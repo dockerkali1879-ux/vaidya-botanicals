@@ -185,9 +185,151 @@
 
             <!-- 2. WEBSITE CONTENT SECTION -->
             <section id="view-content" class="tab-view hidden space-y-6">
-                <!-- Mounted in Milestone 3 -->
-                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 text-center text-vaidya-textMuted">
-                    <p class="text-sm">Content management section</p>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Website Content Management</h3>
+                        <p class="text-xs text-vaidya-textMuted">Modify homepage headlines, brand narrative, contact information, and FAQs</p>
+                    </div>
+                    <button onclick="saveCurrentContentSection()" id="cms-save-btn" class="py-2.5 px-4 rounded-xl bg-vaidya-accent text-vaidya-bg text-xs font-semibold hover:bg-vaidya-accentLight active:scale-[0.99] transition-all flex items-center gap-2 shadow-lg shadow-vaidya-accent/10">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span id="cms-save-btn-text">Publish Section</span>
+                    </button>
+                </div>
+
+                <!-- CMS Subtabs -->
+                <div class="flex border-b border-vaidya-accentMuted/40 gap-6 text-xs font-medium">
+                    <button onclick="switchContentTab('hero')" id="ctab-hero" class="ctab-btn pb-3 border-b-2 border-vaidya-accent text-vaidya-accent">Homepage Hero</button>
+                    <button onclick="switchContentTab('about')" id="ctab-about" class="ctab-btn pb-3 border-b-2 border-transparent text-vaidya-textSecondary hover:text-vaidya-textPrimary">Our Philosophy</button>
+                    <button onclick="switchContentTab('story')" id="ctab-story" class="ctab-btn pb-3 border-b-2 border-transparent text-vaidya-textSecondary hover:text-vaidya-textPrimary">Our Story</button>
+                    <button onclick="switchContentTab('support_info')" id="ctab-support_info" class="ctab-btn pb-3 border-b-2 border-transparent text-vaidya-textSecondary hover:text-vaidya-textPrimary">Care & FAQs</button>
+                </div>
+
+                <!-- CMS Section Panels -->
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 shadow-xl space-y-6">
+                    <!-- Hero Panel -->
+                    <div id="cpanel-hero" class="cpanel space-y-4 text-xs">
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Hero Eyebrow Text</label>
+                            <input type="text" id="cms-hero-eyebrow" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Hero Main Title *</label>
+                            <input type="text" id="cms-hero-title" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary font-serif text-sm focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Hero Narrative Description</label>
+                            <textarea id="cms-hero-desc" rows="3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Badge 1</label>
+                                <input type="text" id="cms-hero-b1" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Badge 2</label>
+                                <input type="text" id="cms-hero-b2" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Badge 3</label>
+                                <input type="text" id="cms-hero-b3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About Panel -->
+                    <div id="cpanel-about" class="cpanel hidden space-y-4 text-xs">
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">About Section Eyebrow</label>
+                            <input type="text" id="cms-about-eyebrow" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Main Statement Heading</label>
+                            <input type="text" id="cms-about-title" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary font-serif text-sm focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Philosophy Description</label>
+                            <textarea id="cms-about-desc" rows="4" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                            <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/30 space-y-1.5">
+                                <label class="block text-[11px] text-vaidya-textMuted">Purity Metric</label>
+                                <input type="text" id="cms-about-s1-num" placeholder="0%" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-xs text-vaidya-accent font-serif">
+                                <input type="text" id="cms-about-s1-lbl" placeholder="Synthetic Additives" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-[11px] text-vaidya-textSecondary">
+                            </div>
+                            <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/30 space-y-1.5">
+                                <label class="block text-[11px] text-vaidya-textMuted">Organic Metric</label>
+                                <input type="text" id="cms-about-s2-num" placeholder="100%" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-xs text-vaidya-accent font-serif">
+                                <input type="text" id="cms-about-s2-lbl" placeholder="Organic Ingredients" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-[11px] text-vaidya-textSecondary">
+                            </div>
+                            <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/30 space-y-1.5">
+                                <label class="block text-[11px] text-vaidya-textMuted">Trade Metric</label>
+                                <input type="text" id="cms-about-s3-num" placeholder="Direct" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-xs text-vaidya-accent font-serif">
+                                <input type="text" id="cms-about-s3-lbl" placeholder="Farm Trade" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-[11px] text-vaidya-textSecondary">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Our Story Panel -->
+                    <div id="cpanel-story" class="cpanel hidden space-y-4 text-xs">
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Story Headline Title</label>
+                            <input type="text" id="cms-story-title" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary font-serif text-sm focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Story Subtitle</label>
+                            <input type="text" id="cms-story-subtitle" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Chapter 1: The Founding</label>
+                            <textarea id="cms-story-p1" rows="3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Chapter 2: Sourcing & Distillation</label>
+                            <textarea id="cms-story-p2" rows="3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Chapter 3: The Daily Ritual</label>
+                            <textarea id="cms-story-p3" rows="3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Support & FAQs Panel -->
+                    <div id="cpanel-support_info" class="cpanel hidden space-y-5 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Support Email</label>
+                                <input type="email" id="cms-support-email" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Support Phone</label>
+                                <input type="text" id="cms-support-phone" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Operating Hours</label>
+                                <input type="text" id="cms-support-hours" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Laboratory Address</label>
+                                <input type="text" id="cms-support-address" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary">
+                            </div>
+                        </div>
+
+                        <!-- FAQs List Manager -->
+                        <div class="border-t border-vaidya-accentMuted/30 pt-4 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-vaidya-textPrimary">Frequently Asked Questions</span>
+                                <button type="button" onclick="addFaqItem()" class="py-1.5 px-3 rounded-lg bg-vaidya-soft border border-vaidya-accent text-vaidya-accent hover:bg-vaidya-accent hover:text-vaidya-bg font-semibold flex items-center gap-1.5 transition-colors">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
+                                    <span>Add Question</span>
+                                </button>
+                            </div>
+                            <div id="faq-list-container" class="space-y-3">
+                                <!-- FAQ items dynamic rendered here -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -847,12 +989,189 @@
             document.getElementById('preview-modal').classList.remove('hidden');
         }
 
+        // ==========================================
+        // WEBSITE CONTENT MANAGEMENT (CMS)
+        // ==========================================
+        let currentContentSection = 'hero';
+        let siteContentData = {};
+        let currentFaqs = [];
+
+        async function loadSiteContent() {
+            try {
+                const res = await fetch('/api/admin/content');
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to fetch content');
+
+                siteContentData = data.content || {};
+                populateContentFields();
+            } catch (err) {
+                showToast('Failed to load content: ' + err.message, true);
+            }
+        }
+
+        function switchContentTab(sec) {
+            currentContentSection = sec;
+            document.querySelectorAll('.cpanel').forEach(p => p.classList.add('hidden'));
+            const activePanel = document.getElementById('cpanel-' + sec);
+            if (activePanel) activePanel.classList.remove('hidden');
+
+            document.querySelectorAll('.ctab-btn').forEach(btn => {
+                btn.classList.remove('border-vaidya-accent', 'text-vaidya-accent');
+                btn.classList.add('border-transparent', 'text-vaidya-textSecondary');
+            });
+            const activeTab = document.getElementById('ctab-' + sec);
+            if (activeTab) {
+                activeTab.classList.add('border-vaidya-accent', 'text-vaidya-accent');
+                activeTab.classList.remove('border-transparent', 'text-vaidya-textSecondary');
+            }
+        }
+
+        function populateContentFields() {
+            // Hero
+            const hero = siteContentData.hero || {};
+            document.getElementById('cms-hero-eyebrow').value = hero.eyebrow || '';
+            document.getElementById('cms-hero-title').value = hero.title || '';
+            document.getElementById('cms-hero-desc').value = hero.description || '';
+            document.getElementById('cms-hero-b1').value = hero.badge_1 || '';
+            document.getElementById('cms-hero-b2').value = hero.badge_2 || '';
+            document.getElementById('cms-hero-b3').value = hero.badge_3 || '';
+
+            // About
+            const about = siteContentData.about || {};
+            document.getElementById('cms-about-eyebrow').value = about.eyebrow || '';
+            document.getElementById('cms-about-title').value = about.title || '';
+            document.getElementById('cms-about-desc').value = about.description || '';
+            document.getElementById('cms-about-s1-num').value = about.stat_1_number || '';
+            document.getElementById('cms-about-s1-lbl').value = about.stat_1_label || '';
+            document.getElementById('cms-about-s2-num').value = about.stat_2_number || '';
+            document.getElementById('cms-about-s2-lbl').value = about.stat_2_label || '';
+            document.getElementById('cms-about-s3-num').value = about.stat_3_number || '';
+            document.getElementById('cms-about-s3-lbl').value = about.stat_3_label || '';
+
+            // Story
+            const story = siteContentData.story || {};
+            document.getElementById('cms-story-title').value = story.title || '';
+            document.getElementById('cms-story-subtitle').value = story.subtitle || '';
+            document.getElementById('cms-story-p1').value = story.p1 || '';
+            document.getElementById('cms-story-p2').value = story.p2 || '';
+            document.getElementById('cms-story-p3').value = story.p3 || '';
+
+            // Support & FAQs
+            const sup = siteContentData.support_info || {};
+            document.getElementById('cms-support-email').value = sup.email || '';
+            document.getElementById('cms-support-phone').value = sup.phone || '';
+            document.getElementById('cms-support-hours').value = sup.hours || '';
+            document.getElementById('cms-support-address').value = sup.address || '';
+
+            currentFaqs = Array.isArray(sup.faqs) ? JSON.parse(JSON.stringify(sup.faqs)) : [];
+            renderFaqList();
+        }
+
+        function renderFaqList() {
+            const container = document.getElementById('faq-list-container');
+            if (!currentFaqs.length) {
+                container.innerHTML = '<div class="py-3 text-center text-vaidya-textMuted border border-dashed border-vaidya-accentMuted/40 rounded-xl">No FAQs added yet. Click "Add Question" above.</div>';
+                return;
+            }
+
+            container.innerHTML = currentFaqs.map((f, i) => `
+                <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/30 space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                        <input type="text" value="${escapeHtml(f.q)}" oninput="currentFaqs[${i}].q = this.value" placeholder="Question..." class="flex-1 bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-xs text-vaidya-textPrimary font-medium focus:outline-none focus:border-vaidya-accent">
+                        <button type="button" onclick="removeFaqItem(${i})" class="text-vaidya-textMuted hover:text-red-400 p-1 text-xs">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                    <textarea rows="2" oninput="currentFaqs[${i}].a = this.value" placeholder="Answer..." class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg p-2 text-xs text-vaidya-textSecondary focus:outline-none focus:border-vaidya-accent">${escapeHtml(f.a)}</textarea>
+                </div>
+            `).join('');
+        }
+
+        function addFaqItem() {
+            currentFaqs.push({ q: 'New Botanical Question', a: 'Detailed answer...' });
+            renderFaqList();
+        }
+
+        function removeFaqItem(index) {
+            currentFaqs.splice(index, 1);
+            renderFaqList();
+        }
+
+        async function saveCurrentContentSection() {
+            const sec = currentContentSection;
+            let dataPayload = {};
+
+            if (sec === 'hero') {
+                dataPayload = {
+                    eyebrow: document.getElementById('cms-hero-eyebrow').value.trim(),
+                    title: document.getElementById('cms-hero-title').value.trim(),
+                    description: document.getElementById('cms-hero-desc').value.trim(),
+                    badge_1: document.getElementById('cms-hero-b1').value.trim(),
+                    badge_2: document.getElementById('cms-hero-b2').value.trim(),
+                    badge_3: document.getElementById('cms-hero-b3').value.trim()
+                };
+            } else if (sec === 'about') {
+                dataPayload = {
+                    eyebrow: document.getElementById('cms-about-eyebrow').value.trim(),
+                    title: document.getElementById('cms-about-title').value.trim(),
+                    description: document.getElementById('cms-about-desc').value.trim(),
+                    stat_1_number: document.getElementById('cms-about-s1-num').value.trim(),
+                    stat_1_label: document.getElementById('cms-about-s1-lbl').value.trim(),
+                    stat_2_number: document.getElementById('cms-about-s2-num').value.trim(),
+                    stat_2_label: document.getElementById('cms-about-s2-lbl').value.trim(),
+                    stat_3_number: document.getElementById('cms-about-s3-num').value.trim(),
+                    stat_3_label: document.getElementById('cms-about-s3-lbl').value.trim()
+                };
+            } else if (sec === 'story') {
+                dataPayload = {
+                    title: document.getElementById('cms-story-title').value.trim(),
+                    subtitle: document.getElementById('cms-story-subtitle').value.trim(),
+                    p1: document.getElementById('cms-story-p1').value.trim(),
+                    p2: document.getElementById('cms-story-p2').value.trim(),
+                    p3: document.getElementById('cms-story-p3').value.trim()
+                };
+            } else if (sec === 'support_info') {
+                dataPayload = {
+                    email: document.getElementById('cms-support-email').value.trim(),
+                    phone: document.getElementById('cms-support-phone').value.trim(),
+                    hours: document.getElementById('cms-support-hours').value.trim(),
+                    address: document.getElementById('cms-support-address').value.trim(),
+                    faqs: currentFaqs
+                };
+            }
+
+            const btn = document.getElementById('cms-save-btn');
+            const btnText = document.getElementById('cms-save-btn-text');
+            btn.disabled = true;
+            btnText.textContent = 'Publishing...';
+
+            try {
+                const res = await fetch('/api/admin/content', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key: sec, data: dataPayload })
+                });
+
+                const resData = await res.json();
+                if (!res.ok) throw new Error(resData.error || 'Failed to update section');
+
+                siteContentData[sec] = dataPayload;
+                showToast(`Section "${sec}" published to live website.`);
+            } catch (err) {
+                showToast(err.message, true);
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = 'Publish Section';
+            }
+        }
+
         function escapeHtml(text) {
             return String(text || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             verifySession();
+            loadSiteContent();
         });
     </script>
 </body>

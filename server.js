@@ -123,6 +123,31 @@ const server = http.createServer(async (req, res) => {
             return handler(req, res);
         }
 
+        // Products APIs
+        if (pathname === '/api/products' || pathname.startsWith('/api/products/')) {
+            const handler = require('./api/products/index');
+            return handler(req, res);
+        }
+        if (pathname === '/api/admin/products' || pathname.startsWith('/api/admin/products/')) {
+            const handler = require('./api/admin/products');
+            return handler(req, res);
+        }
+        // Content APIs
+        if (pathname === '/api/content' || pathname.startsWith('/api/content/')) {
+            const handler = require('./api/content/index');
+            return handler(req, res);
+        }
+        if (pathname === '/api/admin/content' || pathname.startsWith('/api/admin/content/')) {
+            const handler = require('./api/admin/content');
+            return handler(req, res);
+        }
+
+        // Upload API
+        if (pathname === '/api/admin/upload') {
+            const handler = require('./api/admin/upload');
+            return handler(req, res);
+        }
+
         // Additional API route handlers will be mounted in upcoming milestones
         const apiPath = path.join(__dirname, pathname + '.js');
         if (fs.existsSync(apiPath)) {
