@@ -1,0 +1,23 @@
+{
+  "name": "vaidya-botanicals",
+  "version": "1.0.0",
+  "description": "Vaidya Botanicals - Premium Botanical Wellness Ecommerce & Private Admin CMS",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "bootstrap:admin": "node scripts/bootstrap-admin.js",
+    "db:test": "node scripts/test-db-connection.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "cookie": "^0.6.0",
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2",
+    "razorpay": "^2.9.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
