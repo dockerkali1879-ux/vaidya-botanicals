@@ -2170,6 +2170,62 @@ void main() {
                 }
             }
 
+            async function fetchDynamicProducts() {
+                try {
+                    const res = await fetch('/api/products');
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (!data || !Array.isArray(data.products) || !data.products.length) return;
+
+                    const grid = $('product-grid');
+                    const dGrid = $('discover-product-grid');
+                    if (!grid) return;
+
+                    const cardsHtml = data.products.map(p => {
+                        const primaryImg = (p.images && p.images.length) ? p.images.find(i => i.is_primary) || p.images[0] : null;
+                        const catClass = esc(p.category || 'tea');
+                        const icon = catClass === 'tea' ? 'mug-saucer' : catClass === 'oil' ? 'bottle-droplet' : 'leaf';
+                        const badgeHtml = p.badge ? `<span class="absolute top-4 left-4 bg-vaidya-bg/90 text-vaidya-accent border border-vaidya-accent/30 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">${esc(p.badge)}</span>` : '';
+                        const imgHtml = (primaryImg && primaryImg.url)
+                            ? `<img src="${esc(primaryImg.url)}" alt="${esc(primaryImg.alt || p.name)}" class="w-full h-full object-cover">`
+                            : `<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#20E070_1px,transparent_1px)] [background-size:12px_12px]"></div><i class="fa-solid fa-${icon} text-5xl text-vaidya-accent/70"></i>`;
+
+                        const safeName = esc(p.name);
+                        const safeCat = esc(p.health_segment || '');
+                        const safePrice = '$' + Number(p.price).toFixed(2);
+                        const safeDesc = esc(p.description || p.short_description || '');
+                        const safeIng = esc(p.ingredients || '');
+                        const safeUse = esc(p.usage_instructions || '');
+                        const safeUnit = esc(p.unit || '');
+
+                        return `
+                        <div class="product-card ${catClass} card-lift bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/50 flex flex-col justify-between">
+                            <div>
+                                <div class="w-full h-52 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                                    ${imgHtml}
+                                    ${badgeHtml}
+                                </div>
+                                <div class="text-xs font-medium text-vaidya-accentLight mb-1">${safeCat}</div>
+                                <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">${safeName}</h3>
+                                <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">${esc(p.short_description || '')}</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                                <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">${safePrice} <span class="text-xs font-normal text-vaidya-textMuted">${safeUnit}</span></span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="openModal('${safeName}', '${safeCat}', '${safePrice}', '${safeDesc}', '${safeIng}', '${safeUse}')" class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View Details</button>
+                                    <button onclick="Shop.add(this)" data-id="${esc(p.slug || p.id)}" data-name="${safeName}" data-price="${Number(p.price).toFixed(2)}" data-unit="${safeUnit}" class="btn-fluid px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5 hover:bg-vaidya-accentLight"><i class="fa-solid fa-cart-plus"></i> Add</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+                    grid.innerHTML = cardsHtml;
+                    if (dGrid) dGrid.innerHTML = cardsHtml;
+                } catch (e) {
+                    // Gracefully retain existing fallback markup
+                }
+            }
+
             function scrollToSection(e, targetId) {
                 if (e) e.preventDefault();
                 if (location.hash === '#cart' || location.hash === '#discover' || location.hash === '#story' || location.hash === '#support') {
@@ -2224,6 +2280,7 @@ void main() {
                 populateDiscoverGrid();
                 renderBadge();
                 route();
+                fetchDynamicProducts();
             });
 
             return {
