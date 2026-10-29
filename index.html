@@ -2097,8 +2097,8 @@ void main() {
                 return 'VD-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
             }
 
-            function completeOrder(payMethod, payId) {
-                const orderId = generateOrderId();
+            async function completeOrder(payMethod, payId) {
+                let orderId = generateOrderId();
                 const payload = {
                     type: 'order',
                     orderId,
@@ -2111,6 +2111,21 @@ void main() {
                     total: subtotal() + CONFIG.SHIPPING,
                     payment: { method: payMethod, paymentId: payId || null }
                 };
+
+                // Persist order to backend database
+                try {
+                    const res = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (data && data.order && data.order.order_number) {
+                        orderId = data.order.order_number;
+                    }
+                } catch (e) {
+                    // Fallback to client orderId
+                }
 
                 send(payload);
                 cart = []; saveCart(); renderBadge();
@@ -2353,10 +2368,30 @@ void main() {
                     location.hash = '#support';
                     route();
                 },
-                sendSupportMessage(e) {
+                async sendSupportMessage(e) {
                     if (e) e.preventDefault();
-                    toast('Thank you! Your message has been received by our care team.');
-                    e.target.reset();
+                    const form = e.target;
+                    const inputs = form.querySelectorAll('input, select, textarea');
+                    const payload = {
+                        name: inputs[0] ? inputs[0].value : '',
+                        email: inputs[1] ? inputs[1].value : '',
+                        category: inputs[2] ? inputs[2].value : 'General Question',
+                        message: inputs[3] ? inputs[3].value : ''
+                    };
+
+                    try {
+                        const res = await fetch('/api/support', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        toast(data.ticket_number ? `Ticket #${data.ticket_number} created. Care team notified.` : 'Message received. We will contact you soon.');
+                        form.reset();
+                    } catch (err) {
+                        toast('Message received. Thank you for reaching out!');
+                        form.reset();
+                    }
                 },
                 goHome(e) {
                     if (e) e.preventDefault();

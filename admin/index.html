@@ -335,30 +335,130 @@
 
             <!-- 3. ORDERS SECTION -->
             <section id="view-orders" class="tab-view hidden space-y-6">
-                <!-- Mounted in Milestone 4 -->
-                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 text-center text-vaidya-textMuted">
-                    <p class="text-sm">Orders section</p>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Orders & Deliveries</h3>
+                        <p class="text-xs text-vaidya-textMuted">Inspect customer purchases, track fulfillment, record courier numbers, and collect COD payments</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="orders-status-filter" onchange="loadOrders()" class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textSecondary focus:outline-none focus:border-vaidya-accent">
+                            <option value="all">All Order Statuses</option>
+                            <option value="new">New</option>
+                            <option value="processing">Processing</option>
+                            <option value="dispatched">Dispatched</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <button onclick="loadOrders()" class="p-2 rounded-xl bg-vaidya-card border border-vaidya-accentMuted/40 text-vaidya-textSecondary hover:text-vaidya-accent text-xs">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-vaidya-soft/60 border-b border-vaidya-accentMuted/30 text-vaidya-textMuted uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-3.5 px-4">Order Ref</th>
+                                    <th class="py-3.5 px-4">Customer</th>
+                                    <th class="py-3.5 px-4">Total Amount</th>
+                                    <th class="py-3.5 px-4">Payment</th>
+                                    <th class="py-3.5 px-4">Fulfillment</th>
+                                    <th class="py-3.5 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body" class="divide-y divide-vaidya-accentMuted/20 text-vaidya-textPrimary">
+                                <tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No orders recorded yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
             <!-- 4. SUPPORT SECTION -->
             <section id="view-support" class="tab-view hidden space-y-6">
-                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 text-center text-vaidya-textMuted">
-                    <p class="text-sm">Support section</p>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Customer Support Cases</h3>
+                        <p class="text-xs text-vaidya-textMuted">Private inquiries, secure customer attachments, and confidential internal staff notes</p>
+                    </div>
+                    <select id="support-status-filter" onchange="loadSupportTickets()" class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textSecondary">
+                        <option value="all">All Cases</option>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-vaidya-soft/60 border-b border-vaidya-accentMuted/30 text-vaidya-textMuted uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-3.5 px-4">Case #</th>
+                                    <th class="py-3.5 px-4">Customer</th>
+                                    <th class="py-3.5 px-4">Category</th>
+                                    <th class="py-3.5 px-4">Subject</th>
+                                    <th class="py-3.5 px-4">Status</th>
+                                    <th class="py-3.5 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="support-table-body" class="divide-y divide-vaidya-accentMuted/20 text-vaidya-textPrimary">
+                                <tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No support cases submitted.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
             <!-- 5. REVIEWS SECTION -->
             <section id="view-reviews" class="tab-view hidden space-y-6">
-                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 text-center text-vaidya-textMuted">
-                    <p class="text-sm">Reviews section</p>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Product Reviews Moderation</h3>
+                        <p class="text-xs text-vaidya-textMuted">Approve or reject customer-submitted product ratings and reviews</p>
+                    </div>
+                    <select id="reviews-status-filter" onchange="loadReviews()" class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textSecondary">
+                        <option value="all">All Reviews</option>
+                        <option value="pending">Pending Moderation</option>
+                        <option value="approved">Approved & Live</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-vaidya-soft/60 border-b border-vaidya-accentMuted/30 text-vaidya-textMuted uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-3.5 px-4">Product</th>
+                                    <th class="py-3.5 px-4">Reviewer</th>
+                                    <th class="py-3.5 px-4">Rating</th>
+                                    <th class="py-3.5 px-4">Review Commentary</th>
+                                    <th class="py-3.5 px-4">Status</th>
+                                    <th class="py-3.5 px-4 text-right">Moderation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviews-table-body" class="divide-y divide-vaidya-accentMuted/20 text-vaidya-textPrimary">
+                                <tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No reviews awaiting moderation.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
             <!-- 6. AUDIT SECTION -->
             <section id="view-audit" class="tab-view hidden space-y-6">
-                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 text-center text-vaidya-textMuted">
-                    <p class="text-sm">Audit section</p>
+                <div>
+                    <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Security & Action Audit Trail</h3>
+                    <p class="text-xs text-vaidya-textMuted">Immutable server record of administrator operations, pricing changes, and logins</p>
+                </div>
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 shadow-xl space-y-3">
+                    <div id="audit-log-list" class="space-y-2 text-xs font-mono">
+                        <div class="text-vaidya-textMuted py-4 text-center">Audit logs tracking active.</div>
+                    </div>
                 </div>
             </section>
 
@@ -543,6 +643,123 @@
         </div>
     </div>
 
+    <!-- ORDER DETAILS MODAL -->
+    <div id="order-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-vaidya-card border border-vaidya-accentMuted/60 rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
+            <div class="px-6 py-5 border-b border-vaidya-accentMuted/30 flex items-center justify-between">
+                <div>
+                    <h3 id="order-modal-title" class="font-serif text-lg text-vaidya-textPrimary font-medium">Order Inspection</h3>
+                    <p id="order-modal-date" class="text-xs text-vaidya-textMuted"></p>
+                </div>
+                <button onclick="document.getElementById('order-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-vaidya-soft text-vaidya-textSecondary hover:text-vaidya-textPrimary flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-5 overflow-y-auto flex-1 text-xs">
+                <input type="hidden" id="edit-order-id">
+                <!-- Customer info -->
+                <div class="p-4 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30 space-y-1">
+                    <span class="text-[10px] uppercase tracking-wider text-vaidya-accent font-semibold block">Customer & Delivery Address</span>
+                    <div id="order-modal-cust" class="text-sm font-medium text-vaidya-textPrimary"></div>
+                    <div id="order-modal-addr" class="text-xs text-vaidya-textSecondary leading-relaxed"></div>
+                </div>
+
+                <!-- Items list -->
+                <div>
+                    <span class="text-[10px] uppercase tracking-wider text-vaidya-textMuted font-semibold block mb-2">Ordered Formulations</span>
+                    <div id="order-modal-items" class="space-y-2 border border-vaidya-accentMuted/30 rounded-2xl p-3 bg-vaidya-soft/40 divide-y divide-vaidya-accentMuted/20"></div>
+                </div>
+
+                <!-- Status Selectors -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Fulfillment Status</label>
+                        <select id="edit-order-status" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            <option value="new">New</option>
+                            <option value="processing">Processing</option>
+                            <option value="dispatched">Dispatched</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Payment Status</label>
+                        <select id="edit-order-payment-status" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid (Confirmed / Collected)</option>
+                            <option value="refunded">Refunded</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tracking Courier -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Courier Partner</label>
+                        <input type="text" id="edit-order-courier" placeholder="e.g. BlueDart, Delhivery, DTDC" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">AWB / Tracking Number</label>
+                        <input type="text" id="edit-order-tracking" placeholder="Tracking code" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary font-mono">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-vaidya-textSecondary mb-1.5">Internal Order Notes</label>
+                    <textarea id="edit-order-notes" rows="2" placeholder="Private notes for packaging staff..." class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-vaidya-accentMuted/30">
+                    <button type="button" onclick="document.getElementById('order-modal').classList.add('hidden')" class="py-2.5 px-4 rounded-xl text-vaidya-textMuted hover:text-vaidya-textPrimary">Cancel</button>
+                    <button type="button" onclick="saveOrderUpdates()" class="py-2.5 px-5 rounded-xl bg-vaidya-accent text-vaidya-bg font-semibold hover:bg-vaidya-accentLight">Update Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUPPORT CASE MODAL -->
+    <div id="support-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-vaidya-card border border-vaidya-accentMuted/60 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
+            <div class="px-6 py-5 border-b border-vaidya-accentMuted/30 flex items-center justify-between">
+                <div>
+                    <h3 id="support-modal-title" class="font-serif text-lg text-vaidya-textPrimary font-medium">Customer Support Case</h3>
+                    <p id="support-modal-cust" class="text-xs text-vaidya-textMuted"></p>
+                </div>
+                <button onclick="document.getElementById('support-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-vaidya-soft text-vaidya-textSecondary hover:text-vaidya-textPrimary flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4 overflow-y-auto flex-1 text-xs">
+                <input type="hidden" id="edit-support-id">
+                <div class="p-3 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30">
+                    <span class="text-[10px] uppercase text-vaidya-accent font-semibold block mb-1">Customer Inquiry</span>
+                    <div id="support-modal-msg" class="text-xs text-vaidya-textPrimary leading-relaxed whitespace-pre-wrap"></div>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-vaidya-textSecondary mb-1.5">Case Status</label>
+                    <select id="edit-support-status" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-vaidya-textSecondary mb-1.5">Internal Staff Notes (Invisible to Customer)</label>
+                    <textarea id="edit-support-notes" rows="3" placeholder="Record internal follow-up steps..." class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-vaidya-accentMuted/30">
+                    <button type="button" onclick="document.getElementById('support-modal').classList.add('hidden')" class="py-2.5 px-4 rounded-xl text-vaidya-textMuted hover:text-vaidya-textPrimary">Cancel</button>
+                    <button type="button" onclick="saveSupportUpdates()" class="py-2.5 px-5 rounded-xl bg-vaidya-accent text-vaidya-bg font-semibold hover:bg-vaidya-accentLight">Save Case</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Client Script -->
     <script>
         let currentTab = 'products';
@@ -599,6 +816,12 @@
                 audit: 'Audit Trail'
             };
             document.getElementById('page-title').textContent = titles[tabId] || 'Console';
+
+            if (tabId === 'orders') loadOrders();
+            if (tabId === 'support') loadSupportTickets();
+            if (tabId === 'reviews') loadReviews();
+            if (tabId === 'content') loadSiteContent();
+            if (tabId === 'products') loadProducts();
         }
 
         async function verifySession() {
@@ -1162,6 +1385,326 @@
             } finally {
                 btn.disabled = false;
                 btnText.textContent = 'Publish Section';
+            }
+        }
+
+        // ==========================================
+        // ORDERS & DELIVERY MANAGEMENT
+        // ==========================================
+        let allOrders = [];
+
+        async function loadOrders() {
+            const tbody = document.getElementById('orders-table-body');
+            const statusFilter = document.getElementById('orders-status-filter')?.value || 'all';
+
+            try {
+                const url = statusFilter !== 'all' ? `/api/admin/orders?status=${statusFilter}` : '/api/admin/orders';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to fetch orders');
+
+                allOrders = data.orders || [];
+                renderOrdersTable(allOrders);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400">Failed to load orders: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderOrdersTable(orders) {
+            const tbody = document.getElementById('orders-table-body');
+            if (!orders.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No orders found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = orders.map(o => {
+                const payBadge = o.payment_status === 'paid'
+                    ? '<span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">Paid</span>'
+                    : '<span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-950/80 text-amber-300 border border-amber-500/30">Pending</span>';
+
+                const orderBadgeMap = {
+                    new: 'bg-blue-950/80 text-blue-300 border-blue-500/30',
+                    processing: 'bg-indigo-950/80 text-indigo-300 border-indigo-500/30',
+                    dispatched: 'bg-amber-950/80 text-amber-300 border-amber-500/30',
+                    delivered: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30',
+                    cancelled: 'bg-red-950/80 text-red-300 border-red-500/30'
+                };
+                const orderBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] border capitalize ${orderBadgeMap[o.order_status] || 'bg-gray-800 text-gray-400'}">${o.order_status}</span>`;
+
+                const dateStr = new Date(o.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                return `
+                <tr class="hover:bg-vaidya-soft/40 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-medium text-vaidya-accent">
+                        ${escapeHtml(o.order_number)}
+                        <div class="text-[10px] text-vaidya-textMuted font-sans">${dateStr}</div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <div class="font-medium text-vaidya-textPrimary">${escapeHtml(o.customer_name)}</div>
+                        <div class="text-[11px] text-vaidya-textMuted">${escapeHtml(o.customer_phone || o.customer_email)}</div>
+                    </td>
+                    <td class="py-3.5 px-4 font-mono text-sm font-semibold text-vaidya-textPrimary">
+                        $${Number(o.total).toFixed(2)}
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <div class="flex items-center gap-1.5">
+                            ${payBadge}
+                            <span class="text-[10px] uppercase font-bold text-vaidya-textMuted">${escapeHtml(o.payment_method)}</span>
+                        </div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        ${orderBadge}
+                    </td>
+                    <td class="py-3.5 px-4 text-right">
+                        <button onclick="openOrderModal('${o.id}')" class="py-1 px-2.5 rounded-lg bg-vaidya-soft border border-vaidya-accentMuted/40 text-vaidya-textSecondary hover:text-vaidya-accent text-xs">
+                            Inspect
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function openOrderModal(id) {
+            const o = allOrders.find(item => item.id === id);
+            if (!o) return;
+
+            document.getElementById('edit-order-id').value = o.id;
+            document.getElementById('order-modal-title').textContent = `Order ${o.order_number}`;
+            document.getElementById('order-modal-date').textContent = new Date(o.created_at).toLocaleString();
+            document.getElementById('order-modal-cust').textContent = `${o.customer_name} (${o.customer_phone || ''}) - ${o.customer_email}`;
+
+            const a = o.shipping_address || {};
+            document.getElementById('order-modal-addr').innerHTML = `${escapeHtml(a.l1 || '')}${a.l2 ? ', ' + escapeHtml(a.l2) : ''}, ${escapeHtml(a.city || '')}, ${escapeHtml(a.state || '')} - ${escapeHtml(a.pin || '')}`;
+
+            const itemsContainer = document.getElementById('order-modal-items');
+            const items = Array.isArray(o.items) ? o.items : [];
+            itemsContainer.innerHTML = items.map(i => `
+                <div class="flex items-center justify-between py-1.5">
+                    <div>
+                        <span class="font-medium text-vaidya-textPrimary">${escapeHtml(i.name)}</span>
+                        <span class="text-vaidya-textMuted text-[11px] block">Qty: ${i.qty} &times; $${Number(i.price).toFixed(2)}</span>
+                    </div>
+                    <span class="font-mono text-vaidya-textPrimary font-semibold">$${Number(i.qty * i.price).toFixed(2)}</span>
+                </div>
+            `).join('') + `
+                <div class="flex justify-between pt-2 border-t border-vaidya-accentMuted/30 font-semibold text-vaidya-textPrimary">
+                    <span>Order Total:</span>
+                    <span class="text-vaidya-accent font-mono">$${Number(o.total).toFixed(2)}</span>
+                </div>
+            `;
+
+            document.getElementById('edit-order-status').value = o.order_status || 'new';
+            document.getElementById('edit-order-payment-status').value = o.payment_status || 'pending';
+            document.getElementById('edit-order-courier').value = o.courier_name || '';
+            document.getElementById('edit-order-tracking').value = o.tracking_number || '';
+            document.getElementById('edit-order-notes').value = o.admin_notes || '';
+
+            document.getElementById('order-modal').classList.remove('hidden');
+        }
+
+        async function saveOrderUpdates() {
+            const id = document.getElementById('edit-order-id').value;
+            const payload = {
+                order_status: document.getElementById('edit-order-status').value,
+                payment_status: document.getElementById('edit-order-payment-status').value,
+                courier_name: document.getElementById('edit-order-courier').value.trim(),
+                tracking_number: document.getElementById('edit-order-tracking').value.trim(),
+                admin_notes: document.getElementById('edit-order-notes').value.trim()
+            };
+
+            try {
+                const res = await fetch(`/api/admin/orders?id=${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to update order');
+
+                showToast('Order details and delivery status updated.');
+                document.getElementById('order-modal').classList.add('hidden');
+                loadOrders();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // ==========================================
+        // CUSTOMER SUPPORT MANAGEMENT
+        // ==========================================
+        let allSupportTickets = [];
+
+        async function loadSupportTickets() {
+            const tbody = document.getElementById('support-table-body');
+            const statusFilter = document.getElementById('support-status-filter')?.value || 'all';
+
+            try {
+                const url = statusFilter !== 'all' ? `/api/admin/support?status=${statusFilter}` : '/api/admin/support';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to load support cases');
+
+                allSupportTickets = data.tickets || [];
+                renderSupportTable(allSupportTickets);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400">Failed to load cases: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderSupportTable(tickets) {
+            const tbody = document.getElementById('support-table-body');
+            if (!tickets.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No support cases found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = tickets.map(t => {
+                const statusMap = {
+                    open: 'bg-amber-950/80 text-amber-300 border-amber-500/30',
+                    in_progress: 'bg-blue-950/80 text-blue-300 border-blue-500/30',
+                    resolved: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30',
+                    closed: 'bg-gray-800 text-gray-400 border-gray-700'
+                };
+                const badge = `<span class="px-2 py-0.5 rounded-full text-[10px] border capitalize ${statusMap[t.status] || 'bg-gray-800'}">${t.status}</span>`;
+
+                return `
+                <tr class="hover:bg-vaidya-soft/40 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-medium text-vaidya-accent">${escapeHtml(t.ticket_number)}</td>
+                    <td class="py-3.5 px-4">${escapeHtml(t.customer_email)}</td>
+                    <td class="py-3.5 px-4 text-vaidya-textSecondary">${escapeHtml(t.category)}</td>
+                    <td class="py-3.5 px-4 truncate max-w-xs">${escapeHtml(t.subject || t.message)}</td>
+                    <td class="py-3.5 px-4">${badge}</td>
+                    <td class="py-3.5 px-4 text-right">
+                        <button onclick="openSupportModal('${t.id}')" class="py-1 px-2.5 rounded-lg bg-vaidya-soft border border-vaidya-accentMuted/40 text-vaidya-textSecondary hover:text-vaidya-accent text-xs">
+                            View Case
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function openSupportModal(id) {
+            const t = allSupportTickets.find(item => item.id === id);
+            if (!t) return;
+
+            document.getElementById('edit-support-id').value = t.id;
+            document.getElementById('support-modal-title').textContent = `Support Case ${t.ticket_number}`;
+            document.getElementById('support-modal-cust').textContent = `${t.customer_email} &bull; ${new Date(t.created_at).toLocaleString()}`;
+            document.getElementById('support-modal-msg').textContent = t.message;
+            document.getElementById('edit-support-status').value = t.status || 'open';
+            document.getElementById('edit-support-notes').value = t.internal_notes || '';
+
+            document.getElementById('support-modal').classList.remove('hidden');
+        }
+
+        async function saveSupportUpdates() {
+            const id = document.getElementById('edit-support-id').value;
+            const payload = {
+                status: document.getElementById('edit-support-status').value,
+                internal_notes: document.getElementById('edit-support-notes').value.trim()
+            };
+
+            try {
+                const res = await fetch(`/api/admin/support?id=${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to save support updates');
+
+                showToast('Case updated.');
+                document.getElementById('support-modal').classList.add('hidden');
+                loadSupportTickets();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // ==========================================
+        // PRODUCT REVIEWS MODERATION
+        // ==========================================
+        let allReviews = [];
+
+        async function loadReviews() {
+            const tbody = document.getElementById('reviews-table-body');
+            const statusFilter = document.getElementById('reviews-status-filter')?.value || 'all';
+
+            try {
+                const url = statusFilter !== 'all' ? `/api/admin/reviews?status=${statusFilter}` : '/api/admin/reviews';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to load reviews');
+
+                allReviews = data.reviews || [];
+                renderReviewsTable(allReviews);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400">Failed to load reviews: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderReviewsTable(reviews) {
+            const tbody = document.getElementById('reviews-table-body');
+            if (!reviews.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No reviews found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = reviews.map(r => {
+                const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                const verifiedPill = r.verified_purchase
+                    ? '<span class="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> Verified Purchase</span>'
+                    : '';
+
+                const statusMap = {
+                    pending: 'bg-amber-950/80 text-amber-300 border-amber-500/30',
+                    approved: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30',
+                    rejected: 'bg-red-950/80 text-red-300 border-red-500/30',
+                    hidden: 'bg-gray-800 text-gray-400 border-gray-700'
+                };
+                const badge = `<span class="px-2 py-0.5 rounded-full text-[10px] border capitalize ${statusMap[r.status] || 'bg-gray-800'}">${r.status}</span>`;
+
+                return `
+                <tr class="hover:bg-vaidya-soft/40 transition-colors">
+                    <td class="py-3.5 px-4 font-medium text-vaidya-textPrimary">${escapeHtml(r.product_id)}</td>
+                    <td class="py-3.5 px-4">
+                        <div class="font-medium text-vaidya-textPrimary">${escapeHtml(r.customer_name)}</div>
+                        <div class="text-[11px] text-vaidya-textMuted">${escapeHtml(r.customer_email)}</div>
+                        ${verifiedPill}
+                    </td>
+                    <td class="py-3.5 px-4 text-amber-400 font-serif text-sm">${stars}</td>
+                    <td class="py-3.5 px-4 max-w-xs">
+                        <div class="font-medium text-vaidya-textPrimary">${escapeHtml(r.title || '')}</div>
+                        <div class="text-xs text-vaidya-textSecondary line-clamp-2">${escapeHtml(r.comment)}</div>
+                    </td>
+                    <td class="py-3.5 px-4">${badge}</td>
+                    <td class="py-3.5 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            ${r.status !== 'approved' ? `<button onclick="moderateReview('${r.id}', 'approved')" class="py-1 px-2.5 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[11px] font-medium hover:bg-emerald-900/60">Approve</button>` : ''}
+                            ${r.status !== 'rejected' ? `<button onclick="moderateReview('${r.id}', 'rejected')" class="py-1 px-2.5 rounded-lg bg-red-950/80 text-red-300 border border-red-500/30 text-[11px] font-medium hover:bg-red-900/60">Reject</button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        async function moderateReview(id, status) {
+            try {
+                const res = await fetch(`/api/admin/reviews?id=${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to moderate review');
+
+                showToast(`Review marked as ${status}.`);
+                loadReviews();
+            } catch (err) {
+                showToast(err.message, true);
             }
         }
 

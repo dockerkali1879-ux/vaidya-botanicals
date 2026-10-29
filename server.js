@@ -142,6 +142,36 @@ const server = http.createServer(async (req, res) => {
             return handler(req, res);
         }
 
+        // Orders APIs
+        if (pathname === '/api/orders' || pathname.startsWith('/api/orders/')) {
+            const handler = require('./api/orders/index');
+            return handler(req, res);
+        }
+        if (pathname === '/api/admin/orders' || pathname.startsWith('/api/admin/orders/')) {
+            const handler = require('./api/admin/orders');
+            return handler(req, res);
+        }
+
+        // Support APIs
+        if (pathname === '/api/support' || pathname.startsWith('/api/support/')) {
+            const handler = require('./api/support/index');
+            return handler(req, res);
+        }
+        if (pathname === '/api/admin/support' || pathname.startsWith('/api/admin/support/')) {
+            const handler = require('./api/admin/support');
+            return handler(req, res);
+        }
+
+        // Reviews APIs
+        if (pathname === '/api/reviews' || pathname.startsWith('/api/reviews/')) {
+            const handler = require('./api/reviews/index');
+            return handler(req, res);
+        }
+        if (pathname === '/api/admin/reviews' || pathname.startsWith('/api/admin/reviews/')) {
+            const handler = require('./api/admin/reviews');
+            return handler(req, res);
+        }
+
         // Upload API
         if (pathname === '/api/admin/upload') {
             const handler = require('./api/admin/upload');
