@@ -288,12 +288,15 @@ CREATE POLICY "Only admins can view audit logs"
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
+    -- SECURITY CRITICAL: All customer registrations are strictly assigned 'customer' role.
+    -- Administrator role can NEVER be granted via user_metadata or client-controlled inputs.
+    -- Initial administrator accounts must be provisioned via server-side bootstrap with service role key.
     INSERT INTO public.profiles (id, email, full_name, role)
     VALUES (
         new.id,
         new.email,
         COALESCE(new.raw_user_meta_data->>'full_name', ''),
-        COALESCE((new.raw_user_meta_data->>'role')::user_role, 'customer'::user_role)
+        'customer'::user_role
     )
     ON CONFLICT (id) DO UPDATE
     SET email = EXCLUDED.email;

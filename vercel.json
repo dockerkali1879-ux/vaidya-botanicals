@@ -14,6 +14,11 @@
       "destination": "/private-login.html"
     }
   ],
+  "functions": {
+    "api/admin-gate.js": {
+      "includeFiles": "admin/**"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

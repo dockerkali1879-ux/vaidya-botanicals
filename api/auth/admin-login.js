@@ -1,4 +1,4 @@
-const { createAdminToken, createAdminCookie, logAdminAction } = require('../../lib/auth');
+const { createAdminToken, createAdminCookie, logAdminAction, verifyPassword } = require('../../lib/auth');
 const { isSupabaseConfigured, getSupabaseAdmin, getSupabaseClient, mockDb } = require('../../lib/supabase');
 
 module.exports = async function handler(req, res) {
@@ -52,10 +52,10 @@ module.exports = async function handler(req, res) {
         } else {
             // Local development fallback
             const match = mockDb.adminUsers.find(
-                u => u.email.toLowerCase() === normalizedEmail && u.passwordHash === password
+                u => u.email.toLowerCase() === normalizedEmail
             );
 
-            if (!match) {
+            if (!match || !verifyPassword(password, match.passwordHash)) {
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
 

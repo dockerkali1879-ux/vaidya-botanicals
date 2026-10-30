@@ -7,14 +7,14 @@ const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 module.exports = async function handler(req, res) {
-    if (req.method !== 'POST') {
-        res.setHeader('Allow', ['POST']);
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
-
     const admin = await verifyAdmin(req);
     if (!admin) {
         return res.status(404).json({ error: 'Endpoint not found' });
+    }
+
+    if (req.method !== 'POST') {
+        res.setHeader('Allow', ['POST']);
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {

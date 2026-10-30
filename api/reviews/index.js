@@ -99,9 +99,18 @@ module.exports = async function handler(req, res) {
                 if (error) throw error;
                 return res.status(200).json({ reviews: data || [] });
             } else {
-                const approved = mockDb.reviews.filter(
-                    r => r.product_id === product_id && r.status === 'approved'
-                );
+                const approved = mockDb.reviews
+                    .filter(r => r.product_id === product_id && r.status === 'approved')
+                    .map(r => ({
+                        id: r.id,
+                        product_id: r.product_id,
+                        customer_name: r.customer_name,
+                        rating: r.rating,
+                        title: r.title,
+                        comment: r.comment,
+                        verified_purchase: r.verified_purchase,
+                        created_at: r.created_at
+                    }));
                 return res.status(200).json({ reviews: approved });
             }
         } catch (err) {

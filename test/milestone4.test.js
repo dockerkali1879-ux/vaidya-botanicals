@@ -1,5 +1,7 @@
 const http = require('http');
 const server = require('../server');
+const { hashPassword } = require('../lib/auth');
+const { mockDb } = require('../lib/supabase');
 
 const PORT = 3896; // Isolated test port
 
@@ -26,6 +28,14 @@ function request(options, postData = null) {
 
 async function runTests() {
     console.log('--- STARTING MILESTONE 4 VERIFICATION TESTS ---');
+
+    mockDb.adminUsers = [
+        {
+            email: 'admin@vaidyabotanicals.com',
+            passwordHash: hashPassword('VaidyaAdmin2026!'),
+            role: 'admin'
+        }
+    ];
 
     await new Promise(r => server.listen(PORT, r));
     console.log(`Test server running on port ${PORT}`);

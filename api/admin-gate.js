@@ -17,7 +17,12 @@ module.exports = async function handler(req, res) {
         res.setHeader('Content-Type', 'text/html; charset=UTF-8');
         res.setHeader('X-Frame-Options', 'DENY');
         res.setHeader('X-Content-Type-Options', 'nosniff');
-        return res.status(200).send(content);
+        if (typeof res.send === 'function') {
+            return res.status(200).send(content);
+        } else {
+            res.writeHead(200);
+            return res.end(content);
+        }
     } catch (err) {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         return res.end('404 Not Found');

@@ -2141,8 +2141,7 @@ void main() {
 
             function payOnline() {
                 if (!CONFIG.RAZORPAY_KEY_ID) {
-                    toast('Razorpay Key missing. Simulating online payment...');
-                    setTimeout(() => completeOrder('Razorpay_Simulated', 'pay_sim_' + Date.now()), 1000);
+                    toast('Online payments are undergoing maintenance. Please select Cash on Delivery.');
                     return;
                 }
 

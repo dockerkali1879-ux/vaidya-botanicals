@@ -5,7 +5,10 @@
  *   node scripts/bootstrap-admin.js --email owner@vaidyabotanicals.com --password YourSecurePassword123!
  */
 
+const fs = require('fs');
+const path = require('path');
 const { isSupabaseConfigured, getSupabaseAdmin, mockDb } = require('../lib/supabase');
+const { hashPassword } = require('../lib/auth');
 require('dotenv').config();
 
 function parseArgs() {
@@ -21,17 +24,25 @@ function parseArgs() {
 
 async function bootstrap() {
     const args = parseArgs();
-    const email = args.email || process.env.ADMIN_INITIAL_EMAIL || 'admin@vaidyabotanicals.com';
-    const password = args.password || process.env.ADMIN_INITIAL_PASSWORD || 'VaidyaAdmin2026!';
+    const email = args.email || process.env.ADMIN_INITIAL_EMAIL;
+    const password = args.password || process.env.ADMIN_INITIAL_PASSWORD;
     const fullName = args.name || 'Store Owner';
 
     console.log('====================================================');
     console.log('  Vaidya Botanicals - Secure Admin Bootstrap Setup  ');
     console.log('====================================================');
+
+    if (!email || !password) {
+        console.error('ERROR: Both --email and --password arguments are required for secure setup.');
+        console.error('Usage:');
+        console.error('  npm run bootstrap:admin -- --email "owner@example.com" --password "YourStrongPassword123!"');
+        process.exit(1);
+    }
+
     console.log(`Target Email: ${email}`);
 
-    if (password.length < 8) {
-        console.error('ERROR: Admin password must be at least 8 characters long.');
+    if (password.length < 12) {
+        console.error('ERROR: Admin password must be at least 12 characters long for security compliance.');
         process.exit(1);
     }
 
@@ -95,15 +106,33 @@ async function bootstrap() {
     } else {
         console.log('[Development Mode] Supabase live credentials not detected.');
         console.log(`Registering admin in local fallback store: ${email}`);
-        const existing = mockDb.adminUsers.find(u => u.email === email);
-        if (existing) {
-            existing.passwordHash = password;
-        } else {
-            mockDb.adminUsers.push({ email, passwordHash: password, role: 'admin' });
+        const hashed = hashPassword(password);
+        const localAdminPath = path.join(__dirname, '..', '.local-admin.json');
+        let localUsers = [];
+        if (fs.existsSync(localAdminPath)) {
+            try { localUsers = JSON.parse(fs.readFileSync(localAdminPath, 'utf8')); } catch (e) { localUsers = []; }
         }
-        console.log(' SUCCESS: Local administrator credentials set.');
+        const existingIdx = localUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+        const userRecord = { email, passwordHash: hashed, role: 'admin', updated_at: new Date().toISOString() };
+        if (existingIdx !== -1) {
+            localUsers[existingIdx] = userRecord;
+        } else {
+            localUsers.push(userRecord);
+        }
+        fs.writeFileSync(localAdminPath, JSON.stringify(localUsers, null, 2), { mode: 0o600 });
+
+        // Update in-memory mockDb as well
+        const mockIdx = mockDb.adminUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+        if (mockIdx !== -1) {
+            mockDb.adminUsers[mockIdx] = userRecord;
+        } else {
+            mockDb.adminUsers.push(userRecord);
+        }
+
+        console.log(' SUCCESS: Local administrator credentials securely hashed and stored.');
         console.log(` Email: ${email}`);
-        console.log(` Password: ${password}`);
+        console.log(' Password: [SECURELY HASHED - PBKDF2/SHA-512]');
+        console.log(' Config written to: .local-admin.json (excluded from git)');
     }
     console.log('====================================================\n');
 }

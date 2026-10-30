@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "test": "node test/milestone1.test.js && node test/milestone2.test.js && node test/milestone3.test.js && node test/milestone4.test.js && node test/security.test.js",
     "bootstrap:admin": "node scripts/bootstrap-admin.js",
     "db:test": "node scripts/test-db-connection.js"
   },
