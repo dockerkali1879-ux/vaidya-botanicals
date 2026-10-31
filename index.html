@@ -47,13 +47,17 @@
     <style>
         html {
             scroll-behavior: smooth;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         body {
             background-color: #121212;
             color: #E2E8F0;
             font-family: 'Plus Jakarta Sans', sans-serif;
+            max-width: 100%;
             overflow-x: hidden;
+            position: relative;
         }
 
         /* Glassmorphism Navigation */
@@ -87,18 +91,22 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             /* Ensures cursor events pass through to content */
             z-index: 1;
             /* Stays behind headings, buttons, and cards (z-index 10+) */
+            overflow: hidden;
         }
 
         .splash-cursor__canvas {
             display: block;
             width: 100%;
             height: 100%;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -522,15 +530,15 @@
     </section>
 
     <!-- Cart page (same tab, opens at #cart) -->
-    <section id="cart-view" class="hidden relative z-10 pt-28 sm:pt-36 pb-20 px-6 max-w-5xl mx-auto">
+    <section id="cart-view" class="hidden relative z-10 pt-28 sm:pt-36 pb-20 px-4 sm:px-6 max-w-5xl mx-auto w-full box-border">
         <a href="#" onclick="Shop.goHome(event)"
             class="inline-flex items-center gap-2 text-xs font-medium text-vaidya-textSecondary hover:text-vaidya-accent mb-6"><i
                 class="fa-solid fa-arrow-left"></i> Continue shopping</a>
         <h1 class="font-serif text-3xl sm:text-5xl text-vaidya-textPrimary mb-4">Your Cart</h1>
-        <div id="stepper" class="hidden flex items-center gap-2 text-xs mb-10"></div>
+        <div id="stepper" class="hidden flex flex-wrap items-center gap-2 text-xs mb-8 sm:mb-10"></div>
 
         <div id="cart-empty"
-            class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-12 text-center">
+            class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-8 sm:p-12 text-center w-full box-border">
             <div
                 class="w-14 h-14 mx-auto rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-4">
                 <i class="fa-solid fa-cart-shopping text-xl"></i></div>
@@ -541,11 +549,11 @@
                 the range</a>
         </div>
 
-        <div id="cart-main" class="hidden grid lg:grid-cols-3 gap-8 items-start">
-            <div class="lg:col-span-2">
+        <div id="cart-main" class="hidden grid lg:grid-cols-3 gap-8 items-start w-full box-border">
+            <div class="lg:col-span-2 w-full min-w-0 box-border">
 
                 <div id="step-cart"
-                    class="bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8">
+                    class="bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-4 sm:p-8 w-full box-border">
                     <div id="cart-items" class="divide-y divide-vaidya-soft"></div>
                     <button onclick="Shop.toAddress()"
                         class="btn-fluid w-full mt-6 bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Continue
@@ -553,7 +561,7 @@
                 </div>
 
                 <div id="step-address"
-                    class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8">
+                    class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-4 sm:p-8 w-full box-border">
                     <div class="flex items-center justify-between mb-4">
                         <div>
                             <h2 class="font-serif text-2xl text-vaidya-textPrimary">Delivery &amp; Buyer Details</h2>
@@ -670,7 +678,7 @@
                 </div>
 
                 <div id="step-pay"
-                    class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8">
+                    class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-4 sm:p-8 w-full box-border">
                     <h2 class="font-serif text-2xl text-vaidya-textPrimary mb-4">Choose how to pay</h2>
                     <div
                         class="rounded-2xl bg-vaidya-bg p-4 text-xs text-vaidya-textSecondary leading-relaxed mb-6 flex justify-between gap-4 border border-white/5">
@@ -752,7 +760,7 @@
             </div>
 
             <aside
-                class="bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8 lg:sticky lg:top-28">
+                class="bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-4 sm:p-8 lg:sticky lg:top-28 w-full box-border">
                 <h2 class="font-serif text-xl text-vaidya-textPrimary mb-4">Order summary</h2>
                 <div class="space-y-3 text-sm text-vaidya-textSecondary">
                     <div class="flex justify-between"><span>Subtotal</span><span id="sum-sub"></span></div>
@@ -1565,8 +1573,10 @@ void main() {
 
             const fit = () => {
                 const ratio = Math.min(window.devicePixelRatio || 1, 2);
-                const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
-                const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
+                const clientW = Math.min(canvas.clientWidth || window.innerWidth, window.innerWidth);
+                const clientH = Math.min(canvas.clientHeight || window.innerHeight, window.innerHeight);
+                const width = Math.max(1, Math.floor(clientW * ratio));
+                const height = Math.max(1, Math.floor(clientH * ratio));
                 if (canvas.width === width && canvas.height === height) return;
                 canvas.width = width;
                 canvas.height = height;
@@ -1901,9 +1911,13 @@ void main() {
 
             const locate = (clientX, clientY) => {
                 const rect = canvas.getBoundingClientRect();
-                if (!rect.width || !rect.height) return null;
-                const x = (clientX - rect.left) / rect.width;
-                const y = 1 - (clientY - rect.top) / rect.height;
+                const width = Math.min(rect.width || window.innerWidth, window.innerWidth);
+                const height = Math.min(rect.height || window.innerHeight, window.innerHeight);
+                if (!width || !height) return null;
+                const left = rect.left || 0;
+                const top = rect.top || 0;
+                const x = Math.max(0, Math.min(1, (clientX - left) / width));
+                const y = Math.max(0, Math.min(1, 1 - (clientY - top) / height));
                 if (settings.contained && (x < 0 || x > 1 || y < 0 || y > 1)) return null;
                 return { x, y };
             };
@@ -1957,6 +1971,10 @@ void main() {
             }, { passive: true });
             window.addEventListener('touchend', event => {
                 Array.from(event.changedTouches).forEach(touch => pointers.delete(`t${touch.identifier}`));
+            }, { passive: true });
+            window.addEventListener('resize', () => {
+                fit();
+                wake();
             }, { passive: true });
 
             wake();
@@ -2275,19 +2293,38 @@ void main() {
                 if (empty) return;
 
                 $('cart-items').innerHTML = cart.map((i) => `
-      <div class="flex items-center gap-4 py-4 first:pt-0">
-        <div class="w-14 h-14 rounded-2xl bg-vaidya-accentMuted/60 text-vaidya-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-leaf"></i></div>
-        <div class="flex-grow min-w-0">
-          <div class="font-serif text-base text-vaidya-textPrimary truncate">${esc(i.name)}</div>
-          <div class="text-xs text-vaidya-textMuted">${money(parseFloat(i.price) || 0)} ${esc(i.unit || '')}</div>
+      <div class="py-4 first:pt-0">
+        <div class="flex items-start sm:items-center gap-3 sm:gap-4">
+          <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-vaidya-accentMuted/60 text-vaidya-accent flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-leaf text-sm sm:text-base"></i>
+          </div>
+          <div class="flex-grow min-w-0">
+            <div class="flex items-start justify-between gap-2">
+              <div class="font-serif text-sm sm:text-base text-vaidya-textPrimary truncate">${esc(i.name)}</div>
+              <button onclick="Shop.remove('${i.id}')" aria-label="Remove" class="sm:hidden text-vaidya-textMuted hover:text-red-400 p-1 shrink-0 -mt-1 -mr-1">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+            <div class="text-xs text-vaidya-textMuted mt-0.5">${money(parseFloat(i.price) || 0)} ${esc(i.unit || '')}</div>
+          </div>
+          <div class="hidden sm:flex items-center gap-4 shrink-0">
+            <div class="flex items-center gap-2 border border-vaidya-accentMuted/80 rounded-full px-2 py-1 bg-vaidya-bg">
+              <button onclick="Shop.qty('${i.id}',-1)" aria-label="Decrease" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-minus"></i></button>
+              <span class="text-xs font-semibold w-5 text-center text-vaidya-textPrimary">${i.qty}</span>
+              <button onclick="Shop.qty('${i.id}',1)" aria-label="Increase" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <div class="font-serif text-sm font-semibold w-20 text-right text-vaidya-textPrimary">${money((parseInt(i.qty, 10) || 1) * (parseFloat(i.price) || 0))}</div>
+            <button onclick="Shop.remove('${i.id}')" aria-label="Remove" class="text-vaidya-textMuted hover:text-red-400 p-1"><i class="fa-solid fa-xmark"></i></button>
+          </div>
         </div>
-        <div class="flex items-center gap-2 border border-vaidya-accentMuted/80 rounded-full px-2 py-1 bg-vaidya-bg">
-          <button onclick="Shop.qty('${i.id}',-1)" aria-label="Decrease" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-minus"></i></button>
-          <span class="text-xs font-semibold w-5 text-center text-vaidya-textPrimary">${i.qty}</span>
-          <button onclick="Shop.qty('${i.id}',1)" aria-label="Increase" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-plus"></i></button>
+        <div class="flex sm:hidden items-center justify-between mt-3 pl-[60px]">
+          <div class="flex items-center gap-2 border border-vaidya-accentMuted/80 rounded-full px-2 py-1 bg-vaidya-bg">
+            <button onclick="Shop.qty('${i.id}',-1)" aria-label="Decrease" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-minus"></i></button>
+            <span class="text-xs font-semibold w-5 text-center text-vaidya-textPrimary">${i.qty}</span>
+            <button onclick="Shop.qty('${i.id}',1)" aria-label="Increase" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <div class="font-serif text-sm font-semibold text-vaidya-textPrimary">${money((parseInt(i.qty, 10) || 1) * (parseFloat(i.price) || 0))}</div>
         </div>
-        <div class="font-serif text-sm font-semibold w-20 text-right text-vaidya-textPrimary">${money((parseInt(i.qty, 10) || 1) * (parseFloat(i.price) || 0))}</div>
-        <button onclick="Shop.remove('${i.id}')" aria-label="Remove" class="text-vaidya-textMuted hover:text-red-400 p-1"><i class="fa-solid fa-xmark"></i></button>
       </div>
     `).join('');
 
