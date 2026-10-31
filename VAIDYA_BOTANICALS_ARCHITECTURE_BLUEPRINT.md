@@ -696,4 +696,23 @@ The application codebase natively supports both environments:
 1. **Local Development & Regression Testing:** `npm start` and `server.js` continue to run natively on Node.js using `pg.Pool`, local filesystem uploads (`uploads/`), and standard TCP sockets.
 2. **Edge Deployment:** `npm run dev:wrangler` synchronizes static assets to `./public` via [`scripts/sync-assets.js`](file:///c:/Users/Pratham%20Vatsa/Desktop/Py/scripts/sync-assets.js) and boots `wrangler dev` targeting `src/worker.js`.
 
+---
+
+## 10. Security Hardening & Fail-Closed Defense
+
+### 10.1 Fail-Closed Phone OTP Architecture (`lib/phone-verification.js`)
+- **Strict Environment Isolation:** `isTestMode()` is hard-locked to return `false` in `production` regardless of environment flags. Test mode is permitted exclusively under `NODE_ENV === 'test'` or explicit `PHONE_VERIFICATION_TEST_MODE === 'true'`.
+- **Fail-Closed API Key Validation:** In staging and production, missing, placeholder, or invalid `TWOFACTOR_API_KEY` configurations fail closed immediately upfront with HTTP 503 (`Service Unavailable`), preventing unverified OTP issuance or verification bypass.
+- **Credential Hygiene:** Elimination of hardcoded fallback administrator phone numbers; telephone numbers are resolved strictly from server environment secrets or authenticated database records.
+
+### 10.2 Server-Authoritative Order & Payment Verification (`api/orders/index.js`)
+- **Strict Positive Integer Quantities:** All order items are validated upfront before database locks. Floating-point numbers, zero, and negative quantities are rejected with HTTP 400 (`Bad Request`), completely preventing inventory inflation exploits.
+- **Client Payment Claim Rejection:** Client-supplied `payment.paymentId` is never trusted to set `payment_status = 'paid'`. Online Razorpay payments remain disabled for launch (COD only), and order status begins as `'pending'`. Payment confirmation requires independent cryptographic signature verification via `/api/razorpay/verify-payment`.
+- **Authoritative Shipping Fees:** Client-supplied `shipping` fields are disregarded; shipping fees are computed strictly server-side according to store policy.
+
+### 10.3 Administrator Session & Database Enforcement (`lib/auth.js`)
+- **Strict High-Entropy Secret Requirement:** `ADMIN_JWT_SECRET` must be at least 32 characters long in production. Fallback hardcoded dev secrets are eliminated.
+- **Fail-Closed Database Profile Lookup:** Any decoded admin token must match an active record in Neon PostgreSQL (`public.profiles`) with `role = 'admin'`. In staging and production, if the database is unreachable or the user record is absent, admin authorization strictly fails closed with HTTP 404/403.
+
+
 
