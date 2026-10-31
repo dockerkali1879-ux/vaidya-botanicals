@@ -284,7 +284,7 @@ async function runPhase2Tests() {
 
         // [Test 10] Administrator Order Inspection
         console.log('\n[Test 10] Administrator viewing and inspecting orders in Neon...');
-        const adminToken = createAdminToken({ email: 'owner@vaidyabotanicals.com', role: 'admin' });
+        const adminToken = createAdminToken({ email: 'admin@vaidyabotanicals.com', role: 'admin' });
         adminCookie = createAdminCookie(adminToken);
 
         const adminOrdersRes = await request({

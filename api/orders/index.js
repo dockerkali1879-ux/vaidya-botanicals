@@ -41,8 +41,33 @@ module.exports = async function handler(req, res) {
             const { address, items, payment, verification_proof, verificationProof } = body;
             const proof = verification_proof || verificationProof;
 
-            if (!items || !items.length || !address) {
+            if (!items || !Array.isArray(items) || items.length === 0 || !address) {
                 return res.status(400).json({ error: 'Order items and delivery address are required' });
+            }
+
+            // Strictly validate all cart items and quantities upfront before database execution
+            const validatedItems = [];
+            for (const cartItem of items) {
+                if (!cartItem || typeof cartItem !== 'object') {
+                    return res.status(400).json({ error: 'Invalid order item format' });
+                }
+                const itemLookup = cartItem.id || cartItem.slug;
+                if (!itemLookup) {
+                    return res.status(400).json({ error: 'Each order item must specify a product ID or slug' });
+                }
+                const rawQty = cartItem.qty !== undefined ? cartItem.qty : cartItem.quantity;
+                const qty = Number(rawQty);
+                if (!Number.isInteger(qty) || qty <= 0) {
+                    return res.status(400).json({
+                        error: `Invalid quantity for item "${cartItem.name || itemLookup}". Quantity must be a positive integer.`
+                    });
+                }
+                if (qty > 100) {
+                    return res.status(400).json({
+                        error: `Quantity for item "${cartItem.name || itemLookup}" exceeds maximum allowed order limit of 100 units.`
+                    });
+                }
+                validatedItems.push({ ...cartItem, itemLookup, qty });
             }
 
             // 1. Extract and validate buyer information
@@ -102,9 +127,21 @@ module.exports = async function handler(req, res) {
                 is_gift: isGift
             };
 
-            const paymentMethod = payment?.method === 'razorpay' ? 'razorpay' : 'COD';
-            const paymentStatus = paymentMethod === 'razorpay' && payment?.paymentId ? 'paid' : 'pending';
+            const requestedPaymentMethod = String(payment?.method || 'COD').trim().toUpperCase();
+            if (requestedPaymentMethod === 'RAZORPAY') {
+                return res.status(400).json({
+                    error: 'Online payments via Razorpay are temporarily disabled for initial launch. Please select Cash on Delivery (COD).'
+                });
+            }
+            if (requestedPaymentMethod !== 'COD') {
+                return res.status(400).json({ error: 'Unsupported payment method. Only Cash on Delivery is currently supported.' });
+            }
+            const paymentMethod = 'COD';
+            const paymentStatus = 'pending';
             const orderNumber = generateOrderNumber();
+            // Server-authoritative shipping fee computation
+            // Client-supplied body.shipping is strictly ignored to prevent fee tampering
+            const shippingCharge = 0; // Free delivery across India for initial launch
 
             // 4. Neon PostgreSQL Transaction: Proof Consumption, Stock Decrement & Order Creation
             if (isDatabaseConfigured()) {
@@ -116,9 +153,9 @@ module.exports = async function handler(req, res) {
                     const snapshottedItems = [];
                     let calculatedSubtotal = 0;
 
-                    for (const cartItem of items) {
-                        const itemLookup = cartItem.id || cartItem.slug;
-                        const qty = parseInt(cartItem.qty, 10) || 1;
+                    for (const cartItem of validatedItems) {
+                        const itemLookup = cartItem.itemLookup;
+                        const qty = cartItem.qty;
 
                         const prodRes = await client.query(
                             'SELECT id, slug, name, price, stock, unit, is_published, is_archived FROM public.products WHERE (id::text = $1 OR slug = $1) FOR UPDATE',
@@ -157,7 +194,6 @@ module.exports = async function handler(req, res) {
                         });
                     }
 
-                    const shippingCharge = parseFloat(body.shipping) || 0;
                     const finalTotal = calculatedSubtotal + shippingCharge;
 
                     // Step C: Insert complete order record (Guest order: customer_id is NULL)
@@ -215,8 +251,8 @@ module.exports = async function handler(req, res) {
 
             // 5. Fallback for offline / mock testing
             const proofRecord = await consumeVerificationProof(null, proof, buyerPhone);
-            const mockSubtotal = items.reduce((sum, i) => sum + (parseFloat(i.price) || 0) * (parseInt(i.qty, 10) || 1), 0);
-            const mockShipping = parseFloat(body.shipping) || 0;
+            const mockSubtotal = validatedItems.reduce((sum, i) => sum + (parseFloat(i.price) || 0) * i.qty, 0);
+            const mockShipping = shippingCharge;
             const newOrder = {
                 id: 'ord-' + Date.now().toString(36),
                 order_number: orderNumber,
@@ -230,7 +266,7 @@ module.exports = async function handler(req, res) {
                 phone_verified_at: proofRecord.verifiedAt,
                 manual_verification_status: 'unverified',
                 shipping_address: shippingAddressSnapshot,
-                items,
+                items: validatedItems.map(i => ({ id: i.id || i.itemLookup, slug: i.slug, name: i.name, price: parseFloat(i.price) || 0, qty: i.qty, unit: i.unit })),
                 subtotal: mockSubtotal,
                 shipping: mockShipping,
                 total: mockSubtotal + mockShipping,

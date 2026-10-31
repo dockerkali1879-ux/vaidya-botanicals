@@ -20,9 +20,12 @@ module.exports = async function handler(req, res) {
         const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '';
         const ipAddress = Array.isArray(ip) ? ip[0] : String(ip).split(',')[0].trim();
 
+        const env = req.env || process.env;
+
         const result = await sendPhoneOtp({
             phone,
-            ipAddress
+            ipAddress,
+            env
         });
 
         return res.status(200).json({

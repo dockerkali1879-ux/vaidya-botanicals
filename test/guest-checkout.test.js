@@ -467,7 +467,7 @@ async function runGuestCheckoutTests() {
 
         // [Scenario 20] Admin Inspection of Complete Order Record
         console.log('\n[Scenario 20] Administrator inspecting order record with Phone OTP badge...');
-        const adminToken = createAdminToken({ email: 'owner@vaidyabotanicals.com', role: 'admin' });
+        const adminToken = createAdminToken({ email: 'admin@vaidyabotanicals.com', role: 'admin' });
         const adminCookie = createAdminCookie(adminToken);
         const adminInspectRes = await request({
             path: `/api/admin/orders?id=${createdOrder1.id}`,

@@ -18,9 +18,12 @@ module.exports = async function handler(req, res) {
             return res.status(400).json({ error: 'Challenge identifier and verification code are required' });
         }
 
+        const env = req.env || process.env;
+
         const result = await verifyPhoneOtp({
             challengeId: challenge_id,
-            code: verificationCode
+            code: verificationCode,
+            env
         });
 
         return res.status(200).json({
