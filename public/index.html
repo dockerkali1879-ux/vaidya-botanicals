@@ -536,12 +536,8 @@
                 <i class="fa-solid fa-cart-shopping text-xl"></i></div>
             <h2 class="font-serif text-xl sm:text-2xl text-vaidya-textPrimary mb-2">Your cart is emptier than our fridge on a Sunday night.</h2>
             <p class="text-xs sm:text-sm text-vaidya-textSecondary mb-6">Add a tisane.</p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <a href="#" onclick="Shop.goHome(event)"
-                    class="btn-fluid inline-block bg-vaidya-accent text-vaidya-bg px-6 py-3 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Add a tisane</a>
-                <button onclick="Shop.resetFunnyCart()"
-                    class="btn-fluid inline-block bg-vaidya-soft border border-vaidya-accentMuted text-vaidya-accent px-6 py-3 rounded-full text-sm font-semibold hover:bg-vaidya-accentMuted">Restore Funny Cart</button>
-            </div>
+            <a href="#" onclick="Shop.goHome(event)"
+                class="btn-fluid inline-block bg-vaidya-accent text-vaidya-bg px-6 py-3 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Add a tisane</a>
         </div>
 
         <div id="cart-main" class="hidden grid lg:grid-cols-3 gap-8 items-start w-full box-border">
@@ -2033,24 +2029,15 @@ void main() {
             };
             const money = (n) => CONFIG.SYMBOL + n.toFixed(2);
 
-            const MOCK_FUNNY_CART_ITEMS = [
-                { id: 'tisane-mild-confidence', name: 'Tisane of Mild Confidence', tag: 'Brew once, walk into the meeting like you own the building.', price: 24.00, unit: '/ 100g', qty: 1 },
-                { id: 'monday-reset-blend', name: 'Monday Reset Blend', tag: 'Does not cancel Monday. Makes it slightly less rude.', price: 22.00, unit: '/ 100g', qty: 1 },
-                { id: 'overthinkers-evening-infusion', name: 'Overthinker’s Evening Infusion', tag: 'For when your brain opens 47 tabs at 11 PM.', price: 26.00, unit: '/ 75g', qty: 1 },
-                { id: 'rosemary-oil-diffuser', name: 'Rosemary Oil (for your diffuser, not your fries)', tag: 'Smells like a spa. Please do not season anything.', price: 28.00, unit: '/ 15ml', qty: 1 },
-                { id: 'eucalyptus-oil-koala', name: 'Eucalyptus Oil', tag: 'Clears your room’s vibe. Koalas not included.', price: 26.00, unit: '/ 15ml', qty: 1 },
-                { id: 'lavender-oil-pillow', name: 'Lavender Oil', tag: 'Pillow-adjacent.', price: 30.00, unit: '/ 15ml', qty: 1 },
-                { id: 'tea-tree-oil-legal', name: 'Tea Tree Oil', tag: 'Ironically not a tea. Our legal team is very proud of us for saying that.', price: 25.00, unit: '/ 15ml', qty: 1 },
-                { id: 'empty-mug-premium', name: 'Empty Mug (Premium)', tag: 'Bring your own tisane. Or don’t, we’re not your boss.', price: 19.00, unit: '/ 350ml', qty: 1 }
-            ];
+            // Clean up any previously auto-seeded mock cart items so cart starts truly empty
+            try {
+                if (localStorage.getItem('vaidya_funny_cart_seeded_v1')) {
+                    localStorage.removeItem('vaidya_funny_cart_seeded_v1');
+                    localStorage.removeItem(GUEST_CART_KEY);
+                }
+            } catch (e) { }
 
-            const FUNNY_CART_FLAG = 'vaidya_funny_cart_seeded_v1';
-            let cart = store.get(GUEST_CART_KEY, null);
-            if (!store.get(FUNNY_CART_FLAG, false) || !cart || !Array.isArray(cart) || cart.length === 0) {
-                cart = JSON.parse(JSON.stringify(MOCK_FUNNY_CART_ITEMS));
-                store.set(GUEST_CART_KEY, cart);
-                store.set(FUNNY_CART_FLAG, true);
-            }
+            let cart = store.get(GUEST_CART_KEY, []);
             let address = store.get('vaidya_address', null);
             let curStep = 1, done = false, wasCart = false;
 
@@ -2319,14 +2306,6 @@ void main() {
                 saveLocalCart();
                 renderBadge();
                 renderCart();
-            }
-
-            function resetFunnyCart() {
-                cart = JSON.parse(JSON.stringify(MOCK_FUNNY_CART_ITEMS));
-                saveLocalCart();
-                renderBadge();
-                renderCart();
-                toast('Funny mock cart restored!');
             }
 
             function renderCart() {
@@ -2986,7 +2965,7 @@ void main() {
             });
 
             return {
-                add, qty, remove, resetFunnyCart,
+                add, qty, remove,
                 onPhoneInput, sendPhoneOtp, verifyPhoneOtp, toggleGift,
                 openCheckoutOtpModal, closeCheckoutOtpModal, confirmCheckoutOtp, resendCheckoutOtp,
                 toAddress, saveAddress, step, payOnline, cod, scrollToSection,
