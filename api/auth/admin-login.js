@@ -1,5 +1,6 @@
-const { createAdminToken, createAdminCookie, logAdminAction, verifyPassword } = require('../../lib/auth');
-const { isSupabaseConfigured, getSupabaseAdmin, getSupabaseClient, mockDb } = require('../../lib/supabase');
+const { createAdminToken, createAdminCookie, logAdminAction, verifyPassword, verifyPasswordAsync } = require('../../lib/auth');
+const { isDatabaseConfigured, query } = require('../../lib/db');
+const { isSupabaseConfigured, getSupabaseClient, mockDb } = require('../../lib/supabase');
 
 module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -16,6 +17,54 @@ module.exports = async function handler(req, res) {
 
         const normalizedEmail = String(email).trim().toLowerCase();
 
+        // 1. Neon PostgreSQL Database Check
+        if (isDatabaseConfigured()) {
+            try {
+                const dbRes = await query(`
+                    SELECT c.profile_id, c.password_hash, p.id, p.email, p.role
+                    FROM public.auth_credentials c
+                    JOIN public.profiles p ON p.id = c.profile_id
+                    WHERE LOWER(p.email) = $1 AND p.role = 'admin'
+                `, [normalizedEmail]);
+
+                if (dbRes.rows.length > 0) {
+                    const admin = dbRes.rows[0];
+                    const isValid = await verifyPasswordAsync(password, admin.password_hash);
+                    if (isValid) {
+                        const token = createAdminToken({ id: admin.id, email: admin.email });
+                        res.setHeader('Set-Cookie', createAdminCookie(token));
+                        await logAdminAction(admin.email, 'LOGIN', 'auth', admin.id, { ip: req.socket?.remoteAddress });
+                        return res.status(200).json({
+                            success: true,
+                            message: 'Administrator authenticated successfully',
+                            user: { email: admin.email, role: 'admin' }
+                        });
+                    }
+                }
+            } catch (dbErr) {
+                // If database query fails or is unreachable during offline testing, proceed to local check
+            }
+
+            // Fallback to local admin file if bootstrapped locally
+            const localMatch = (mockDb.adminUsers || []).find(u => u.email.toLowerCase() === normalizedEmail);
+            if (localMatch) {
+                const isValidLocal = await verifyPasswordAsync(password, localMatch.passwordHash);
+                if (isValidLocal) {
+                    const token = createAdminToken({ id: localMatch.email, email: localMatch.email });
+                    res.setHeader('Set-Cookie', createAdminCookie(token));
+                    await logAdminAction(localMatch.email, 'LOGIN', 'auth', localMatch.email, { ip: req.socket?.remoteAddress });
+                    return res.status(200).json({
+                        success: true,
+                        message: 'Administrator authenticated successfully',
+                        user: { email: localMatch.email, role: 'admin' }
+                    });
+                }
+            }
+
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        // 2. Legacy Supabase check
         if (isSupabaseConfigured()) {
             const client = getSupabaseClient();
             const { data: authData, error: authError } = await client.auth.signInWithPassword({
@@ -27,52 +76,36 @@ module.exports = async function handler(req, res) {
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
 
-            const adminClient = getSupabaseAdmin();
-            const { data: profile, error: profileError } = await adminClient
-                .from('profiles')
-                .select('id, email, role')
-                .eq('id', authData.user.id)
-                .single();
-
-            if (profileError || !profile || profile.role !== 'admin') {
-                return res.status(403).json({ error: 'Access denied: not an administrator' });
-            }
-
-            const token = createAdminToken({ id: profile.id, email: profile.email });
-            const cookieHeader = createAdminCookie(token);
-
-            res.setHeader('Set-Cookie', cookieHeader);
-            await logAdminAction(profile.email, 'LOGIN', 'auth', profile.id, { ip: req.socket?.remoteAddress });
-
+            const token = createAdminToken({ id: authData.user.id, email: normalizedEmail });
+            res.setHeader('Set-Cookie', createAdminCookie(token));
             return res.status(200).json({
                 success: true,
                 message: 'Administrator authenticated successfully',
-                user: { email: profile.email, role: 'admin' }
-            });
-        } else {
-            // Local development fallback
-            const match = mockDb.adminUsers.find(
-                u => u.email.toLowerCase() === normalizedEmail
-            );
-
-            if (!match || !verifyPassword(password, match.passwordHash)) {
-                return res.status(401).json({ error: 'Invalid credentials' });
-            }
-
-            const token = createAdminToken({ id: 'mock-admin-id', email: match.email });
-            const cookieHeader = createAdminCookie(token);
-
-            res.setHeader('Set-Cookie', cookieHeader);
-            await logAdminAction(match.email, 'LOGIN_MOCK', 'auth', 'mock-admin-id', {});
-
-            return res.status(200).json({
-                success: true,
-                message: 'Administrator authenticated successfully (local dev mode)',
-                user: { email: match.email, role: 'admin' }
+                user: { email: normalizedEmail, role: 'admin' }
             });
         }
+
+        // 3. Local development fallback
+        const match = (mockDb.adminUsers || []).find(
+            u => u.email.toLowerCase() === normalizedEmail
+        );
+
+        const isMatchValid = match ? await verifyPasswordAsync(password, match.passwordHash) : false;
+        if (!match || !isMatchValid) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        const token = createAdminToken({ id: match.email, email: match.email });
+        res.setHeader('Set-Cookie', createAdminCookie(token));
+        await logAdminAction(match.email, 'LOGIN', 'auth', match.email, { ip: req.socket?.remoteAddress });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Administrator authenticated successfully',
+            user: { email: match.email, role: 'admin' }
+        });
     } catch (err) {
         console.error('[Admin Login Error]:', err);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error during authentication' });
     }
 };

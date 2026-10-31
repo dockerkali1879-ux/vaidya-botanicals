@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Vaidya - Botanical Wellness</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vaidya: {
+                            bg: '#121212',
+                            soft: '#181A20',
+                            card: '#1E2026',
+                            accent: '#20E070',
+                            accentLight: '#34D399',
+                            accentMuted: '#1A382B',
+                            textPrimary: '#E2E8F0',
+                            textSecondary: '#94A3B8',
+                            textMuted: '#64748B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif']
+                    },
+                    borderRadius: {
+                        '4xl': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #121212;
+            color: #E2E8F0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(30, 32, 38, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Subtle hover card lift */
+        .card-lift {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -15px rgba(32, 224, 112, 0.18);
+        }
+
+        /* Smooth button active feedback */
+        .btn-fluid {
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .btn-fluid:active {
+            transform: scale(0.97);
+        }
+
+        /* Splash Cursor Specific Styles */
+        .splash-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            /* Ensures cursor events pass through to content */
+            z-index: 1;
+            /* Stays behind headings, buttons, and cards (z-index 10+) */
+        }
+
+        .splash-cursor__canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body class="relative min-h-screen selection:bg-vaidya-accentMuted selection:text-vaidya-accent">
+
+    <!-- Splash Cursor Component Container -->
+    <div id="splash-cursor-root" class="splash-cursor">
+        <canvas id="splash-cursor__canvas" class="splash-cursor__canvas"></canvas>
+    </div>
+
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 px-4 sm:px-8 py-4">
+        <nav
+            class="max-w-6xl mx-auto glass-nav rounded-full px-6 py-3 border border-vaidya-accentMuted/40 shadow-lg flex items-center justify-between">
+            <a href="#" onclick="Shop.goHome(event)" class="flex items-center gap-3 group relative z-20">
+                <div
+                    class="w-10 h-10 rounded-full bg-vaidya-accent/10 flex items-center justify-center text-vaidya-accent transition-transform duration-500 group-hover:rotate-45">
+                    <i class="fa-solid font-light fa-leaf text-lg"></i></div>
+                <span class="font-serif text-2xl tracking-tight text-vaidya-textPrimary font-normal">Vaidya</span>
+            </a>
+            <div
+                class="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-medium text-vaidya-textSecondary relative z-20">
+                <a href="#about" onclick="Shop.scrollToSection(event, 'about')"
+                    class="hover:text-vaidya-accent transition-colors py-1">Philosophy</a>
+                <a href="#products" onclick="Shop.scrollToSection(event, 'products')"
+                    class="hover:text-vaidya-accent transition-colors py-1">Collections</a>
+                <a href="#benefits" onclick="Shop.scrollToSection(event, 'benefits')"
+                    class="hover:text-vaidya-accent transition-colors py-1">Health Segments</a>
+                <a href="#story" onclick="Shop.goStory(event)"
+                    class="hover:text-vaidya-accent transition-colors py-1">Our Story</a>
+                <a href="#support" onclick="Shop.goSupport(event)"
+                    class="hover:text-vaidya-accent transition-colors py-1">Customer Support</a>
+            </div>
+            <div class="flex items-center gap-2.5 sm:gap-3 relative z-20">
+                <a href="#discover" onclick="Shop.goDiscover(event)"
+                    class="btn-fluid bg-vaidya-accent text-vaidya-bg px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold shadow-sm flex items-center gap-2 hover:bg-vaidya-accentLight">
+                    <span>Discover</span><i class="fa-solid fa-arrow-right text-xs opacity-85"></i>
+                </a>
+                <button onclick="Shop.goCart()" aria-label="Open cart"
+                    class="btn-fluid relative w-10 h-10 rounded-full bg-vaidya-card text-vaidya-accent border border-vaidya-accentMuted shadow-md flex items-center justify-center hover:border-vaidya-accent">
+                    <i class="fa-solid fa-cart-shopping text-sm"></i>
+                    <span id="cart-badge" style="display:none"
+                        class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-vaidya-accent text-vaidya-bg text-[10px] font-bold items-center justify-center ring-2 ring-vaidya-card">0</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="home-view" class="relative z-10 pt-28 sm:pt-36">
+
+        <!-- Hero -->
+        <section class="max-w-5xl mx-auto px-6 text-center py-12 sm:py-20 relative z-10">
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-vaidya-accentMuted/60 text-vaidya-accent text-xs font-medium tracking-wide mb-8 border border-vaidya-accent/20">
+                <span class="w-2 h-2 rounded-full bg-vaidya-accent inline-block animate-pulse"></span><span id="dyn-hero-eyebrow">Pure Botanical Craftsmanship</span>
+            </div>
+            <h1 id="dyn-hero-title"
+                class="font-serif text-4xl sm:text-6xl md:text-7xl font-normal text-vaidya-textPrimary leading-[1.15] tracking-tight mb-6">
+                Slow Down, Breathe, Unwind, <br class="hidden sm:inline" />
+                <span class="italic font-light text-vaidya-accent">Naturally.</span>
+            </h1>
+            <p id="dyn-hero-desc"
+                class="max-w-2xl mx-auto text-base sm:text-lg text-vaidya-textSecondary font-light leading-relaxed mb-10">
+                Vaidya fuses centuries of Ayurvedic botanical wisdom with modern wellness standards. Unearth our
+                therapeutic organic lemongrass distillates, vitalizing green teas, and curative essential oils.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#products" onclick="Shop.scrollToSection(event, 'products')"
+                    class="btn-fluid w-full sm:w-auto bg-vaidya-accent text-vaidya-bg font-semibold px-8 py-4 rounded-full shadow-lg shadow-vaidya-accent/20 hover:bg-vaidya-accentLight">Explore
+                    Organic Blends</a>
+                <a href="#about" onclick="Shop.scrollToSection(event, 'about')"
+                    class="btn-fluid w-full sm:w-auto bg-vaidya-card border border-vaidya-accentMuted text-vaidya-textPrimary px-8 py-4 rounded-full font-medium hover:border-vaidya-accent">Our
+                    Wellness Philosophy</a>
+            </div>
+            <div class="mt-16 sm:mt-24 relative max-w-4xl mx-auto">
+                <div
+                    class="absolute inset-0 bg-gradient-to-tr from-vaidya-accent/15 to-transparent rounded-[3rem] blur-2xl -z-10">
+                </div>
+                <div
+                    class="bg-vaidya-card/90 backdrop-blur-md rounded-[2.5rem] p-4 sm:p-8 border border-vaidya-accentMuted/60 shadow-2xl grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div
+                        class="p-6 rounded-3xl bg-vaidya-soft/80 flex flex-col items-center text-center border border-white/5">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-4">
+                            <i class="fa-solid fa-droplet text-xl"></i></div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary mb-1">100% Cold-Pressed</h3>
+                        <p class="text-xs text-vaidya-textSecondary">Steam distilled lemongrass & botanical essential
+                            oils</p>
+                    </div>
+                    <div
+                        class="p-6 rounded-3xl bg-vaidya-soft/80 flex flex-col items-center text-center border border-white/5">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-4">
+                            <i class="fa-solid fa-mug-hot text-xl"></i></div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary mb-1">Targeted Health Teas</h3>
+                        <p class="text-xs text-vaidya-textSecondary">Formulated for immunity, sleep, and digestive
+                            rhythm</p>
+                    </div>
+                    <div
+                        class="p-6 rounded-3xl bg-vaidya-soft/80 flex flex-col items-center text-center border border-white/5">
+                        <div
+                            class="w-14 h-14 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-4">
+                            <i class="fa-solid fa-seedling text-xl"></i></div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary mb-1">Sustainably Harvested</h3>
+                        <p class="text-xs text-vaidya-textSecondary">Ethically sourced directly from single-origin farms
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Philosophy -->
+        <section id="about" class="py-20 px-6 max-w-5xl mx-auto relative z-10">
+            <div
+                class="bg-vaidya-card rounded-[2.5rem] p-8 sm:p-14 border border-vaidya-accentMuted/50 shadow-xl relative overflow-hidden">
+                <div
+                    class="absolute -right-20 -bottom-20 w-80 h-80 bg-vaidya-accent/10 rounded-full blur-3xl pointer-events-none">
+                </div>
+                <div class="max-w-3xl">
+                    <span id="dyn-about-eyebrow" class="text-xs font-semibold uppercase tracking-widest text-vaidya-accent mb-3 block">Our Heritage</span>
+                    <h2 id="dyn-about-title" class="font-serif text-3xl sm:text-4xl text-vaidya-textPrimary mb-6 leading-tight">Formulated at
+                        the intersection of nature’s simplicity and holistic vitality.</h2>
+                    <p id="dyn-about-desc" class="text-vaidya-textSecondary leading-relaxed text-base sm:text-lg mb-6 font-light">
+                        "Vaidya" translates to the traditional healer—one who understands the soothing harmony between
+                        nature and human well-being. We specialize in wild-harvested lemongrass green teas, calming
+                        botanical infusions, and pure therapeutic essential oils crafted to soothe mind and body.
+                    </p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-4 border-t border-vaidya-soft">
+                        <div>
+                            <div id="dyn-about-s1-num" class="font-serif text-2xl sm:text-3xl text-vaidya-accent">0%</div>
+                            <div id="dyn-about-s1-lbl" class="text-xs text-vaidya-textMuted mt-1">Synthetic Additives</div>
+                        </div>
+                        <div>
+                            <div id="dyn-about-s2-num" class="font-serif text-2xl sm:text-3xl text-vaidya-accent">100%</div>
+                            <div id="dyn-about-s2-lbl" class="text-xs text-vaidya-textMuted mt-1">Organic Ingredients</div>
+                        </div>
+                        <div>
+                            <div id="dyn-about-s3-num" class="font-serif text-2xl sm:text-3xl text-vaidya-accent">Direct</div>
+                            <div id="dyn-about-s3-lbl" class="text-xs text-vaidya-textMuted mt-1">Farm Trade</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products -->
+        <section id="products" class="py-20 px-6 max-w-6xl mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-vaidya-accent mb-2 block">Curated
+                        Formulations</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl text-vaidya-textPrimary">Discover Our Signature Range
+                    </h2>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-6 md:mt-0">
+                    <button onclick="filterProducts('all')" id="btn-all"
+                        class="filter-btn active btn-fluid px-5 py-2.5 rounded-full text-xs font-semibold bg-vaidya-accent text-vaidya-bg shadow-sm">All
+                        Offerings</button>
+                    <button onclick="filterProducts('tea')" id="btn-tea"
+                        class="filter-btn btn-fluid px-5 py-2.5 rounded-full text-xs font-semibold bg-vaidya-card text-vaidya-textSecondary border border-vaidya-accentMuted hover:border-vaidya-accent hover:text-vaidya-textPrimary">Green
+                        Teas & Infusions</button>
+                    <button onclick="filterProducts('oil')" id="btn-oil"
+                        class="filter-btn btn-fluid px-5 py-2.5 rounded-full text-xs font-semibold bg-vaidya-card text-vaidya-textSecondary border border-vaidya-accentMuted hover:border-vaidya-accent hover:text-vaidya-textPrimary">Essential
+                        Oils</button>
+                </div>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <div
+                    class="product-card tea card-lift bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/50 flex flex-col justify-between">
+                    <div>
+                        <div
+                            class="w-full h-52 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                            <div
+                                class="absolute inset-0 opacity-20 bg-[radial-gradient(#20E070_1px,transparent_1px)] [background-size:12px_12px]">
+                            </div>
+                            <i class="fa-solid fa-mug-saucer text-5xl text-vaidya-accent/70"></i>
+                            <span
+                                class="absolute top-4 left-4 bg-vaidya-bg/90 text-vaidya-accent border border-vaidya-accent/30 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">Best
+                                Seller</span>
+                        </div>
+                        <div class="text-xs font-medium text-vaidya-accentLight mb-1">Health Segment: Immunity</div>
+                        <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">Lemongrass Immunity Green Tea</h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">Hand-picked green
+                            tea leaves blended with aromatic pure lemongrass cut and ginger root for natural vitalizing
+                            immunity support.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹24.00 <span
+                                class="text-xs font-normal text-vaidya-textMuted">/ 100g</span></span>
+                        <div class="flex items-center gap-2"><button
+                                onclick="openModal('Lemongrass Immunity Green Tea', 'Health Segment: Immunity', '₹24.00', 'Hand-picked green tea leaves blended with aromatic pure lemongrass cut and ginger root for natural vitalizing immunity support.', 'Green Tea, Organic Lemongrass, Ginger Extract, Tulsi Leaves', 'Brew 1 tsp in 85°C water for 3-4 minutes.')"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
+                                Details</button><button onclick="Shop.add(this)" data-id="lemongrass-immunity-green-tea"
+                                data-name="Lemongrass Immunity Green Tea" data-price="24.00" data-unit="/ 100g"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5 hover:bg-vaidya-accentLight"><i
+                                    class="fa-solid fa-cart-plus"></i> Add</button></div>
+                    </div>
+                </div>
+
+                <div
+                    class="product-card oil card-lift bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/50 flex flex-col justify-between">
+                    <div>
+                        <div
+                            class="w-full h-52 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                            <div
+                                class="absolute inset-0 opacity-20 bg-[radial-gradient(#20E070_1px,transparent_1px)] [background-size:12px_12px]">
+                            </div>
+                            <i class="fa-solid fa-bottle-droplet text-5xl text-emerald-400/70"></i>
+                            <span
+                                class="absolute top-4 left-4 bg-vaidya-bg/90 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">Pure
+                                Distillate</span>
+                        </div>
+                        <div class="text-xs font-medium text-vaidya-accentLight mb-1">Health Segment: Stress Relief
+                        </div>
+                        <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">Organic Lemongrass Essential Oil
+                        </h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">Steam-distilled
+                            Cymbopogon oil with a crisp citrusy aroma. Promotes mental clarity, relieves tension, and
+                            purifies air.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹28.00 <span
+                                class="text-xs font-normal text-vaidya-textMuted">/ 15ml</span></span>
+                        <div class="flex items-center gap-2"><button
+                                onclick="openModal('Organic Lemongrass Essential Oil', 'Health Segment: Stress Relief', '₹28.00', 'Steam-distilled Cymbopogon oil with a crisp citrusy aroma. Promotes mental clarity, relieves tension, and purifies indoor spaces.', '100% Pure Organic Lemongrass Oil (Cymbopogon citratus)', 'Add 4-6 drops to diffuser or dilute with carrier oil for topical application.')"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
+                                Details</button><button onclick="Shop.add(this)"
+                                data-id="organic-lemongrass-essential-oil" data-name="Organic Lemongrass Essential Oil"
+                                data-price="28.00" data-unit="/ 15ml"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5 hover:bg-vaidya-accentLight"><i
+                                    class="fa-solid fa-cart-plus"></i> Add</button></div>
+                    </div>
+                </div>
+
+                <div
+                    class="product-card tea card-lift bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/50 flex flex-col justify-between">
+                    <div>
+                        <div
+                            class="w-full h-52 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                            <i class="fa-solid fa-leaf text-5xl text-vaidya-accent/60"></i>
+                            <span
+                                class="absolute top-4 left-4 bg-vaidya-bg/90 text-vaidya-accent border border-vaidya-accent/30 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">Detox
+                                Blend</span>
+                        </div>
+                        <div class="text-xs font-medium text-vaidya-accentLight mb-1">Health Segment: Digestion & Detox
+                        </div>
+                        <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">Botanical Cleanse Green Tea</h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">Formulated with
+                            high-antioxidant sencha, dandelion root, and soothing peppermint for gentle daily digestive
+                            harmony.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹22.00 <span
+                                class="text-xs font-normal text-vaidya-textMuted">/ 100g</span></span>
+                        <div class="flex items-center gap-2"><button
+                                onclick="openModal('Botanical Cleanse Green Tea', 'Health Segment: Digestion & Detox', '₹22.00', 'Formulated with high-antioxidant sencha, dandelion root, and soothing peppermint for gentle daily digestive harmony.', 'Japanese Sencha, Dandelion Root, Peppermint Leaves, Licorice', 'Enjoy after meals. Steep for 3 minutes.')"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
+                                Details</button><button onclick="Shop.add(this)" data-id="botanical-cleanse-green-tea"
+                                data-name="Botanical Cleanse Green Tea" data-price="22.00" data-unit="/ 100g"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5 hover:bg-vaidya-accentLight"><i
+                                    class="fa-solid fa-cart-plus"></i> Add</button></div>
+                    </div>
+                </div>
+
+                <div
+                    class="product-card oil card-lift bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/50 flex flex-col justify-between">
+                    <div>
+                        <div
+                            class="w-full h-52 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                            <i class="fa-solid fa-spa text-5xl text-emerald-400/60"></i>
+                            <span
+                                class="absolute top-4 left-4 bg-vaidya-bg/90 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">Rest
+                                & Sleep</span>
+                        </div>
+                        <div class="text-xs font-medium text-vaidya-accentLight mb-1">Health Segment: Deep Sleep</div>
+                        <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">Highland Lavender Elixir Oil</h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">Extracted from
+                            high-altitude lavender fields, enriched with bergamot notes to prepare your mind for restful
+                            sleep.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹32.00 <span
+                                class="text-xs font-normal text-vaidya-textMuted">/ 15ml</span></span>
+                        <div class="flex items-center gap-2"><button
+                                onclick="openModal('Highland Lavender Elixir Oil', 'Health Segment: Deep Sleep', '₹32.00', 'Extracted from high-altitude lavender fields, enriched with bergamot notes to prepare your mind for restful sleep.', 'Pure Highland Lavender & Wild Bergamot Distillate', 'Diffuse in bedroom 30 minutes before rest.')"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
+                                Details</button><button onclick="Shop.add(this)" data-id="highland-lavender-elixir-oil"
+                                data-name="Highland Lavender Elixir Oil" data-price="32.00" data-unit="/ 15ml"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5 hover:bg-vaidya-accentLight"><i
+                                    class="fa-solid fa-cart-plus"></i> Add</button></div>
+                    </div>
+                </div>
+
+                <div
+                    class="product-card tea card-lift bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/50 flex flex-col justify-between">
+                    <div>
+                        <div
+                            class="w-full h-52 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                            <i class="fa-solid fa-wind text-5xl text-vaidya-accent/50"></i>
+                        </div>
+                        <div class="text-xs font-medium text-vaidya-accentLight mb-1">Health Segment: Calm & Focus</div>
+                        <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">Chamomile & Lemongrass Zen</h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">A soothing
+                            caffeine-free infusion designed to lower cortisol levels and restore inner calmness.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹20.00 <span
+                                class="text-xs font-normal text-vaidya-textMuted">/ 100g</span></span>
+                        <div class="flex items-center gap-2"><button
+                                onclick="openModal('Chamomile & Lemongrass Zen', 'Health Segment: Calm & Focus', '₹20.00', 'A soothing caffeine-free infusion designed to lower cortisol levels and restore inner calmness during busy workdays.', 'Egyptian Chamomile Flowers, Cut Lemongrass, Lemon Balm', 'Steep 1 tbsp for 5 minutes in hot water.')"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
+                                Details</button><button onclick="Shop.add(this)" data-id="chamomile-lemongrass-zen"
+                                data-name="Chamomile &amp; Lemongrass Zen" data-price="20.00" data-unit="/ 100g"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5 hover:bg-vaidya-accentLight"><i
+                                    class="fa-solid fa-cart-plus"></i> Add</button></div>
+                    </div>
+                </div>
+
+                <div
+                    class="product-card oil card-lift bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/50 flex flex-col justify-between">
+                    <div>
+                        <div
+                            class="w-full h-52 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                            <i class="fa-solid fa-tree text-5xl text-vaidya-accent/50"></i>
+                        </div>
+                        <div class="text-xs font-medium text-vaidya-accentLight mb-1">Health Segment: Vitality &
+                            Respiratory</div>
+                        <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">Eucalyptus & Tea Tree Essence</h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">Invigorating
+                            botanical blend designed for clear breathing, congestion relief, and refreshing home
+                            ambiance.</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹26.00 <span
+                                class="text-xs font-normal text-vaidya-textMuted">/ 15ml</span></span>
+                        <div class="flex items-center gap-2"><button
+                                onclick="openModal('Eucalyptus & Tea Tree Essence', 'Health Segment: Vitality & Respiratory', '₹26.00', 'Invigorating botanical blend designed for clear breathing, congestion relief, and refreshing home ambiance.', 'Organic Eucalyptus Globulus, Melaleuca Alternifolia', 'Inhale vapors directly or use in shower steam.')"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
+                                Details</button><button onclick="Shop.add(this)" data-id="eucalyptus-tea-tree-essence"
+                                data-name="Eucalyptus &amp; Tea Tree Essence" data-price="26.00" data-unit="/ 15ml"
+                                class="btn-fluid px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5 hover:bg-vaidya-accentLight"><i
+                                    class="fa-solid fa-cart-plus"></i> Add</button></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Benefits -->
+        <section id="benefits" class="py-20 px-6 max-w-6xl mx-auto relative z-10">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-xs font-semibold uppercase tracking-widest text-vaidya-accent mb-2 block">Why Choose
+                    Vaidya</span>
+                <h2 class="font-serif text-3xl sm:text-4xl text-vaidya-textPrimary">Crafted for Specific Health Segments
+                </h2>
+                <p class="text-vaidya-textSecondary text-sm font-light mt-3">Every essential oil droplet and green tea
+                    leaf is selected with therapeutic efficacy in mind.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-vaidya-card p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-6">
+                        <i class="fa-solid fa-shield-halved text-lg"></i></div>
+                    <h3 class="font-serif text-xl text-vaidya-textPrimary mb-3">Immunity Boost</h3>
+                    <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">Citral-rich lemongrass
+                        extracts packed with natural antioxidants that fortify cellular health and ward off seasonal
+                        fatigue.</p>
+                </div>
+                <div class="bg-vaidya-card p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-6">
+                        <i class="fa-solid fa-brain text-lg"></i></div>
+                    <h3 class="font-serif text-xl text-vaidya-textPrimary mb-3">Cognitive Calm</h3>
+                    <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">Pure volatile aromatherapy
+                        oils designed to stimulate the limbic system, reducing daily anxiety and sharpening focus.</p>
+                </div>
+                <div class="bg-vaidya-card p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                    <div
+                        class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-6">
+                        <i class="fa-solid fa-earth-americas text-lg"></i></div>
+                    <h3 class="font-serif text-xl text-vaidya-textPrimary mb-3">Ethical Distillation</h3>
+                    <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">Zero synthetic fragrances or
+                        artificial preservatives. Sustainable steam extraction that preserves the plant's true cellular
+                        essence.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Dedicated Discover View -->
+    <section id="discover-view" class="hidden relative z-10 pt-28 sm:pt-36 pb-20 px-6 max-w-6xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+                <a href="#" onclick="Shop.goHome(event)"
+                    class="inline-flex items-center gap-2 text-xs font-medium text-vaidya-textSecondary hover:text-vaidya-accent mb-3"><i
+                        class="fa-solid fa-arrow-left"></i> Back to main site</a>
+                <h1 class="font-serif text-3xl sm:text-5xl text-vaidya-textPrimary">Full Botanical Catalogue</h1>
+                <p class="text-xs text-vaidya-textSecondary mt-2">Explore our complete collection of handcrafted green
+                    teas, wellness infusions, and organic essential distillates.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="filterProducts('all')" id="discover-btn-all"
+                    class="filter-btn active btn-fluid px-5 py-2.5 rounded-full text-xs font-semibold bg-vaidya-accent text-vaidya-bg shadow-sm">All
+                    Offerings</button>
+                <button onclick="filterProducts('tea')" id="discover-btn-tea"
+                    class="filter-btn btn-fluid px-5 py-2.5 rounded-full text-xs font-semibold bg-vaidya-card text-vaidya-textSecondary border border-vaidya-accentMuted hover:border-vaidya-accent hover:text-vaidya-textPrimary">Green
+                    Teas</button>
+                <button onclick="filterProducts('oil')" id="discover-btn-oil"
+                    class="filter-btn btn-fluid px-5 py-2.5 rounded-full text-xs font-semibold bg-vaidya-card text-vaidya-textSecondary border border-vaidya-accentMuted hover:border-vaidya-accent hover:text-vaidya-textPrimary">Essential
+                    Oils</button>
+            </div>
+        </div>
+
+        <div id="discover-product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Cloned product items dynamically copied from main grid -->
+        </div>
+    </section>
+
+    <!-- Cart page (same tab, opens at #cart) -->
+    <section id="cart-view" class="hidden relative z-10 pt-28 sm:pt-36 pb-20 px-6 max-w-5xl mx-auto">
+        <a href="#" onclick="Shop.goHome(event)"
+            class="inline-flex items-center gap-2 text-xs font-medium text-vaidya-textSecondary hover:text-vaidya-accent mb-6"><i
+                class="fa-solid fa-arrow-left"></i> Continue shopping</a>
+        <h1 class="font-serif text-3xl sm:text-5xl text-vaidya-textPrimary mb-4">Your Cart</h1>
+        <div id="stepper" class="hidden flex items-center gap-2 text-xs mb-10"></div>
+
+        <div id="cart-empty"
+            class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-12 text-center">
+            <div
+                class="w-14 h-14 mx-auto rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-4">
+                <i class="fa-solid fa-cart-shopping text-xl"></i></div>
+            <h2 class="font-serif text-xl text-vaidya-textPrimary mb-2">Your cart is empty</h2>
+            <p class="text-xs text-vaidya-textSecondary mb-6">Add a tea or oil and it will appear here.</p>
+            <a href="#" onclick="Shop.goHome(event)"
+                class="btn-fluid inline-block bg-vaidya-accent text-vaidya-bg px-6 py-3 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Browse
+                the range</a>
+        </div>
+
+        <div id="cart-main" class="hidden grid lg:grid-cols-3 gap-8 items-start">
+            <div class="lg:col-span-2">
+
+                <div id="step-cart"
+                    class="bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8">
+                    <div id="cart-items" class="divide-y divide-vaidya-soft"></div>
+                    <button onclick="Shop.toAddress()"
+                        class="btn-fluid w-full mt-6 bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Continue
+                        to delivery details</button>
+                </div>
+
+                <div id="step-address"
+                    class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="font-serif text-2xl text-vaidya-textPrimary">Delivery &amp; Buyer Details</h2>
+                            <p class="text-xs text-vaidya-textSecondary">Fast guest checkout. No account required.</p>
+                        </div>
+                        <span id="phone-verified-pill" class="hidden text-xs text-vaidya-accent flex items-center gap-1.5 bg-vaidya-accentMuted/40 px-3 py-1 rounded-full border border-vaidya-accent/30"><i class="fa-solid fa-circle-check"></i> <span>Phone Verified</span></span>
+                    </div>
+
+                    <form id="addr-form" onsubmit="Shop.saveAddress(event)" class="space-y-4">
+                        <!-- Buyer Contact Information -->
+                        <div class="p-4 rounded-3xl bg-vaidya-soft/60 border border-vaidya-accentMuted/40 space-y-4">
+                            <span class="text-[11px] font-semibold text-vaidya-accent uppercase tracking-wider block">Buyer Information</span>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Your Full Name *</label>
+                                    <input id="a-cust-name" required placeholder="Aarav Sharma" autocomplete="name"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Email Address (Order Confirmation) *</label>
+                                    <input id="a-cust-email" type="email" required placeholder="aarav@example.com" autocomplete="email"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                            </div>
+
+                            <!-- Buyer Phone Number (Verified at final Place Order click) -->
+                            <div>
+                                <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Mobile Phone (Order &amp; Delivery Verification) *</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-vaidya-accent">+91</span>
+                                    <input id="a-cust-phone" required placeholder="9876543210" inputmode="tel" maxlength="10"
+                                        class="w-full pl-12 pr-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <p class="text-[11px] text-vaidya-textMuted mt-1">A 6-digit SMS verification code will be sent to confirm your order upon clicking Place Order.</p>
+                            </div>
+                        </div>
+
+                        <!-- Gift Option Checkbox -->
+                        <div class="pt-3 pb-1 border-t border-vaidya-soft">
+                            <label class="flex items-center gap-2.5 text-xs text-vaidya-textSecondary cursor-pointer select-none">
+                                <input type="checkbox" id="a-is-gift" onchange="Shop.toggleGift(this.checked)" class="rounded text-vaidya-accent focus:ring-vaidya-accent">
+                                <span class="font-medium text-vaidya-textPrimary">This order is a gift for someone else (different delivery recipient)</span>
+                            </label>
+                        </div>
+
+                        <!-- Delivery Recipient & Address -->
+                        <div id="recipient-section" class="space-y-4 pt-1">
+                            <div id="recipient-fields" class="hidden grid sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-purple-500/10 border border-purple-500/30">
+                                <div class="sm:col-span-2 text-[11px] text-purple-300">
+                                    <i class="fa-solid fa-gift mr-1"></i> Delivery Recipient (OTP verification above verifies your contact mobile; recipient phone is only for courier delivery).
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-purple-300 uppercase tracking-wider mb-1">Recipient Name *</label>
+                                    <input id="a-rec-name" placeholder="Gift recipient's name"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-purple-500/40 bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-purple-400">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-purple-300 uppercase tracking-wider mb-1">Recipient Phone *</label>
+                                    <input id="a-rec-phone" placeholder="Recipient's mobile number" inputmode="tel" maxlength="10"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-purple-500/40 bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-purple-400">
+                                </div>
+                            </div>
+
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">House / Flat, Street Address *</label>
+                                    <input id="a-l1" required placeholder="Flat 402, Green Valley Apartments, Rajpur Road" autocomplete="address-line1"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Locality / Area *</label>
+                                    <input id="a-l2" required placeholder="Jakhan / Near Clock Tower" autocomplete="address-line2"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">City *</label>
+                                    <input id="a-city" required placeholder="Dehradun" autocomplete="address-level2"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">State *</label>
+                                    <input id="a-state" required placeholder="Uttarakhand" autocomplete="address-level1"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">PIN Code (6 digits) *</label>
+                                    <input id="a-pin" required placeholder="248001" inputmode="numeric" maxlength="6" autocomplete="postal-code"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Landmark (Optional)</label>
+                                    <input id="a-landmark" placeholder="Near Pacific Mall"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <label class="flex items-center gap-2 text-xs text-vaidya-textSecondary cursor-pointer select-none">
+                                <input type="checkbox" id="a-save-addr" checked class="rounded text-vaidya-accent focus:ring-vaidya-accent">
+                                <span>Save this delivery address for subsequent orders</span>
+                            </label>
+                        </div>
+
+                        <p id="addr-error" class="text-xs text-red-400 min-h-[1rem]"></p>
+
+                        <div class="flex gap-3 pt-2">
+                            <button type="button" onclick="Shop.step(1)"
+                                class="btn-fluid px-6 py-3.5 rounded-full text-sm font-medium bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted">Back to Cart</button>
+                            <button type="submit" id="btn-to-payment"
+                                class="btn-fluid flex-grow bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Continue to Payment</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="step-pay"
+                    class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8">
+                    <h2 class="font-serif text-2xl text-vaidya-textPrimary mb-4">Choose how to pay</h2>
+                    <div
+                        class="rounded-2xl bg-vaidya-bg p-4 text-xs text-vaidya-textSecondary leading-relaxed mb-6 flex justify-between gap-4 border border-white/5">
+                        <div id="pay-recap"></div>
+                        <button onclick="Shop.step(2)"
+                            class="text-vaidya-accent font-medium underline shrink-0 self-start">Edit</button>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div
+                            class="rounded-3xl border border-vaidya-accentMuted/60 bg-vaidya-soft/50 p-5 flex flex-col justify-between gap-4">
+                            <div>
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-vaidya-accentMuted/60 text-vaidya-accent flex items-center justify-center mb-3">
+                                    <i class="fa-solid fa-credit-card"></i></div>
+                                <h3 class="font-serif text-lg text-vaidya-textPrimary mb-1">Pay online</h3>
+                                <p class="text-xs text-vaidya-textSecondary leading-relaxed">UPI, cards, netbanking and
+                                    wallets via Razorpay.</p>
+                            </div>
+                            <button onclick="Shop.payOnline()" id="btn-pay"
+                                class="btn-fluid bg-vaidya-accent text-vaidya-bg py-3 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Pay
+                                now</button>
+                        </div>
+                        <div
+                            class="rounded-3xl border border-vaidya-accentMuted/60 bg-vaidya-soft/50 p-5 flex flex-col justify-between gap-4">
+                            <div>
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-vaidya-accentMuted/60 text-vaidya-accent flex items-center justify-center mb-3">
+                                    <i class="fa-solid fa-hand-holding-dollar"></i></div>
+                                <h3 class="font-serif text-lg text-vaidya-textPrimary mb-1">Cash on delivery</h3>
+                                <p class="text-xs text-vaidya-textSecondary leading-relaxed">Pay in cash when your order
+                                    arrives.</p>
+                            </div>
+                            <button onclick="Shop.cod()"
+                                class="btn-fluid bg-vaidya-card border border-vaidya-accent text-vaidya-accent py-3 rounded-full text-sm font-semibold hover:bg-vaidya-accentMuted">Place
+                                COD order</button>
+                        </div>
+                    </div>
+                    <button onclick="Shop.step(2)"
+                        class="mt-6 text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i
+                            class="fa-solid fa-arrow-left"></i> Back to delivery details</button>
+                </div>
+
+                <!-- Final-Click Phone OTP Verification Modal -->
+                <div id="checkout-otp-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div class="w-full max-w-md bg-vaidya-card border border-vaidya-accentMuted/60 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-full bg-vaidya-accent/10 flex items-center justify-center text-vaidya-accent">
+                                    <i class="fa-solid fa-mobile-screen-button text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-serif text-lg text-vaidya-textPrimary">Verify Mobile Number</h3>
+                                    <p class="text-[11px] text-vaidya-textMuted">One-time security verification</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="Shop.closeCheckoutOtpModal()" class="text-vaidya-textMuted hover:text-vaidya-textPrimary">
+                                <i class="fa-solid fa-xmark text-base"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-vaidya-textSecondary mb-3">
+                            Enter the 6-digit code sent to <strong id="checkout-otp-phone-display" class="text-vaidya-textPrimary font-mono">+91 ••••••••••</strong> to confirm your order.
+                        </p>
+                        <div class="space-y-3">
+                            <input id="checkout-otp-code-input" inputmode="numeric" maxlength="6" pattern="[0-9]*" placeholder="123456"
+                                class="w-full text-center tracking-[0.3em] font-mono text-lg px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-vaidya-textPrimary focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                            <p id="checkout-otp-error" class="text-xs text-red-400 min-h-[1rem]"></p>
+                            <button type="button" id="btn-confirm-checkout-otp" onclick="Shop.confirmCheckoutOtp()"
+                                class="btn-fluid w-full bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight flex items-center justify-center gap-2">
+                                <span id="btn-confirm-otp-text">Verify &amp; Confirm Order</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                            <div class="flex items-center justify-between text-xs text-vaidya-textMuted pt-1">
+                                <button type="button" id="btn-checkout-resend-otp" onclick="Shop.resendCheckoutOtp()" class="text-vaidya-accent underline">Resend Code</button>
+                                <button type="button" onclick="Shop.closeCheckoutOtpModal()" class="hover:text-vaidya-textPrimary">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside
+                class="bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8 lg:sticky lg:top-28">
+                <h2 class="font-serif text-xl text-vaidya-textPrimary mb-4">Order summary</h2>
+                <div class="space-y-3 text-sm text-vaidya-textSecondary">
+                    <div class="flex justify-between"><span>Subtotal</span><span id="sum-sub"></span></div>
+                    <div class="flex justify-between"><span>Delivery</span><span id="sum-ship"></span></div>
+                    <div
+                        class="flex justify-between pt-3 border-t border-vaidya-soft font-serif text-lg text-vaidya-textPrimary font-semibold">
+                        <span>Total</span><span id="sum-total"></span></div>
+                </div>
+            </aside>
+        </div>
+
+        <div id="order-done"
+            class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-12 text-center">
+            <div
+                class="w-14 h-14 mx-auto rounded-full bg-vaidya-accentMuted flex items-center justify-center text-vaidya-accent mb-4">
+                <i class="fa-solid fa-check text-xl"></i></div>
+            <h2 class="font-serif text-3xl text-vaidya-textPrimary mb-2">Thank you for your order</h2>
+            <p class="text-xs text-vaidya-textSecondary mb-1">Order reference: <span id="done-id"
+                    class="font-semibold text-vaidya-accent"></span></p>
+            <p id="done-msg" class="text-xs text-vaidya-textSecondary mb-8"></p>
+            <a href="#" onclick="Shop.goHome(event)"
+                class="btn-fluid inline-block bg-vaidya-accent text-vaidya-bg px-6 py-3 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Keep
+                shopping</a>
+        </div>
+    </section>
+
+    <!-- Dedicated Our Story View -->
+    <section id="story-view" class="hidden relative z-10 pt-28 sm:pt-36 pb-20 px-6 max-w-5xl mx-auto">
+        <a href="#" onclick="Shop.goHome(event)"
+            class="inline-flex items-center gap-2 text-xs font-medium text-vaidya-textSecondary hover:text-vaidya-accent mb-6"><i
+                class="fa-solid fa-arrow-left"></i> Back to main site</a>
+
+        <div class="mb-12">
+            <span class="text-xs font-semibold uppercase tracking-widest text-vaidya-accent mb-2 block">Our Heritage &amp; Craft</span>
+            <h1 id="dyn-story-title" class="font-serif text-3xl sm:text-5xl text-vaidya-textPrimary mb-4">The Story Behind Vaidya</h1>
+            <p id="dyn-story-subtitle" class="text-xs sm:text-sm text-vaidya-textSecondary max-w-2xl font-light leading-relaxed">Rooted in
+                age-old traditional wellness and elevated by modern sustainable extraction, Vaidya was founded on a
+                singular conviction: genuine well-being flourishes when plants are respected in their purest form.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-vaidya-card p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-6">
+                    <i class="fa-solid fa-mountain-sun text-lg"></i></div>
+                <h3 class="font-serif text-xl text-vaidya-textPrimary mb-3">Single-Origin Terroir</h3>
+                <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">Our botanical leaves and herbs
+                    are nurtured in pristine high-altitude microclimates, where mineral-rich soil and natural rainfall
+                    cultivate unmatched therapeutic potency.</p>
+            </div>
+
+            <div class="bg-vaidya-card p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-6">
+                    <i class="fa-solid fa-fire-burner text-lg"></i></div>
+                <h3 class="font-serif text-xl text-vaidya-textPrimary mb-3">Slow Steam Distillation</h3>
+                <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">We extract essential distillates
+                    through gentle, low-heat copper steam alembics, capturing pure volatile aromatic compounds without
+                    harsh chemical solvents or artificial additives.</p>
+            </div>
+
+            <div class="bg-vaidya-card p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-6">
+                    <i class="fa-solid fa-hand-holding-heart text-lg"></i></div>
+                <h3 class="font-serif text-xl text-vaidya-textPrimary mb-3">Regenerative Care</h3>
+                <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">Every batch supports local
+                    farmer cooperatives practicing regenerative agriculture, safeguarding soil vitality and ensuring
+                    fair prosperity for indigenous harvesting communities.</p>
+            </div>
+        </div>
+
+        <div
+            class="bg-vaidya-card rounded-[2.5rem] p-8 sm:p-12 border border-vaidya-accentMuted/50 shadow-xl relative overflow-hidden mb-12">
+            <div class="max-w-2xl relative z-10">
+                <span class="text-xs font-semibold uppercase tracking-widest text-vaidya-accent mb-3 block">Our Guiding
+                    Promise</span>
+                <h2 class="font-serif text-2xl sm:text-3xl text-vaidya-textPrimary mb-4">Purity you can taste, aroma
+                    that restores calm.</h2>
+                <p class="text-xs sm:text-sm text-vaidya-textSecondary leading-relaxed font-light mb-6">From whole leaf
+                    infusion cuts to unadulterated cold-pressed distillates, every formulation is batch-tested for
+                    therapeutic integrity. We believe daily wellness should not be an elaborate ritual, but a quiet
+                    moment of botanical serenity.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-6 border-t border-vaidya-soft">
+                    <div>
+                        <div class="font-serif text-2xl text-vaidya-accent">100%</div>
+                        <div class="text-[11px] text-vaidya-textMuted mt-1">Certified Botanical</div>
+                    </div>
+                    <div>
+                        <div class="font-serif text-2xl text-vaidya-accent">0%</div>
+                        <div class="text-[11px] text-vaidya-textMuted mt-1">Chemical Fillers</div>
+                    </div>
+                    <div>
+                        <div class="font-serif text-2xl text-vaidya-accent">Direct</div>
+                        <div class="text-[11px] text-vaidya-textMuted mt-1">Co-op Sourcing</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="flex flex-col sm:flex-row items-center justify-between gap-6 p-8 rounded-4xl bg-vaidya-soft/80 border border-white/5">
+            <div>
+                <h3 class="font-serif text-xl text-vaidya-textPrimary mb-1">Experience our harvest formulations</h3>
+                <p class="text-xs text-vaidya-textSecondary font-light">Explore single-origin green teas, herbal
+                    infusions, and botanical essences.</p>
+            </div>
+            <a href="#discover" onclick="Shop.goDiscover(event)"
+                class="btn-fluid bg-vaidya-accent text-vaidya-bg px-6 py-3 rounded-full text-xs font-semibold flex items-center gap-2 hover:bg-vaidya-accentLight shrink-0"><span>Browse
+                    Catalogue</span><i class="fa-solid fa-arrow-right text-xs"></i></a>
+        </div>
+    </section>
+
+    <!-- Dedicated Customer Support View -->
+    <section id="support-view" class="hidden relative z-10 pt-28 sm:pt-36 pb-20 px-6 max-w-5xl mx-auto">
+        <a href="#" onclick="Shop.goHome(event)"
+            class="inline-flex items-center gap-2 text-xs font-medium text-vaidya-textSecondary hover:text-vaidya-accent mb-6"><i
+                class="fa-solid fa-arrow-left"></i> Back to main site</a>
+
+        <div class="mb-12">
+            <span class="text-xs font-semibold uppercase tracking-widest text-vaidya-accent mb-2 block">Customer Care
+                &amp; Inquiries</span>
+            <h1 class="font-serif text-3xl sm:text-5xl text-vaidya-textPrimary mb-4">Customer Support</h1>
+            <p class="text-xs sm:text-sm text-vaidya-textSecondary max-w-2xl font-light leading-relaxed">Our botanical
+                care team is dedicated to assisting your wellness journey. Have questions about our ingredients, order
+                shipping, or brewing rituals? Reach out below.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-vaidya-card p-6 sm:p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-4">
+                    <i class="fa-solid fa-envelope text-lg"></i></div>
+                <h3 class="font-serif text-lg text-vaidya-textPrimary mb-1">Email Care</h3>
+                <p class="text-xs text-vaidya-textSecondary font-light mb-3">Direct response within 24 hours.</p>
+                <span class="text-xs font-medium text-vaidya-accent">care@vaidyabotanicals.com</span>
+            </div>
+
+            <div class="bg-vaidya-card p-6 sm:p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-4">
+                    <i class="fa-solid fa-truck-fast text-lg"></i></div>
+                <h3 class="font-serif text-lg text-vaidya-textPrimary mb-1">Orders &amp; Shipping</h3>
+                <p class="text-xs text-vaidya-textSecondary font-light mb-3">Track delivery, dispatch &amp; status.</p>
+                <span class="text-xs font-medium text-vaidya-accent">orders@vaidyabotanicals.com</span>
+            </div>
+
+            <div class="bg-vaidya-card p-6 sm:p-8 rounded-4xl border border-vaidya-accentMuted/40 card-lift">
+                <div
+                    class="w-12 h-12 rounded-2xl bg-vaidya-accentMuted/60 flex items-center justify-center text-vaidya-accent mb-4">
+                    <i class="fa-solid fa-spa text-lg"></i></div>
+                <h3 class="font-serif text-lg text-vaidya-textPrimary mb-1">Wellness Advisory</h3>
+                <p class="text-xs text-vaidya-textSecondary font-light mb-3">Personalized blend recommendations.</p>
+                <span class="text-xs font-medium text-vaidya-accent">wellness@vaidyabotanicals.com</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- Contact Form -->
+            <div class="bg-vaidya-card rounded-4xl p-8 border border-vaidya-accentMuted/50 shadow-xl">
+                <h2 class="font-serif text-2xl text-vaidya-textPrimary mb-2">Send Us a Message</h2>
+                <p class="text-xs text-vaidya-textSecondary font-light mb-6">Leave us a note and one of our botanical
+                    advisors will get back to you shortly.</p>
+                <form onsubmit="Shop.sendSupportMessage(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-vaidya-textSecondary mb-1.5">Full Name</label>
+                        <input type="text" required placeholder="Your name"
+                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-vaidya-textSecondary mb-1.5">Email Address</label>
+                        <input type="email" required placeholder="you@example.com"
+                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-vaidya-textSecondary mb-1.5">Subject</label>
+                        <select
+                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                            <option value="order">Order Status &amp; Delivery</option>
+                            <option value="product">Product Information &amp; Brewing</option>
+                            <option value="feedback">Botanical Feedback &amp; Inquiry</option>
+                            <option value="other">General Question</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-vaidya-textSecondary mb-1.5">Your Message</label>
+                        <textarea required rows="4" placeholder="How can we help you today?"
+                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent resize-none"></textarea>
+                    </div>
+                    <button type="submit"
+                        class="btn-fluid w-full bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Submit
+                        Inquiry</button>
+                </form>
+            </div>
+
+            <!-- FAQ & Assistance -->
+            <div class="space-y-4">
+                <h2 class="font-serif text-2xl text-vaidya-textPrimary mb-2">Frequently Asked Questions</h2>
+                <p class="text-xs text-vaidya-textSecondary font-light mb-6">Quick answers to common questions about our
+                    products and order process.</p>
+
+                <div id="dyn-faq-container" class="space-y-4">
+                    <div class="bg-vaidya-card p-6 rounded-3xl border border-vaidya-accentMuted/40">
+                        <h3 class="font-serif text-base text-vaidya-textPrimary mb-2 flex items-center gap-2"><i
+                                class="fa-solid fa-circle-question text-xs text-vaidya-accent"></i> How should I store the
+                            botanical teas and oils?</h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">Keep green teas in an
+                            airtight container away from moisture and heat. Essential oils should be kept in a cool, dry
+                            place out of direct sunlight to preserve aromatic potency.</p>
+                    </div>
+
+                    <div class="bg-vaidya-card p-6 rounded-3xl border border-vaidya-accentMuted/40">
+                        <h3 class="font-serif text-base text-vaidya-textPrimary mb-2 flex items-center gap-2"><i
+                                class="fa-solid fa-circle-question text-xs text-vaidya-accent"></i> What are your shipping
+                            timeframes?</h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">Orders are processed within
+                            24 to 48 business hours. Standard domestic delivery takes 3 to 5 business days, shipped in
+                            eco-conscious recycled packaging.</p>
+                    </div>
+
+                    <div class="bg-vaidya-card p-6 rounded-3xl border border-vaidya-accentMuted/40">
+                        <h3 class="font-serif text-base text-vaidya-textPrimary mb-2 flex items-center gap-2"><i
+                                class="fa-solid fa-circle-question text-xs text-vaidya-accent"></i> What is your return
+                            &amp; exchange policy?</h3>
+                        <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">We honor 14-day hassle-free
+                            returns for unopened items in original packaging. If you receive a damaged blend, reach out to
+                            our team immediately for a replacement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="toast" style="opacity:0;transform:translate(-50%,12px)"
+        class="fixed bottom-6 left-1/2 z-[70] bg-vaidya-card border border-vaidya-accent/40 text-vaidya-textPrimary text-xs px-5 py-3 rounded-full shadow-2xl transition-all duration-300 pointer-events-none">
+    </div>
+
+    <!-- Product Modal -->
+    <div id="product-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div
+            class="bg-vaidya-card rounded-4xl max-w-lg w-full p-8 shadow-2xl transform scale-95 transition-transform duration-300 relative border border-vaidya-accentMuted">
+            <button onclick="closeModal()" aria-label="Close"
+                class="absolute top-6 right-6 w-9 h-9 rounded-full bg-vaidya-soft flex items-center justify-center text-vaidya-textSecondary hover:text-vaidya-accent transition-colors"><i
+                    class="fa-solid fa-xmark"></i></button>
+            <div class="text-xs font-medium text-vaidya-accentLight mb-1" id="modal-category">Segment</div>
+            <h3 class="font-serif text-2xl text-vaidya-textPrimary mb-2" id="modal-title">Product Name</h3>
+            <div class="font-serif text-lg text-vaidya-accent font-semibold mb-4" id="modal-price">₹0.00</div>
+            <p class="text-xs text-vaidya-textSecondary leading-relaxed mb-6 font-light" id="modal-desc">Description</p>
+            <div class="space-y-4 pt-4 border-t border-vaidya-soft text-xs">
+                <div><span class="font-semibold text-vaidya-textPrimary block mb-1">Key Botanicals &
+                        Ingredients:</span><span class="text-vaidya-textSecondary" id="modal-ingredients">Ingredients
+                        list</span></div>
+                <div><span class="font-semibold text-vaidya-textPrimary block mb-1">Suggested Ritual /
+                        Usage:</span><span class="text-vaidya-textSecondary" id="modal-usage">Usage instructions</span>
+                </div>
+            </div>
+            <button onclick="closeModal()"
+                class="btn-fluid w-full mt-8 bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Close
+                & Return</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-vaidya-accentMuted/40 text-center relative z-10 bg-vaidya-bg">
+        <div
+            class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-xs text-vaidya-textMuted">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-leaf text-vaidya-accent"></i><span
+                    class="font-serif text-base text-vaidya-textPrimary font-normal">Vaidya Botanical Wellness</span>
+            </div>
+            <div class="flex items-center gap-5 flex-wrap justify-center">
+                <a href="#story" onclick="Shop.goStory(event)" class="hover:text-vaidya-accent transition-colors">Our
+                    Story</a>
+                <a href="#support" onclick="Shop.goSupport(event)"
+                    class="hover:text-vaidya-accent transition-colors">Customer Support</a>
+                <a href="#products" onclick="Shop.scrollToSection(event, 'products')"
+                    class="hover:text-vaidya-accent transition-colors">Collections</a>
+                <a href="#" class="hover:text-vaidya-accent transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-vaidya-accent transition-colors">Terms of Botanical Craft</a>
+            </div>
+            <p>© 2026 Vaidya Organics. All rights reserved. Crafted with serenity.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Filter & Modal Functions
+        function filterProducts(category) {
+            const cards = document.querySelectorAll('.product-card');
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('bg-vaidya-accent', 'text-vaidya-bg', 'active');
+                btn.classList.add('bg-vaidya-card', 'text-vaidya-textSecondary');
+            });
+
+            const activeBtns = document.querySelectorAll(`#btn-${category}, #discover-btn-${category}`);
+            activeBtns.forEach(btn => {
+                if (btn) {
+                    btn.classList.remove('bg-vaidya-card', 'text-vaidya-textSecondary');
+                    btn.classList.add('bg-vaidya-accent', 'text-vaidya-bg', 'active');
+                }
+            });
+
+            cards.forEach(card => {
+                if (category === 'all' || card.classList.contains(category)) {
+                    card.style.display = 'flex';
+                    setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 50);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(10px)';
+                    setTimeout(() => { card.style.display = 'none'; }, 300);
+                }
+            });
+        }
+
+        function openModal(title, category, price, desc, ingredients, usage) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-category').innerText = category;
+            document.getElementById('modal-price').innerText = price;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('modal-ingredients').innerText = ingredients;
+            document.getElementById('modal-usage').innerText = usage;
+
+            const modal = document.getElementById('product-modal');
+            modal.classList.remove('pointer-events-none', 'opacity-0');
+            modal.classList.add('opacity-100');
+
+            const content = modal.firstElementChild;
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('product-modal');
+            const content = modal.firstElementChild;
+
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+        }
+    </script>
+
+    <!-- Splash Cursor Component Script -->
+    <script>
+        const QUALITY = {
+            low: { sim: 64, dye: 512, iterations: 10 },
+            medium: { sim: 96, dye: 1024, iterations: 16 },
+            high: { sim: 128, dye: 1440, iterations: 20 }
+        };
+        const BLOOM_RESOLUTION = 256;
+        const BLOOM_ITERATIONS = 4;
+        const BLOOM_THRESHOLD = 0.3;
+        const BLOOM_KNEE = 0.7;
+
+        const VERTEX = `#version 300 es
+precision highp float;
+in vec2 aPosition;
+uniform vec2 texelSize;
+out vec2 vUv;
+out vec2 vL;
+out vec2 vR;
+out vec2 vT;
+out vec2 vB;
+void main() {
+  vUv = aPosition * 0.5 + 0.5;
+  vL = vUv - vec2(texelSize.x, 0.0);
+  vR = vUv + vec2(texelSize.x, 0.0);
+  vT = vUv + vec2(0.0, texelSize.y);
+  vB = vUv - vec2(0.0, texelSize.y);
+  gl_Position = vec4(aPosition, 0.0, 1.0);
+}`;
+
+        const HEADER = `#version 300 es
+precision highp float;
+precision highp sampler2D;
+in vec2 vUv;
+in vec2 vL;
+in vec2 vR;
+in vec2 vT;
+in vec2 vB;
+out vec4 outColor;
+`;
+
+        const SHADERS = {
+            copy: `uniform sampler2D uTexture;
+void main() {
+  outColor = texture(uTexture, vUv);
+}`,
+            clear: `uniform sampler2D uTexture;
+uniform float value;
+void main() {
+  outColor = value * texture(uTexture, vUv);
+}`,
+            splat: `uniform sampler2D uTarget;
+uniform float aspectRatio;
+uniform vec3 color;
+uniform vec2 pointA;
+uniform vec2 pointB;
+uniform float radius;
+void main() {
+  vec2 scale = vec2(aspectRatio, 1.0);
+  vec2 pa = (vUv - pointA) * scale;
+  vec2 ba = (pointB - pointA) * scale;
+  float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-9), 0.0, 1.0);
+  vec2 d = pa - ba * h;
+  vec3 base = texture(uTarget, vUv).xyz;
+  outColor = vec4(base + exp(-dot(d, d) / radius) * color, 1.0);
+}`,
+            burst: `uniform sampler2D uTarget;
+uniform float aspectRatio;
+uniform vec2 point;
+uniform float radius;
+uniform float strength;
+uniform float seed;
+void main() {
+  vec2 d = (vUv - point) * vec2(aspectRatio, 1.0);
+  float distance = length(d);
+  vec2 direction = d / max(distance, 0.00001);
+  float angle = atan(d.y, d.x);
+  float petals = 0.78 + 0.22 * sin(angle * 5.0 + seed) * sin(angle * 3.0 - seed * 1.7);
+  vec2 twist = vec2(-direction.y, direction.x) * 0.3 * sin(angle * 4.0 + seed * 2.3);
+  float falloff = exp(-dot(d, d) / radius) * distance / sqrt(radius);
+  outColor = vec4(texture(uTarget, vUv).xy + (direction * petals + twist) * falloff * strength, 0.0, 1.0);
+}`,
+            crown: `uniform sampler2D uTarget;
+uniform float aspectRatio;
+uniform vec2 point;
+uniform float radius;
+uniform vec3 colorA;
+uniform vec3 colorB;
+uniform float seed;
+void main() {
+  vec2 d = (vUv - point) * vec2(aspectRatio, 1.0);
+  vec3 ink = exp(-dot(d, d) / (radius * 0.45)) * colorA;
+  for (int i = 0; i < 7; i++) {
+    float index = float(i);
+    float angle = seed + index * 0.8975979 + sin(seed * 3.0 + index * 1.9) * 0.35;
+    float reach = sqrt(radius) * (0.75 + 0.45 * fract(sin(seed * 7.1 + index * 3.7) * 43.7));
+    float drop = radius * (0.08 + 0.12 * fract(sin(seed * 2.9 + index * 5.3) * 31.9));
+    vec2 q = d - vec2(cos(angle), sin(angle)) * reach;
+    ink += exp(-dot(q, q) / drop) * mix(colorA, colorB, fract(index * 0.37 + 0.2));
+  }
+  outColor = vec4(texture(uTarget, vUv).xyz + ink, 1.0);
+}`,
+            advection: `uniform sampler2D uVelocity;
+uniform sampler2D uSource;
+uniform vec2 texelSize;
+uniform float dt;
+uniform float dissipation;
+void main() {
+  vec2 coord = vUv - dt * texture(uVelocity, vUv).xy * texelSize;
+  outColor = texture(uSource, coord) / (1.0 + dissipation * dt);
+}`,
+            divergence: `uniform sampler2D uVelocity;
+void main() {
+  float L = texture(uVelocity, vL).x;
+  float R = texture(uVelocity, vR).x;
+  float T = texture(uVelocity, vT).y;
+  float B = texture(uVelocity, vB).y;
+  vec2 C = texture(uVelocity, vUv).xy;
+  if (vL.x < 0.0) L = -C.x;
+  if (vR.x > 1.0) R = -C.x;
+  if (vT.y > 1.0) T = -C.y;
+  if (vB.y < 0.0) B = -C.y;
+  outColor = vec4(0.5 * (R - L + T - B), 0.0, 0.0, 1.0);
+}`,
+            curl: `uniform sampler2D uVelocity;
+void main() {
+  float L = texture(uVelocity, vL).y;
+  float R = texture(uVelocity, vR).y;
+  float T = texture(uVelocity, vT).x;
+  float B = texture(uVelocity, vB).x;
+  outColor = vec4(0.5 * (R - L - T + B), 0.0, 0.0, 1.0);
+}`,
+            vorticity: `uniform sampler2D uVelocity;
+uniform sampler2D uCurl;
+uniform float curl;
+uniform float dt;
+void main() {
+  float L = texture(uCurl, vL).x;
+  float R = texture(uCurl, vR).x;
+  float T = texture(uCurl, vT).x;
+  float B = texture(uCurl, vB).x;
+  float C = texture(uCurl, vUv).x;
+  vec2 force = 0.5 * vec2(abs(T) - abs(B), abs(R) - abs(L));
+  force /= length(force) + 0.0001;
+  force *= curl * C;
+  force.y *= -1.0;
+  vec2 velocity = texture(uVelocity, vUv).xy + force * dt;
+  outColor = vec4(clamp(velocity, -1000.0, 1000.0), 0.0, 1.0);
+}`,
+            pressure: `uniform sampler2D uPressure;
+uniform sampler2D uDivergence;
+void main() {
+  float L = texture(uPressure, vL).x;
+  float R = texture(uPressure, vR).x;
+  float T = texture(uPressure, vT).x;
+  float B = texture(uPressure, vB).x;
+  float divergence = texture(uDivergence, vUv).x;
+  outColor = vec4((L + R + B + T - divergence) * 0.25, 0.0, 0.0, 1.0);
+}`,
+            gradient: `uniform sampler2D uPressure;
+uniform sampler2D uVelocity;
+void main() {
+  float L = texture(uPressure, vL).x;
+  float R = texture(uPressure, vR).x;
+  float T = texture(uPressure, vT).x;
+  float B = texture(uPressure, vB).x;
+  vec2 velocity = texture(uVelocity, vUv).xy - vec2(R - L, T - B);
+  outColor = vec4(velocity, 0.0, 1.0);
+}`,
+            prefilter: `uniform sampler2D uTexture;
+uniform vec3 curve;
+uniform float threshold;
+void main() {
+  vec3 c = texture(uTexture, vUv).rgb;
+  float br = max(c.r, max(c.g, c.b));
+  float rq = clamp(br - curve.x, 0.0, curve.y);
+  rq = curve.z * rq * rq;
+  c *= max(rq, br - threshold) / max(br, 0.0001);
+  outColor = vec4(c, 0.0);
+}`,
+            blur: `uniform sampler2D uTexture;
+uniform float intensity;
+void main() {
+  vec4 sum = texture(uTexture, vL) + texture(uTexture, vR) + texture(uTexture, vT) + texture(uTexture, vB);
+  outColor = sum * 0.25 * intensity;
+}`,
+            display: `uniform sampler2D uTexture;
+uniform sampler2D uBloom;
+uniform vec2 texelSize;
+uniform float shading;
+uniform float bloom;
+uniform float light;
+float hash(vec2 p) {
+  vec3 q = fract(vec3(p.xyx) * 0.1031);
+  q += dot(q, q.yzx + 33.33);
+  return fract((q.x + q.y) * q.z);
+}
+void main() {
+  vec3 c = texture(uTexture, vUv).rgb;
+  if (shading > 0.0) {
+    float dx = length(texture(uTexture, vR).rgb) - length(texture(uTexture, vL).rgb);
+    float dy = length(texture(uTexture, vT).rgb) - length(texture(uTexture, vB).rgb);
+    vec3 n = normalize(vec3(dx, dy, length(texelSize)));
+    c *= mix(1.0, clamp(n.z + 0.7, 0.7, 1.0), shading);
+  }
+  if (bloom > 0.0) {
+    c += max(texture(uBloom, vUv).rgb, 0.0) * bloom;
+  }
+  c = max(c, 0.0);
+  float peak = max(c.r, max(c.g, c.b));
+  float grain = (hash(gl_FragCoord.xy) - 0.5) / 255.0 * smoothstep(0.0, 0.03, peak);
+  if (light > 0.5) {
+    vec3 transmit = exp(-2.4 * c);
+    float low = min(transmit.r, min(transmit.g, transmit.b));
+    float alpha = clamp(1.0 - low + grain, 0.0, 1.0);
+    outColor = vec4(min(transmit - low, vec3(alpha)), alpha);
+  } else {
+    c = max(c + grain, 0.0);
+    float alpha = clamp(max(c.r, max(c.g, c.b)), 0.0, 1.0);
+    outColor = vec4(min(c, vec3(alpha)), alpha);
+  }
+}`
+        };
+
+        const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+        const parseColor = value => {
+            let hex = String(value).replace('#', '').trim();
+            if (hex.length === 3) hex = [...hex].map(char => char + char).join('');
+            const number = parseInt(hex.slice(0, 6), 16);
+            if (Number.isNaN(number)) return [1, 1, 1];
+            return [((number >> 16) & 255) / 255, ((number >> 8) & 255) / 255, (number & 255) / 255];
+        };
+        const hsv = (h, s, v) => {
+            const i = Math.floor(h * 6);
+            const f = h * 6 - i;
+            const p = v * (1 - s);
+            const q = v * (1 - f * s);
+            const t = v * (1 - (1 - f) * s);
+            const sector = ((i % 6) + 6) % 6;
+            if (sector === 0) return [v, t, p];
+            if (sector === 1) return [q, v, p];
+            if (sector === 2) return [p, v, t];
+            if (sector === 3) return [p, q, v];
+            if (sector === 4) return [t, p, v];
+            return [v, p, q];
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('splash-cursor__canvas');
+            if (!canvas) return;
+
+            const props = {
+                colors: ['#20E070', '#34D399', '#10B981'],
+                rainbow: false,
+                colorSpeed: 1,
+                intensity: 1,
+                size: 1,
+                force: 1,
+                swirl: 3,
+                trail: 1,
+                momentum: 1,
+                shading: 1,
+                glow: 0.5,
+                quality: 'high',
+                clickSplash: true,
+                intro: true,
+                contained: false,
+                theme: 'dark'
+            };
+
+            const settings = {
+                palette: props.colors.map(parseColor),
+                rainbow: props.rainbow,
+                colorSpeed: Math.max(0, props.colorSpeed),
+                intensity: Math.max(0, props.intensity),
+                size: Math.max(0.05, props.size),
+                force: Math.max(0, props.force),
+                swirl: Math.max(0, props.swirl),
+                trail: Math.max(0.05, props.trail),
+                momentum: Math.max(0.05, props.momentum),
+                shading: clamp(props.shading, 0, 1),
+                glow: clamp(props.glow, 0, 1),
+                quality: QUALITY[props.quality] ? props.quality : 'high',
+                clickSplash: props.clickSplash,
+                contained: props.contained,
+                light: props.theme === 'light'
+            };
+
+            const gl = canvas.getContext('webgl2', {
+                alpha: true,
+                premultipliedAlpha: true,
+                antialias: false,
+                depth: false,
+                stencil: false,
+                preserveDrawingBuffer: false
+            });
+            if (!gl) return;
+            gl.getExtension('EXT_color_buffer_float');
+            gl.getExtension('EXT_color_buffer_half_float');
+
+            const renderable = (internal, format) => {
+                const texture = gl.createTexture();
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, internal, 4, 4, 0, format, gl.HALF_FLOAT, null);
+                const fbo = gl.createFramebuffer();
+                gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+                const complete = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+                gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                gl.deleteFramebuffer(fbo);
+                gl.deleteTexture(texture);
+                return complete;
+            };
+            const rgba = { internal: gl.RGBA16F, format: gl.RGBA };
+            if (!renderable(rgba.internal, rgba.format)) return;
+            const rg = renderable(gl.RG16F, gl.RG) ? { internal: gl.RG16F, format: gl.RG } : rgba;
+            const r = renderable(gl.R16F, gl.RED) ? { internal: gl.R16F, format: gl.RED } : rg;
+
+            const compile = (type, source) => {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                return shader;
+            };
+            const vertex = compile(gl.VERTEX_SHADER, VERTEX);
+            const programs = {};
+            let broken = false;
+            Object.entries(SHADERS).forEach(([name, body]) => {
+                const fragment = compile(gl.FRAGMENT_SHADER, HEADER + body);
+                const program = gl.createProgram();
+                gl.attachShader(program, vertex);
+                gl.attachShader(program, fragment);
+                gl.bindAttribLocation(program, 0, 'aPosition');
+                gl.linkProgram(program);
+                gl.deleteShader(fragment);
+                if (!gl.getProgramParameter(program, gl.LINK_STATUS)) broken = true;
+                const uniforms = {};
+                const count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+                for (let i = 0; i < count; i++) {
+                    const info = gl.getActiveUniform(program, i);
+                    if (info) uniforms[info.name] = gl.getUniformLocation(program, info.name);
+                }
+                programs[name] = { program, uniforms };
+            });
+            gl.deleteShader(vertex);
+
+            const buffer = gl.createBuffer();
+            const vao = gl.createVertexArray();
+            gl.bindVertexArray(vao);
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+            gl.enableVertexAttribArray(0);
+            gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+            const targets = new Set();
+            let disposed = false;
+            let lost = false;
+
+            const use = name => {
+                const item = programs[name];
+                gl.useProgram(item.program);
+                return item.uniforms;
+            };
+
+            const blit = target => {
+                if (target) {
+                    gl.viewport(0, 0, target.width, target.height);
+                    gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo);
+                } else {
+                    gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+                    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                }
+                gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            };
+
+            const createTarget = (width, height, format, filter) => {
+                gl.activeTexture(gl.TEXTURE0);
+                const texture = gl.createTexture();
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                gl.texImage2D(gl.TEXTURE_2D, 0, format.internal, width, height, 0, format.format, gl.HALF_FLOAT, null);
+                const fbo = gl.createFramebuffer();
+                gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+                gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+                gl.viewport(0, 0, width, height);
+                gl.clearColor(0, 0, 0, 0);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                const target = {
+                    texture,
+                    fbo,
+                    width,
+                    height,
+                    texelX: 1 / width,
+                    texelY: 1 / height,
+                    attach: unit => {
+                        gl.activeTexture(gl.TEXTURE0 + unit);
+                        gl.bindTexture(gl.TEXTURE_2D, texture);
+                        return unit;
+                    }
+                };
+                targets.add(target);
+                return target;
+            };
+
+            const destroyTarget = target => {
+                if (!target) return;
+                gl.deleteFramebuffer(target.fbo);
+                gl.deleteTexture(target.texture);
+                targets.delete(target);
+            };
+
+            const reshape = (target, width, height, format) => {
+                gl.bindTexture(gl.TEXTURE_2D, target.texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, format.internal, width, height, 0, format.format, gl.HALF_FLOAT, null);
+                target.width = width;
+                target.height = height;
+                target.texelX = 1 / width;
+                target.texelY = 1 / height;
+            };
+
+            const createDouble = (width, height, format, filter) => {
+                const pair = {
+                    read: createTarget(width, height, format, filter),
+                    write: createTarget(width, height, format, filter),
+                    width,
+                    height,
+                    texelX: 1 / width,
+                    texelY: 1 / height,
+                    swap: () => {
+                        const current = pair.read;
+                        pair.read = pair.write;
+                        pair.write = current;
+                    }
+                };
+                return pair;
+            };
+
+            const resizeDouble = (pair, width, height, format, filter, keep) => {
+                if (keep) {
+                    const next = createTarget(width, height, format, filter);
+                    const u = use('copy');
+                    gl.uniform1i(u.uTexture, pair.read.attach(0));
+                    blit(next);
+                    destroyTarget(pair.read);
+                    pair.read = next;
+                } else {
+                    reshape(pair.read, width, height, format);
+                }
+                reshape(pair.write, width, height, format);
+                pair.width = width;
+                pair.height = height;
+                pair.texelX = 1 / width;
+                pair.texelY = 1 / height;
+            };
+
+            const resolution = base => {
+                const width = gl.drawingBufferWidth;
+                const height = gl.drawingBufferHeight;
+                const aspect = Math.max(width, height) / Math.max(1, Math.min(width, height));
+                const short = Math.round(base);
+                const long = Math.round(base * aspect);
+                return width > height ? { width: long, height: short } : { width: short, height: long };
+            };
+
+            const fit = () => {
+                const ratio = Math.min(window.devicePixelRatio || 1, 2);
+                const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
+                const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
+                if (canvas.width === width && canvas.height === height) return;
+                canvas.width = width;
+                canvas.height = height;
+            };
+
+            const sizes = () => {
+                const q = QUALITY[settings.quality];
+                const shortSide = Math.min(gl.drawingBufferWidth, gl.drawingBufferHeight);
+                return { sim: resolution(q.sim), ink: resolution(Math.max(q.sim, Math.min(q.dye, shortSide))) };
+            };
+
+            fit();
+            const initial = sizes();
+            const dye = createDouble(initial.ink.width, initial.ink.height, rgba, gl.LINEAR);
+            const velocity = createDouble(initial.sim.width, initial.sim.height, rg, gl.LINEAR);
+            const pressure = createDouble(initial.sim.width, initial.sim.height, r, gl.NEAREST);
+            const divergence = createTarget(initial.sim.width, initial.sim.height, r, gl.NEAREST);
+            const curl = createTarget(initial.sim.width, initial.sim.height, r, gl.NEAREST);
+            let bloom = null;
+            let bloomChain = [];
+
+            const dropBloom = () => {
+                destroyTarget(bloom);
+                bloomChain.forEach(destroyTarget);
+                bloom = null;
+                bloomChain = [];
+            };
+
+            const ensureBloom = () => {
+                if (bloom) return bloom;
+                const size = resolution(BLOOM_RESOLUTION);
+                const created = createTarget(size.width, size.height, rgba, gl.LINEAR);
+                for (let i = 0; i < BLOOM_ITERATIONS; i++) {
+                    const width = size.width >> (i + 1);
+                    const height = size.height >> (i + 1);
+                    if (width < 2 || height < 2) break;
+                    bloomChain.push(createTarget(width, height, rgba, gl.LINEAR));
+                }
+                bloom = created;
+                return created;
+            };
+
+            const resize = () => {
+                fit();
+                const next = sizes();
+                if (dye.width !== next.ink.width || dye.height !== next.ink.height) {
+                    resizeDouble(dye, next.ink.width, next.ink.height, rgba, gl.LINEAR, true);
+                }
+                if (velocity.width !== next.sim.width || velocity.height !== next.sim.height) {
+                    resizeDouble(velocity, next.sim.width, next.sim.height, rg, gl.LINEAR, true);
+                    resizeDouble(pressure, next.sim.width, next.sim.height, r, gl.NEAREST, false);
+                    reshape(divergence, next.sim.width, next.sim.height, r);
+                    reshape(curl, next.sim.width, next.sim.height, r);
+                }
+                const glowSize = resolution(BLOOM_RESOLUTION);
+                if (bloom && (bloom.width !== glowSize.width || bloom.height !== glowSize.height)) dropBloom();
+            };
+
+            const radiusFor = scale => {
+                const aspect = canvas.width / canvas.height;
+                return ((0.2 * settings.size * scale) / 100) * (aspect > 1 ? aspect : 1);
+            };
+
+            const splat = (ax, ay, bx, by, vx, vy, color, radius) => {
+                const u = use('splat');
+                gl.uniform1i(u.uTarget, velocity.read.attach(0));
+                gl.uniform1f(u.aspectRatio, canvas.width / canvas.height);
+                gl.uniform2f(u.pointA, ax, ay);
+                gl.uniform2f(u.pointB, bx, by);
+                gl.uniform3f(u.color, vx, vy, 0);
+                gl.uniform1f(u.radius, radius);
+                blit(velocity.write);
+                velocity.swap();
+                gl.uniform1i(u.uTarget, dye.read.attach(0));
+                gl.uniform3f(u.color, color[0], color[1], color[2]);
+                blit(dye.write);
+                dye.swap();
+            };
+
+            const colorAt = (offset, now) => {
+                const s = settings;
+                const phase = (((offset + (now / 1000) * s.colorSpeed * 0.6) % 1) + 1) % 1;
+                if (s.rainbow) return hsv(phase, 1, 1);
+                const palette = s.palette;
+                if (palette.length === 1) return palette[0];
+                const position = phase * palette.length;
+                const from = palette[Math.floor(position) % palette.length];
+                const to = palette[(Math.floor(position) + 1) % palette.length];
+                const t = position - Math.floor(position);
+                const blend = t * t * (3 - 2 * t);
+                return [
+                    from[0] + (to[0] - from[0]) * blend,
+                    from[1] + (to[1] - from[1]) * blend,
+                    from[2] + (to[2] - from[2]) * blend
+                ];
+            };
+
+            const inkFor = (color, amount) =>
+                color.map(channel => (settings.light ? 1 - channel : channel) * amount);
+
+            const flush = (pointer, dt, now) => {
+                const s = settings;
+                const aspect = canvas.width / canvas.height;
+                const length = Math.hypot((pointer.x - pointer.px) * aspect, pointer.y - pointer.py);
+                if (length > 0.35) {
+                    pointer.px = pointer.x;
+                    pointer.py = pointer.y;
+                    return;
+                }
+                let dx = pointer.x - pointer.px;
+                let dy = pointer.y - pointer.py;
+                if (aspect < 1) dx *= aspect;
+                else dy /= aspect;
+                const radius = radiusFor(1);
+                const spread = 1 + length / (1.77 * Math.sqrt(radius));
+                const push = (6000 * s.force) / Math.sqrt(spread);
+                const amount = (0.15 * s.intensity * Math.min(dt * 60, 1)) / Math.sqrt(spread);
+                const color = inkFor(colorAt(pointer.offset, now), amount);
+                splat(pointer.px, pointer.py, pointer.x, pointer.y, dx * push, dy * push, color, radius);
+                pointer.px = pointer.x;
+                pointer.py = pointer.y;
+            };
+
+            const burst = (x, y, now) => {
+                const s = settings;
+                const seed = Math.random() * Math.PI * 2;
+                const aspect = canvas.width / canvas.height;
+                let u = use('burst');
+                gl.uniform1i(u.uTarget, velocity.read.attach(0));
+                gl.uniform1f(u.aspectRatio, aspect);
+                gl.uniform2f(u.point, x, y);
+                gl.uniform1f(u.radius, radiusFor(3));
+                gl.uniform1f(u.strength, 1100 * s.force);
+                gl.uniform1f(u.seed, seed);
+                blit(velocity.write);
+                velocity.swap();
+                const offset = Math.random();
+                const amount = 1.6 * s.intensity;
+                const first = inkFor(colorAt(offset, now), amount);
+                const second = inkFor(colorAt(offset + 0.3, now), amount);
+                u = use('crown');
+                gl.uniform1i(u.uTarget, dye.read.attach(0));
+                gl.uniform1f(u.aspectRatio, aspect);
+                gl.uniform2f(u.point, x, y);
+                gl.uniform1f(u.radius, radiusFor(1.6));
+                gl.uniform3f(u.colorA, first[0], first[1], first[2]);
+                gl.uniform3f(u.colorB, second[0], second[1], second[2]);
+                gl.uniform1f(u.seed, seed);
+                blit(dye.write);
+                dye.swap();
+            };
+
+            const step = dt => {
+                const s = settings;
+                const iterations = QUALITY[s.quality].iterations;
+                gl.disable(gl.BLEND);
+
+                let u = use('curl');
+                gl.uniform2f(u.texelSize, velocity.texelX, velocity.texelY);
+                gl.uniform1i(u.uVelocity, velocity.read.attach(0));
+                blit(curl);
+
+                u = use('vorticity');
+                gl.uniform2f(u.texelSize, velocity.texelX, velocity.texelY);
+                gl.uniform1i(u.uVelocity, velocity.read.attach(0));
+                gl.uniform1i(u.uCurl, curl.attach(1));
+                gl.uniform1f(u.curl, s.swirl);
+                gl.uniform1f(u.dt, dt);
+                blit(velocity.write);
+                velocity.swap();
+
+                u = use('divergence');
+                gl.uniform2f(u.texelSize, velocity.texelX, velocity.texelY);
+                gl.uniform1i(u.uVelocity, velocity.read.attach(0));
+                blit(divergence);
+
+                u = use('clear');
+                gl.uniform1i(u.uTexture, pressure.read.attach(0));
+                gl.uniform1f(u.value, 0.1);
+                blit(pressure.write);
+                pressure.swap();
+
+                u = use('pressure');
+                gl.uniform2f(u.texelSize, velocity.texelX, velocity.texelY);
+                gl.uniform1i(u.uDivergence, divergence.attach(0));
+                for (let i = 0; i < iterations; i++) {
+                    gl.uniform1i(u.uPressure, pressure.read.attach(1));
+                    blit(pressure.write);
+                    pressure.swap();
+                }
+
+                u = use('gradient');
+                gl.uniform2f(u.texelSize, velocity.texelX, velocity.texelY);
+                gl.uniform1i(u.uPressure, pressure.read.attach(0));
+                gl.uniform1i(u.uVelocity, velocity.read.attach(1));
+                blit(velocity.write);
+                velocity.swap();
+
+                u = use('advection');
+                gl.uniform2f(u.texelSize, velocity.texelX, velocity.texelY);
+                gl.uniform1i(u.uVelocity, velocity.read.attach(0));
+                gl.uniform1i(u.uSource, velocity.read.attach(0));
+                gl.uniform1f(u.dt, dt);
+                gl.uniform1f(u.dissipation, 2 / s.momentum);
+                blit(velocity.write);
+                velocity.swap();
+
+                gl.uniform1i(u.uVelocity, velocity.read.attach(0));
+                gl.uniform1i(u.uSource, dye.read.attach(1));
+                gl.uniform1f(u.dissipation, 3.5 / s.trail);
+                blit(dye.write);
+                dye.swap();
+            };
+
+            const applyBloom = amount => {
+                const base = ensureBloom();
+                if (!bloomChain.length) return;
+                gl.disable(gl.BLEND);
+                let u = use('prefilter');
+                const knee = BLOOM_THRESHOLD * BLOOM_KNEE + 0.0001;
+                gl.uniform3f(u.curve, BLOOM_THRESHOLD - knee, knee * 2, 0.25 / knee);
+                gl.uniform1f(u.threshold, BLOOM_THRESHOLD);
+                gl.uniform1i(u.uTexture, dye.read.attach(0));
+                blit(base);
+                u = use('blur');
+                gl.uniform1f(u.intensity, 1);
+                let last = base;
+                bloomChain.forEach(target => {
+                    gl.uniform2f(u.texelSize, last.texelX, last.texelY);
+                    gl.uniform1i(u.uTexture, last.attach(0));
+                    blit(target);
+                    last = target;
+                });
+                gl.blendFunc(gl.ONE, gl.ONE);
+                gl.enable(gl.BLEND);
+                for (let i = bloomChain.length - 2; i >= 0; i--) {
+                    const target = bloomChain[i];
+                    gl.uniform2f(u.texelSize, last.texelX, last.texelY);
+                    gl.uniform1i(u.uTexture, last.attach(0));
+                    blit(target);
+                    last = target;
+                }
+                gl.disable(gl.BLEND);
+                gl.uniform1f(u.intensity, amount);
+                gl.uniform2f(u.texelSize, last.texelX, last.texelY);
+                gl.uniform1i(u.uTexture, last.attach(0));
+                blit(base);
+            };
+
+            const render = () => {
+                const s = settings;
+                if (s.glow > 0) applyBloom(2 * s.glow);
+                gl.disable(gl.BLEND);
+                const u = use('display');
+                gl.uniform2f(u.texelSize, 1 / gl.drawingBufferWidth, 1 / gl.drawingBufferHeight);
+                gl.uniform1i(u.uTexture, dye.read.attach(0));
+                gl.uniform1i(u.uBloom, (bloom ?? dye.read).attach(1));
+                gl.uniform1f(u.shading, s.shading);
+                gl.uniform1f(u.bloom, s.glow > 0 ? 1 : 0);
+                gl.uniform1f(u.light, s.light ? 1 : 0);
+                blit(null);
+            };
+
+            const clearScreen = () => {
+                gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+                gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+                gl.clearColor(0, 0, 0, 0);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+            };
+
+            const pointers = new Map();
+            const bursts = [];
+            const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+            const introPointer = { x: 0, y: 0, px: 0, py: 0, ready: false, moved: false, offset: Math.random() };
+            let introStart = props.intro && !reduced ? performance.now() + 150 : -1;
+            let raf = 0;
+            let last = 0;
+            let lastActivity = performance.now();
+
+            const advanceIntro = now => {
+                if (introStart < 0) return;
+                const progress = (now - introStart) / 1100;
+                if (progress < 0) return;
+                const t = Math.min(progress, 1);
+                const eased = t * t * (3 - 2 * t);
+                const x = 0.2 + 0.6 * eased;
+                const y = 0.5 + 0.12 * Math.sin(eased * Math.PI * 2);
+                if (!introPointer.ready) {
+                    introPointer.x = introPointer.px = x;
+                    introPointer.y = introPointer.py = y;
+                    introPointer.ready = true;
+                } else {
+                    introPointer.x = x;
+                    introPointer.y = y;
+                    introPointer.moved = true;
+                }
+                if (t >= 1) introStart = -1;
+                lastActivity = now;
+            };
+
+            const frame = now => {
+                raf = 0;
+                if (disposed || lost) return;
+                const s = settings;
+                const dt = clamp((now - last) / 1000, 0, 1 / 60);
+                last = now;
+                resize();
+                advanceIntro(now);
+                if (introPointer.moved) {
+                    introPointer.moved = false;
+                    flush(introPointer, dt, now);
+                }
+                pointers.forEach(pointer => {
+                    if (!pointer.moved) return;
+                    pointer.moved = false;
+                    flush(pointer, dt, now);
+                });
+                bursts.splice(0).forEach(point => burst(point.x, point.y, now));
+                step(dt);
+                render();
+                const quiet = (2.2 * s.trail + 0.4) * 1000;
+                if (introStart >= 0 || now - lastActivity < quiet) raf = requestAnimationFrame(frame);
+                else clearScreen();
+            };
+
+            const wake = () => {
+                lastActivity = performance.now();
+                if (raf || disposed || lost) return;
+                last = performance.now();
+                raf = requestAnimationFrame(frame);
+            };
+
+            const locate = (clientX, clientY) => {
+                const rect = canvas.getBoundingClientRect();
+                if (!rect.width || !rect.height) return null;
+                const x = (clientX - rect.left) / rect.width;
+                const y = 1 - (clientY - rect.top) / rect.height;
+                if (settings.contained && (x < 0 || x > 1 || y < 0 || y > 1)) return null;
+                return { x, y };
+            };
+
+            const track = (id, clientX, clientY) => {
+                const point = locate(clientX, clientY);
+                let pointer = pointers.get(id);
+                if (!point) {
+                    if (pointer) pointer.ready = false;
+                    return;
+                }
+                if (!pointer) {
+                    pointer = { x: 0, y: 0, px: 0, py: 0, ready: false, moved: false, offset: Math.random() };
+                    pointers.set(id, pointer);
+                }
+                if (!pointer.ready) {
+                    pointer.x = pointer.px = point.x;
+                    pointer.y = pointer.py = point.y;
+                    pointer.ready = true;
+                    return;
+                }
+                pointer.x = point.x;
+                pointer.y = point.y;
+                pointer.moved = true;
+                wake();
+            };
+
+            const press = (clientX, clientY) => {
+                if (!settings.clickSplash) return;
+                const point = locate(clientX, clientY);
+                if (!point) return;
+                bursts.push(point);
+                wake();
+            };
+
+            window.addEventListener('pointermove', event => {
+                if (event.pointerType !== 'touch') track(`p${event.pointerId}`, event.clientX, event.clientY);
+            }, { passive: true });
+            window.addEventListener('pointerdown', event => {
+                if (event.pointerType !== 'touch') press(event.clientX, event.clientY);
+            }, { passive: true });
+            window.addEventListener('touchstart', event => {
+                Array.from(event.changedTouches).forEach(touch => {
+                    pointers.delete(`t${touch.identifier}`);
+                    track(`t${touch.identifier}`, touch.clientX, touch.clientY);
+                    press(touch.clientX, touch.clientY);
+                });
+            }, { passive: true });
+            window.addEventListener('touchmove', event => {
+                Array.from(event.changedTouches).forEach(touch => track(`t${touch.identifier}`, touch.clientX, touch.clientY));
+            }, { passive: true });
+            window.addEventListener('touchend', event => {
+                Array.from(event.changedTouches).forEach(touch => pointers.delete(`t${touch.identifier}`));
+            }, { passive: true });
+
+            wake();
+        });
+    </script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        const Shop = (function () {
+            const CONFIG = {
+                RAZORPAY_KEY_ID: '',
+                ORDER_WEBHOOK_URL: '',
+                CURRENCY: 'INR',
+                SYMBOL: '₹',
+                SHIPPING: 0,
+                BRAND: 'Vaidya'
+            };
+
+            const $ = (id) => document.getElementById(id);
+            const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const GUEST_CART_KEY = 'vaidya_guest_cart_v1';
+            const LEGACY_CART_KEY = 'vaidya_cart';
+
+            // Safe legacy migration: transfer old cart to versioned guest cart
+            try {
+                const legacy = localStorage.getItem(LEGACY_CART_KEY);
+                if (legacy && !localStorage.getItem(GUEST_CART_KEY)) {
+                    localStorage.setItem(GUEST_CART_KEY, legacy);
+                }
+                localStorage.removeItem(LEGACY_CART_KEY);
+            } catch (e) { }
+
+            const store = {
+                get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+                set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+            };
+            const money = (n) => CONFIG.SYMBOL + n.toFixed(2);
+
+            let cart = store.get(GUEST_CART_KEY, []);
+            let address = store.get('vaidya_address', null);
+            let curStep = 1, done = false, wasCart = false;
+
+            // Phone OTP verification state
+            let phoneChallengeId = null;
+            let phoneVerified = false;
+            let verificationProof = null;
+            let verifiedPhone = '';
+            let otpCooldown = 0;
+            let otpInterval = null;
+
+            const count = () => cart.reduce((a, i) => a + (parseInt(i.qty, 10) || 1), 0);
+            const subtotal = () => cart.reduce((a, i) => a + ((parseInt(i.qty, 10) || 1) * (parseFloat(i.price) || 0)), 0);
+
+            function saveLocalCart() {
+                store.set(GUEST_CART_KEY, cart);
+            }
+
+            function send(payload) {
+                if (CONFIG.ORDER_WEBHOOK_URL) {
+                    fetch(CONFIG.ORDER_WEBHOOK_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) }).catch(() => { });
+                } else {
+                    const box = store.get('vaidya_outbox', []); box.push(payload); store.set('vaidya_outbox', box.slice(-50));
+                }
+            }
+
+            let tt;
+            function toast(m) {
+                const t = $('toast'); if (!t) return;
+                t.textContent = m; t.style.opacity = '1'; t.style.transform = 'translate(-50%,0)';
+                clearTimeout(tt); tt = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%,12px)'; }, 2400);
+            }
+
+            function renderBadge(bump) {
+                const n = count(), b = $('cart-badge');
+                if (!b) return;
+                b.textContent = n > 99 ? '99+' : n; b.style.display = n ? 'flex' : 'none';
+                if (bump && n) b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.4)' }, { transform: 'scale(1)' }], { duration: 350 });
+            }
+
+            function onPhoneInput() {
+                const input = $('a-cust-phone');
+                const currentDigits = input ? input.value.replace(/\D/g, '') : '';
+                if (phoneVerified && currentDigits !== verifiedPhone) {
+                    phoneVerified = false;
+                    verificationProof = null;
+                    phoneChallengeId = null;
+                    const pill = $('phone-verified-pill');
+                    if (pill) pill.classList.add('hidden');
+                    const status = $('otp-phone-status');
+                    if (status) {
+                        status.textContent = 'Phone number changed. Please request a new verification code.';
+                        status.className = 'text-[11px] text-amber-400 mt-1';
+                    }
+                    const verifyBox = $('otp-verify-box');
+                    if (verifyBox) verifyBox.classList.add('hidden');
+                    const sendBtnText = $('btn-send-otp-text');
+                    if (sendBtnText) sendBtnText.textContent = 'Send OTP';
+                }
+            }
+
+            function startPhoneOtpCooldown(seconds = 60) {
+                otpCooldown = seconds;
+                const btn = $('btn-send-otp');
+                const resendBtn = $('btn-resend-otp');
+                const btnText = $('btn-send-otp-text');
+                clearInterval(otpInterval);
+
+                const updateUi = () => {
+                    if (otpCooldown > 0) {
+                        if (btn) {
+                            btn.disabled = true;
+                            btn.classList.add('opacity-60', 'cursor-not-allowed');
+                        }
+                        if (btnText) btnText.textContent = `Wait ${otpCooldown}s`;
+                        if (resendBtn) {
+                            resendBtn.disabled = true;
+                            resendBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                            resendBtn.textContent = `Resend in ${otpCooldown}s`;
+                        }
+                    } else {
+                        clearInterval(otpInterval);
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                        }
+                        if (btnText) btnText.textContent = phoneVerified ? 'Re-verify' : 'Resend OTP';
+                        if (resendBtn) {
+                            resendBtn.disabled = false;
+                            resendBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                            resendBtn.textContent = 'Resend';
+                        }
+                    }
+                };
+
+                updateUi();
+                otpInterval = setInterval(() => {
+                    otpCooldown--;
+                    updateUi();
+                }, 1000);
+            }
+
+            async function sendPhoneOtp() {
+                if (otpCooldown > 0) return;
+                const phoneInput = $('a-cust-phone');
+                const status = $('otp-phone-status');
+                const errVerify = $('otp-verify-error');
+                if (errVerify) errVerify.textContent = '';
+
+                const phone = phoneInput ? phoneInput.value.replace(/\D/g, '') : '';
+                if (!phone || !/^[6-9]\d{9}$/.test(phone)) {
+                    if (status) {
+                        status.textContent = 'Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.';
+                        status.className = 'text-[11px] text-red-400 mt-1';
+                    }
+                    return;
+                }
+
+                const btn = $('btn-send-otp');
+                const btnText = $('btn-send-otp-text');
+                const prevText = btnText ? btnText.textContent : 'Send OTP';
+                if (btn) {
+                    btn.disabled = true;
+                    if (btnText) btnText.textContent = 'Sending...';
+                }
+
+                try {
+                    const res = await fetch('/api/checkout/otp/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        if (status) {
+                            status.textContent = data.error || 'Failed to send OTP.';
+                            status.className = 'text-[11px] text-red-400 mt-1';
+                        }
+                        if (btn) btn.disabled = false;
+                        if (btnText) btnText.textContent = prevText;
+                        return;
+                    }
+
+                    phoneChallengeId = data.challenge_id;
+                    if (status) {
+                        status.textContent = 'Verification code sent via SMS.';
+                        status.className = 'text-[11px] text-vaidya-accent mt-1';
+                    }
+
+                    const targetDisplay = $('otp-target-phone-display');
+                    if (targetDisplay) targetDisplay.textContent = '+91 ' + phone;
+
+                    const verifyBox = $('otp-verify-box');
+                    if (verifyBox) verifyBox.classList.remove('hidden');
+
+                    const codeInput = $('otp-code-input');
+                    if (codeInput) {
+                        codeInput.value = '';
+                        setTimeout(() => codeInput.focus(), 150);
+                    }
+
+                    startPhoneOtpCooldown(data.retry_after || 60);
+                } catch (netErr) {
+                    if (status) {
+                        status.textContent = 'Network error sending OTP. Please check your connection.';
+                        status.className = 'text-[11px] text-red-400 mt-1';
+                    }
+                    if (btn) btn.disabled = false;
+                    if (btnText) btnText.textContent = prevText;
+                }
+            }
+
+            async function verifyPhoneOtp() {
+                const err = $('otp-verify-error');
+                if (err) err.textContent = '';
+                const codeInput = $('otp-code-input');
+                const code = codeInput ? codeInput.value.trim() : '';
+
+                if (!code || !/^\d{6}$/.test(code)) {
+                    if (err) err.textContent = 'Please enter the 6-digit code received on your mobile.';
+                    return;
+                }
+                if (!phoneChallengeId) {
+                    if (err) err.textContent = 'Please request an OTP first.';
+                    return;
+                }
+
+                const phoneInput = $('a-cust-phone');
+                const phone = phoneInput ? phoneInput.value.replace(/\D/g, '') : '';
+
+                const btn = $('btn-verify-otp');
+                const prevText = btn ? btn.textContent : 'Verify';
+                if (btn) {
+                    btn.disabled = true;
+                    btn.textContent = 'Verifying...';
+                }
+
+                try {
+                    const res = await fetch('/api/checkout/otp/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ challenge_id: phoneChallengeId, otp: code, phone })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        if (err) err.textContent = data.error || 'Invalid or expired OTP.';
+                        return;
+                    }
+
+                    phoneVerified = true;
+                    verificationProof = data.verification_proof;
+                    verifiedPhone = phone;
+
+                    const pill = $('phone-verified-pill');
+                    if (pill) pill.classList.remove('hidden');
+
+                    const verifyBox = $('otp-verify-box');
+                    if (verifyBox) verifyBox.classList.add('hidden');
+
+                    const status = $('otp-phone-status');
+                    if (status) {
+                        status.textContent = 'Phone number verified successfully.';
+                        status.className = 'text-[11px] text-vaidya-accent mt-1';
+                    }
+
+                    toast('Mobile number verified');
+                } catch (netErr) {
+                    if (err) err.textContent = 'Network error verifying code. Please try again.';
+                } finally {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = prevText;
+                    }
+                }
+            }
+
+            function commit(item) {
+                const f = cart.find((c) => c.id === item.id);
+                if (f) f.qty = (parseInt(f.qty, 10) || 1) + 1;
+                else cart.push({ ...item, qty: 1 });
+
+                saveLocalCart();
+                renderBadge(true);
+                toast(item.name + ' added to cart');
+                if (wasCart) renderCart();
+            }
+
+            // GUEST-FIRST ADD TO CART: No login prompt or blocker
+            function add(btn) {
+                const d = btn.dataset;
+                const item = { id: d.id, name: d.name, price: parseFloat(d.price), unit: d.unit };
+                commit(item);
+            }
+
+            function qty(id, delta) {
+                const f = cart.find((c) => c.id === id); if (!f) return;
+                f.qty = (parseInt(f.qty, 10) || 1) + delta;
+                if (f.qty < 1) cart = cart.filter((c) => c.id !== id);
+                saveLocalCart();
+                renderBadge();
+                renderCart();
+            }
+
+            function remove(id) {
+                cart = cart.filter((c) => c.id !== id);
+                saveLocalCart();
+                renderBadge();
+                renderCart();
+            }
+
+            function renderCart() {
+                const empty = cart.length === 0;
+                $('cart-empty').classList.toggle('hidden', !(empty && !done));
+                $('cart-main').classList.toggle('hidden', empty || done);
+                $('order-done').classList.toggle('hidden', !done);
+                $('stepper').classList.toggle('hidden', empty || done);
+                if (empty) return;
+
+                $('cart-items').innerHTML = cart.map((i) => `
+      <div class="flex items-center gap-4 py-4 first:pt-0">
+        <div class="w-14 h-14 rounded-2xl bg-vaidya-accentMuted/60 text-vaidya-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-leaf"></i></div>
+        <div class="flex-grow min-w-0">
+          <div class="font-serif text-base text-vaidya-textPrimary truncate">${esc(i.name)}</div>
+          <div class="text-xs text-vaidya-textMuted">${money(parseFloat(i.price) || 0)} ${esc(i.unit || '')}</div>
+        </div>
+        <div class="flex items-center gap-2 border border-vaidya-accentMuted/80 rounded-full px-2 py-1 bg-vaidya-bg">
+          <button onclick="Shop.qty('${i.id}',-1)" aria-label="Decrease" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-minus"></i></button>
+          <span class="text-xs font-semibold w-5 text-center text-vaidya-textPrimary">${i.qty}</span>
+          <button onclick="Shop.qty('${i.id}',1)" aria-label="Increase" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="font-serif text-sm font-semibold w-20 text-right text-vaidya-textPrimary">${money((parseInt(i.qty, 10) || 1) * (parseFloat(i.price) || 0))}</div>
+        <button onclick="Shop.remove('${i.id}')" aria-label="Remove" class="text-vaidya-textMuted hover:text-red-400 p-1"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    `).join('');
+
+                const sub = subtotal(), ship = CONFIG.SHIPPING, tot = sub + ship;
+                $('sum-sub').textContent = money(sub);
+                $('sum-ship').textContent = ship ? money(ship) : 'Free';
+                $('sum-total').textContent = money(tot);
+
+                renderStepper();
+                step(curStep);
+            }
+
+            function renderStepper() {
+                const steps = ['Cart', 'Delivery', 'Payment'];
+                $('stepper').innerHTML = steps.map((s, idx) => {
+                    const num = idx + 1;
+                    const active = num === curStep;
+                    const doneStep = num < curStep;
+                    return `
+        <button onclick="Shop.step(${num})" ${num > curStep && !address ? 'disabled' : ''} class="flex items-center gap-2 ${active ? 'font-semibold text-vaidya-accent' : doneStep ? 'text-vaidya-textPrimary' : 'text-vaidya-textMuted'}">
+          <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${active ? 'bg-vaidya-accent text-vaidya-bg font-bold' : doneStep ? 'bg-vaidya-accentMuted text-vaidya-accent' : 'bg-vaidya-soft'}">${num}</span>
+          <span>${s}</span>
+        </button>
+        ${idx < 2 ? '<i class="fa-solid fa-chevron-right text-[10px] text-vaidya-textMuted mx-1"></i>' : ''}
+      `;
+                }).join('');
+            }
+
+            function toggleGift(isGift) {
+                const rf = $('recipient-fields');
+                if (rf) rf.classList.toggle('hidden', !isGift);
+                const rn = $('a-rec-name');
+                const rp = $('a-rec-phone');
+                if (rn) rn.required = Boolean(isGift);
+                if (rp) rp.required = Boolean(isGift);
+            }
+
+            function fillAddressForm() {
+                if (!address) {
+                    const saved = store.get('vaidya_address', null);
+                    if (saved) address = saved;
+                }
+
+                if (address) {
+                    const custName = $('a-cust-name');
+                    const custEmail = $('a-cust-email');
+                    const custPhone = $('a-cust-phone');
+
+                    if (custName && (address.customer_name || address.name)) custName.value = address.customer_name || address.name;
+                    if (custEmail && (address.customer_email || address.email)) custEmail.value = address.customer_email || address.email;
+                    if (custPhone && (address.customer_phone || address.phone)) custPhone.value = address.customer_phone || address.phone;
+
+                    const giftCheck = $('a-is-gift');
+                    if (giftCheck) {
+                        giftCheck.checked = Boolean(address.is_gift);
+                        toggleGift(Boolean(address.is_gift));
+                    }
+                    const recName = $('a-rec-name');
+                    if (recName && address.recipient_name) recName.value = address.recipient_name;
+                    const recPhone = $('a-rec-phone');
+                    if (recPhone && address.recipient_phone) recPhone.value = address.recipient_phone;
+
+                    const ids = ['l1', 'l2', 'city', 'state', 'pin', 'landmark'];
+                    ids.forEach((k) => { const el = $('a-' + k); if (el && address[k]) el.value = address[k]; });
+                }
+            }
+
+            function step(n) {
+                if (n === 2) {
+                    // Fast guest checkout: step 2 (Delivery & Buyer Details) is always accessible
+                }
+                if (n === 3) {
+                    if (!address) {
+                        step(2);
+                        const el = $('addr-error');
+                        if (el) el.textContent = 'Please enter your delivery details before proceeding.';
+                        return;
+                    }
+                }
+                curStep = n;
+                $('step-cart').classList.toggle('hidden', n !== 1);
+                $('step-address').classList.toggle('hidden', n !== 2);
+                $('step-pay').classList.toggle('hidden', n !== 3);
+                renderStepper();
+
+                if (n === 2) fillAddressForm();
+                if (n === 3 && address) {
+                    const isGift = address.is_gift;
+                    const giftHtml = isGift
+                        ? `<div class="mb-3 p-3 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-xs text-purple-300">
+                             <i class="fa-solid fa-gift mr-1.5"></i> <strong>Gift Recipient:</strong> ${esc(address.recipient_name)} (${esc(address.recipient_phone)})
+                           </div>`
+                        : '';
+                    $('pay-recap').innerHTML = `
+                        ${giftHtml}
+                        <div class="text-xs text-vaidya-textSecondary space-y-1">
+                            <div>Buyer: <strong class="text-vaidya-textPrimary">${esc(address.customer_name || address.name)}</strong> (${esc(address.customer_phone || address.phone)})</div>
+                            <div>Email: <strong class="text-vaidya-textPrimary">${esc(address.customer_email || address.email)}</strong></div>
+                            <div class="pt-1 text-vaidya-textPrimary font-medium">${esc(address.l1)}${address.l2 ? ', ' + esc(address.l2) : ''}</div>
+                            <div class="text-vaidya-textPrimary font-medium">${esc(address.city)}, ${esc(address.state)} - ${esc(address.pin)}</div>
+                            ${address.landmark ? `<div class="text-[11px] text-vaidya-textMuted">Landmark: ${esc(address.landmark)}</div>` : ''}
+                        </div>
+                    `;
+                }
+            }
+
+            function toAddress() { step(2); }
+
+            function saveAddress(e) {
+                if (e) e.preventDefault();
+                const g = (k) => ($('a-' + k)?.value || '').trim();
+                const custName = g('cust-name');
+                const custEmail = g('cust-email');
+                const custPhone = g('cust-phone').replace(/\D/g, '');
+                const isGift = $('a-is-gift')?.checked || false;
+                const recName = isGift ? g('rec-name') : custName;
+                const recPhone = isGift ? g('rec-phone').replace(/\D/g, '') : custPhone;
+                const l1 = g('l1');
+                const l2 = g('l2');
+                const city = g('city');
+                const state = g('state');
+                const pin = g('pin').replace(/\s/g, '');
+                const landmark = g('landmark');
+                const saveForLater = $('a-save-addr')?.checked || false;
+                const err = (t) => { const el = $('addr-error'); if (el) el.textContent = t; };
+
+                if (!custName) return err('Please enter your full name.');
+                if (!custEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(custEmail)) return err('Please enter a valid email address.');
+                if (!/^[6-9]\d{9}$/.test(custPhone)) return err('Please enter a valid 10-digit Indian mobile number.');
+
+                if (isGift) {
+                    if (!recName) return err('Please enter the gift recipient\'s name.');
+                    if (!/^\d{10}$/.test(recPhone)) return err('Please enter a valid 10-digit recipient mobile number.');
+                }
+                if (!l1) return err('House / Flat and street address is required.');
+                if (!l2) return err('Locality / Area is required.');
+                if (!city) return err('City is required.');
+                if (!state) return err('State is required.');
+                if (!/^\d{6}$/.test(pin)) return err('Please enter a valid 6-digit PIN code.');
+                err('');
+
+                address = {
+                    customer_name: custName,
+                    customer_email: custEmail,
+                    customer_phone: custPhone,
+                    name: custName,
+                    email: custEmail,
+                    phone: custPhone,
+                    recipient_name: recName,
+                    recipient_phone: recPhone,
+                    is_gift: isGift,
+                    l1,
+                    l2,
+                    city,
+                    state,
+                    pin,
+                    landmark
+                };
+
+                if (saveForLater) {
+                    store.set('vaidya_address', address);
+                }
+                step(3);
+            }
+
+            async function completeOrder(payMethod, payId) {
+                if (!address || !phoneVerified || !verificationProof) {
+                    toast('Please verify your mobile number and enter delivery details.');
+                    step(2);
+                    return;
+                }
+                if (!cart.length) {
+                    toast('Your cart is empty.');
+                    return;
+                }
+
+                const payload = {
+                    address: {
+                        customer_name: address.customer_name,
+                        customer_email: address.customer_email || address.email,
+                        customer_phone: address.customer_phone,
+                        name: address.customer_name,
+                        phone: address.customer_phone,
+                        email: address.customer_email || address.email,
+                        recipient_name: address.recipient_name,
+                        recipient_phone: address.recipient_phone,
+                        is_gift: address.is_gift,
+                        l1: address.l1,
+                        l2: address.l2,
+                        city: address.city,
+                        state: address.state,
+                        pin: address.pin,
+                        landmark: address.landmark
+                    },
+                    items: cart,
+                    shipping: CONFIG.SHIPPING,
+                    payment: { method: payMethod, paymentId: payId || null },
+                    verification_proof: verificationProof
+                };
+
+                try {
+                    const res = await fetch('/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        toast(data.error || 'Failed to complete order');
+                        if (data.error && data.error.toLowerCase().includes('verification')) {
+                            phoneVerified = false;
+                            verificationProof = null;
+                            const pill = $('phone-verified-pill');
+                            if (pill) pill.classList.add('hidden');
+                            step(2);
+                        }
+                        return;
+                    }
+
+                    const confirmed = data.order || {};
+                    const orderId = confirmed.order_number || ('VD-' + Date.now().toString(36).toUpperCase());
+
+                    send({ type: 'order', orderNumber: orderId, total: confirmed.total, items: cart });
+                    // Guest cart cleared ONLY upon confirmed order creation
+                    cart = [];
+                    store.set(GUEST_CART_KEY, []);
+                    phoneVerified = false;
+                    verificationProof = null;
+                    renderBadge();
+                    done = true;
+
+                    $('done-id').textContent = orderId;
+                    $('done-msg').textContent = payMethod === 'COD'
+                        ? 'Your Cash on Delivery order is confirmed and recorded in our system. Our botanical care team will dispatch your package shortly.'
+                        : 'Payment received successfully via Razorpay. Your botanical order is being processed.';
+
+                    renderCart();
+                } catch (e) {
+                    // On network error, guest cart is NOT cleared
+                    toast('Network error creating order. Please check your connection.');
+                }
+            }
+
+            let pendingPayMethod = null;
+            let pendingPayId = null;
+
+            function openCheckoutOtpModal() {
+                if (!address || !address.customer_phone) {
+                    toast('Please enter your delivery details.');
+                    step(2);
+                    return;
+                }
+                const modal = $('checkout-otp-modal');
+                if (modal) modal.classList.remove('hidden');
+                const phoneDisplay = $('checkout-otp-phone-display');
+                if (phoneDisplay) phoneDisplay.textContent = '+91 ' + address.customer_phone;
+                const err = $('checkout-otp-error');
+                if (err) err.textContent = '';
+                const input = $('checkout-otp-code-input');
+                if (input) {
+                    input.value = '';
+                    setTimeout(() => input.focus(), 150);
+                }
+                // Automatically dispatch OTP to buyer phone
+                sendCheckoutOtp();
+            }
+
+            function closeCheckoutOtpModal() {
+                const modal = $('checkout-otp-modal');
+                if (modal) modal.classList.add('hidden');
+                pendingPayMethod = null;
+                pendingPayId = null;
+            }
+
+            async function sendCheckoutOtp() {
+                const err = $('checkout-otp-error');
+                if (err) err.textContent = '';
+                try {
+                    const res = await fetch('/api/checkout/otp/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone: address.customer_phone })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        if (err) err.textContent = data.error || 'Failed to dispatch verification code';
+                        return;
+                    }
+                    phoneChallengeId = data.challenge_id;
+                    toast('Verification code sent to +91 ' + address.customer_phone);
+                } catch (e) {
+                    if (err) err.textContent = 'Network error sending OTP. Please try again.';
+                }
+            }
+
+            function resendCheckoutOtp() {
+                sendCheckoutOtp();
+            }
+
+            async function confirmCheckoutOtp() {
+                const err = $('checkout-otp-error');
+                if (err) err.textContent = '';
+                const input = $('checkout-otp-code-input');
+                const code = input ? input.value.trim() : '';
+
+                if (!code || !/^\d{4,6}$/.test(code)) {
+                    if (err) err.textContent = 'Please enter the 6-digit code received on your mobile.';
+                    return;
+                }
+
+                if (!phoneChallengeId) {
+                    if (err) err.textContent = 'Please request a verification code first.';
+                    return;
+                }
+
+                const btn = $('btn-confirm-checkout-otp');
+                const btnText = $('btn-confirm-otp-text');
+                const prevText = btnText ? btnText.textContent : 'Verify & Confirm Order';
+                if (btn) btn.disabled = true;
+                if (btnText) btnText.textContent = 'Verifying...';
+
+                try {
+                    const res = await fetch('/api/checkout/otp/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            challenge_id: phoneChallengeId,
+                            otp: code,
+                            phone: address.customer_phone
+                        })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        if (err) err.textContent = data.error || 'Invalid or expired verification code';
+                        return;
+                    }
+
+                    phoneVerified = true;
+                    verificationProof = data.verification_proof;
+                    verifiedPhone = address.customer_phone;
+
+                    // Close modal and execute the pending order!
+                    const modal = $('checkout-otp-modal');
+                    if (modal) modal.classList.add('hidden');
+
+                    const m = pendingPayMethod || 'COD';
+                    const p = pendingPayId;
+                    pendingPayMethod = null;
+                    pendingPayId = null;
+
+                    if (m === 'Razorpay' && !p) {
+                        launchRazorpay();
+                    } else {
+                        completeOrder(m, p);
+                    }
+                } catch (netErr) {
+                    if (err) err.textContent = 'Network error verifying code. Please try again.';
+                } finally {
+                    if (btn) btn.disabled = false;
+                    if (btnText) btnText.textContent = prevText;
+                }
+            }
+
+            function cod() {
+                if (!address) {
+                    toast('Please enter your delivery details.');
+                    step(2);
+                    return;
+                }
+                if (!cart.length) {
+                    toast('Your cart is empty.');
+                    return;
+                }
+                pendingPayMethod = 'COD';
+                pendingPayId = null;
+
+                if (phoneVerified && verificationProof && verifiedPhone === address.customer_phone) {
+                    completeOrder('COD', null);
+                } else {
+                    openCheckoutOtpModal();
+                }
+            }
+
+            function payOnline() {
+                if (!CONFIG.RAZORPAY_KEY_ID) {
+                    toast('Online payments are undergoing maintenance. Please select Cash on Delivery.');
+                    return;
+                }
+                if (!address) {
+                    toast('Please enter your delivery details.');
+                    step(2);
+                    return;
+                }
+                if (!cart.length) {
+                    toast('Your cart is empty.');
+                    return;
+                }
+
+                pendingPayMethod = 'Razorpay';
+                pendingPayId = null;
+
+                if (phoneVerified && verificationProof && verifiedPhone === address.customer_phone) {
+                    launchRazorpay();
+                } else {
+                    openCheckoutOtpModal();
+                }
+            }
+
+            function launchRazorpay() {
+                const amtInSubunits = Math.round((subtotal() + CONFIG.SHIPPING) * 100);
+                const options = {
+                    key: CONFIG.RAZORPAY_KEY_ID,
+                    amount: amtInSubunits,
+                    currency: CONFIG.CURRENCY,
+                    name: CONFIG.BRAND,
+                    description: 'Botanical Wellness Purchase',
+                    handler: function (resp) {
+                        completeOrder('Razorpay', resp.razorpay_payment_id);
+                    },
+                    prefill: {
+                        name: address ? (address.customer_name || address.name) : '',
+                        email: address ? (address.customer_email || address.email) : '',
+                        contact: address ? (address.customer_phone || address.phone) : ''
+                    },
+                    theme: { color: '#20E070' }
+                };
+
+                try {
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+                } catch (e) {
+                    toast('Could not open Razorpay gateway.');
+                }
+            }
+
+            function populateDiscoverGrid() {
+                const mainGrid = $('product-grid');
+                const discoverGrid = $('discover-product-grid');
+                if (mainGrid && discoverGrid && !discoverGrid.children.length) {
+                    discoverGrid.innerHTML = mainGrid.innerHTML;
+                }
+            }
+
+            async function fetchDynamicProducts() {
+                try {
+                    const res = await fetch('/api/products');
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (!data || !Array.isArray(data.products) || !data.products.length) return;
+
+                    const grid = $('product-grid');
+                    const dGrid = $('discover-product-grid');
+                    if (!grid) return;
+
+                    const cardsHtml = data.products.map(p => {
+                        const primaryImg = (p.images && p.images.length) ? p.images.find(i => i.is_primary) || p.images[0] : null;
+                        const catClass = esc(p.category || 'tea');
+                        const icon = catClass === 'tea' ? 'mug-saucer' : catClass === 'oil' ? 'bottle-droplet' : 'leaf';
+                        const badgeHtml = p.badge ? `<span class="absolute top-4 left-4 bg-vaidya-bg/90 text-vaidya-accent border border-vaidya-accent/30 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">${esc(p.badge)}</span>` : '';
+                        const imgHtml = (primaryImg && primaryImg.url)
+                            ? `<img src="${esc(primaryImg.url)}" alt="${esc(primaryImg.alt || p.name)}" class="w-full h-full object-cover">`
+                            : `<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#20E070_1px,transparent_1px)] [background-size:12px_12px]"></div><i class="fa-solid fa-${icon} text-5xl text-vaidya-accent/70"></i>`;
+
+                        const safeName = esc(p.name);
+                        const safeCat = esc(p.health_segment || '');
+                        const safePrice = '₹' + Number(p.price).toFixed(2);
+                        const safeDesc = esc(p.description || p.short_description || '');
+                        const safeIng = esc(p.ingredients || '');
+                        const safeUse = esc(p.usage_instructions || '');
+                        const safeUnit = esc(p.unit || '');
+
+                        return `
+                        <div class="product-card ${catClass} card-lift bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/50 flex flex-col justify-between">
+                            <div>
+                                <div class="w-full h-52 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                                    ${imgHtml}
+                                    ${badgeHtml}
+                                </div>
+                                <div class="text-xs font-medium text-vaidya-accentLight mb-1">${safeCat}</div>
+                                <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">${safeName}</h3>
+                                <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">${esc(p.short_description || '')}</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                                <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">${safePrice} <span class="text-xs font-normal text-vaidya-textMuted">${safeUnit}</span></span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="openModal('${safeName}', '${safeCat}', '${safePrice}', '${safeDesc}', '${safeIng}', '${safeUse}')" class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View Details</button>
+                                    <button onclick="Shop.add(this)" data-id="${esc(p.slug || p.id)}" data-name="${safeName}" data-price="${Number(p.price).toFixed(2)}" data-unit="${safeUnit}" class="btn-fluid px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5 hover:bg-vaidya-accentLight"><i class="fa-solid fa-cart-plus"></i> Add</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+                    grid.innerHTML = cardsHtml;
+                    if (dGrid) dGrid.innerHTML = cardsHtml;
+                } catch (e) {
+                    // Gracefully retain existing fallback markup
+                }
+            }
+
+            function scrollToSection(e, targetId) {
+                if (e) e.preventDefault();
+                if (location.hash === '#cart' || location.hash === '#discover' || location.hash === '#story' || location.hash === '#support') {
+                    location.hash = '';
+                    route();
+                }
+                setTimeout(() => {
+                    const el = $(targetId);
+                    if (el) {
+                        const offset = 100;
+                        const bodyRect = document.body.getBoundingClientRect().top;
+                        const elementRect = el.getBoundingClientRect().top;
+                        const elementPosition = elementRect - bodyRect;
+                        const offsetPosition = elementPosition - offset;
+                        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                    }
+                }, 50);
+            }
+
+            function route() {
+                const isCart = location.hash === '#cart';
+                const isDiscover = location.hash === '#discover';
+                const isStory = location.hash === '#story';
+                const isSupport = location.hash === '#support';
+
+                wasCart = isCart;
+                const isSubpage = isCart || isDiscover || isStory || isSupport;
+                $('home-view').classList.toggle('hidden', isSubpage);
+                $('cart-view').classList.toggle('hidden', !isCart);
+                $('discover-view').classList.toggle('hidden', !isDiscover);
+                const storyView = $('story-view');
+                if (storyView) storyView.classList.toggle('hidden', !isStory);
+                const supportView = $('support-view');
+                if (supportView) supportView.classList.toggle('hidden', !isSupport);
+
+                if (isDiscover) {
+                    populateDiscoverGrid();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (isCart) {
+                    done = false;
+                    renderCart();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (isStory || isSupport) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            async function fetchDynamicContent() {
+                try {
+                    const res = await fetch('/api/content');
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const content = data.content || {};
+
+                    if (content.hero) {
+                        const h = content.hero;
+                        if (h.eyebrow && $('dyn-hero-eyebrow')) $('dyn-hero-eyebrow').innerText = h.eyebrow;
+                        if (h.title && $('dyn-hero-title')) $('dyn-hero-title').innerText = h.title;
+                        if (h.description && $('dyn-hero-desc')) $('dyn-hero-desc').innerText = h.description;
+                    }
+
+                    if (content.about) {
+                        const a = content.about;
+                        if (a.eyebrow && $('dyn-about-eyebrow')) $('dyn-about-eyebrow').innerText = a.eyebrow;
+                        if (a.title && $('dyn-about-title')) $('dyn-about-title').innerText = a.title;
+                        if (a.description && $('dyn-about-desc')) $('dyn-about-desc').innerText = a.description;
+                        if (a.stat_1_number && $('dyn-about-s1-num')) $('dyn-about-s1-num').innerText = a.stat_1_number;
+                        if (a.stat_1_label && $('dyn-about-s1-lbl')) $('dyn-about-s1-lbl').innerText = a.stat_1_label;
+                        if (a.stat_2_number && $('dyn-about-s2-num')) $('dyn-about-s2-num').innerText = a.stat_2_number;
+                        if (a.stat_2_label && $('dyn-about-s2-lbl')) $('dyn-about-s2-lbl').innerText = a.stat_2_label;
+                        if (a.stat_3_number && $('dyn-about-s3-num')) $('dyn-about-s3-num').innerText = a.stat_3_number;
+                        if (a.stat_3_label && $('dyn-about-s3-lbl')) $('dyn-about-s3-lbl').innerText = a.stat_3_label;
+                    }
+
+                    if (content.story) {
+                        const s = content.story;
+                        if (s.title && $('dyn-story-title')) $('dyn-story-title').innerText = s.title;
+                        if (s.subtitle && $('dyn-story-subtitle')) $('dyn-story-subtitle').innerText = s.subtitle;
+                    }
+
+                    if (content.support_info && Array.isArray(content.support_info.faqs) && $('dyn-faq-container')) {
+                        const faqs = content.support_info.faqs;
+                        if (faqs.length) {
+                            $('dyn-faq-container').innerHTML = faqs.map(f => `
+                                <div class="bg-vaidya-card p-6 rounded-3xl border border-vaidya-accentMuted/40">
+                                    <h3 class="font-serif text-base text-vaidya-textPrimary mb-2 flex items-center gap-2">
+                                         <i class="fa-solid fa-circle-question text-xs text-vaidya-accent"></i> ${esc(f.q)}
+                                    </h3>
+                                    <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">${esc(f.a)}</p>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                } catch (e) {
+                    // Gracefully retain existing fallback markup
+                }
+            }
+
+            window.addEventListener('hashchange', route);
+
+            document.addEventListener('DOMContentLoaded', () => {
+                populateDiscoverGrid();
+                renderBadge();
+                route();
+                fetchDynamicProducts();
+                fetchDynamicContent();
+            });
+
+            return {
+                add, qty, remove,
+                onPhoneInput, sendPhoneOtp, verifyPhoneOtp, toggleGift,
+                openCheckoutOtpModal, closeCheckoutOtpModal, confirmCheckoutOtp, resendCheckoutOtp,
+                toAddress, saveAddress, step, payOnline, cod, scrollToSection,
+                goCart() { location.hash = '#cart'; },
+                goDiscover(e) {
+                    if (e) e.preventDefault();
+                    location.hash = '#discover';
+                    route();
+                },
+                goStory(e) {
+                    if (e) e.preventDefault();
+                    location.hash = '#story';
+                    route();
+                },
+                goSupport(e) {
+                    if (e) e.preventDefault();
+                    location.hash = '#support';
+                    route();
+                },
+                async sendSupportMessage(e) {
+                    if (e) e.preventDefault();
+                    const form = e.target;
+                    const inputs = form.querySelectorAll('input, select, textarea');
+                    const payload = {
+                        name: inputs[0] ? inputs[0].value : '',
+                        email: inputs[1] ? inputs[1].value : '',
+                        category: inputs[2] ? inputs[2].value : 'General Question',
+                        message: inputs[3] ? inputs[3].value : ''
+                    };
+
+                    try {
+                        const res = await fetch('/api/support', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        toast(data.ticket_number ? `Ticket #${data.ticket_number} created. Care team notified.` : 'Message received. We will contact you soon.');
+                        form.reset();
+                    } catch (err) {
+                        toast('Message received. Thank you for reaching out!');
+                        form.reset();
+                    }
+                },
+                goHome(e) {
+                    if (e) e.preventDefault();
+                    location.hash = '';
+                    route();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            };
+        })();
+    </script>
+</body>
+
+</html>

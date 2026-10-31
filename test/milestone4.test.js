@@ -1,3 +1,6 @@
+process.env.NODE_ENV = 'test';
+process.env.PHONE_VERIFICATION_TEST_MODE = 'true';
+
 const http = require('http');
 const server = require('../server');
 const { hashPassword } = require('../lib/auth');
@@ -50,8 +53,56 @@ async function runTests() {
 
         const cookieVal = loginRes.headers['set-cookie'][0].split(';')[0];
 
+        // Authenticate Customer
+        let customerCookie = '';
+        const getCookie = (res) => {
+            const raw = res.headers && res.headers['set-cookie'];
+            if (!raw) return '';
+            if (Array.isArray(raw) && raw.length > 0) return raw[0].split(';')[0];
+            if (typeof raw === 'string') return raw.split(';')[0];
+            return '';
+        };
+
+        const regRes = await request({
+            path: '/api/auth/customer-register',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        }, {
+            email: 'ananya@example.com',
+            password: 'CustomerSecure2026!',
+            full_name: 'Ananya Sharma',
+            phone: '9876543210'
+        });
+
+        customerCookie = getCookie(regRes);
+        if (!customerCookie) {
+            const custLogin = await request({
+                path: '/api/auth/customer-login',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }, {
+                email: 'ananya@example.com',
+                password: 'CustomerSecure2026!'
+            });
+            customerCookie = getCookie(custLogin);
+        }
+
         // Test 1: Place a real order via checkout API
         console.log('\n[Test 1] Verifying customer order creation...');
+        const sendOtpRes = await request({
+            path: '/api/checkout/otp/send',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        }, { phone: '9876543210' });
+        const challengeId = JSON.parse(sendOtpRes.body).challenge_id;
+
+        const verifyOtpRes = await request({
+            path: '/api/checkout/otp/verify',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        }, { challenge_id: challengeId, otp: '123456', phone: '9876543210' });
+        const verificationProof = JSON.parse(verifyOtpRes.body).verification_proof;
+
         const orderPayload = {
             user: { method: 'email', value: 'ananya@example.com' },
             address: {
@@ -70,13 +121,17 @@ async function runTests() {
             subtotal: 48.00,
             shipping: 0,
             total: 48.00,
-            payment: { method: 'COD' }
+            payment: { method: 'COD' },
+            verification_proof: verificationProof
         };
 
         const createOrderRes = await request({
             path: '/api/orders',
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                'Content-Type': 'application/json',
+                'Cookie': customerCookie
+            }
         }, orderPayload);
 
         if (createOrderRes.statusCode !== 201) throw new Error('Order creation failed: ' + createOrderRes.body);

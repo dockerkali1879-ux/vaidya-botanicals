@@ -3,6 +3,10 @@
  * Serves public storefront, gates private admin interface, and routes serverless API calls.
  */
 
+const dns = require('dns');
+if (dns.setDefaultResultOrder) {
+    dns.setDefaultResultOrder('ipv4first');
+}
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -36,7 +40,8 @@ function serveFile(res, filePath, contentType) {
         res.writeHead(200, {
             'Content-Type': contentType || 'text/html; charset=UTF-8',
             'X-Frame-Options': 'DENY',
-            'X-Content-Type-Options': 'nosniff'
+            'X-Content-Type-Options': 'nosniff',
+            'X-Robots-Tag': 'noindex, nofollow'
         });
         res.end(content);
     });
@@ -110,6 +115,14 @@ const server = http.createServer(async (req, res) => {
         req.query = parsedUrl.query;
 
         // Auth APIs
+        if (pathname === '/api/auth/admin-otp/send') {
+            const handler = require('./api/auth/admin-otp-send');
+            return handler(req, res);
+        }
+        if (pathname === '/api/auth/admin-otp/verify') {
+            const handler = require('./api/auth/admin-otp-verify');
+            return handler(req, res);
+        }
         if (pathname === '/api/auth/admin-login') {
             const handler = require('./api/auth/admin-login');
             return handler(req, res);
@@ -120,6 +133,62 @@ const server = http.createServer(async (req, res) => {
         }
         if (pathname === '/api/auth/admin-logout') {
             const handler = require('./api/auth/admin-logout');
+            return handler(req, res);
+        }
+
+        // Checkout Phone OTP APIs (Guest Phone Verification)
+        if (pathname === '/api/checkout/otp/send') {
+            const handler = require('./api/checkout/otp/send');
+            return handler(req, res);
+        }
+        if (pathname === '/api/checkout/otp/verify') {
+            const handler = require('./api/checkout/otp/verify');
+            return handler(req, res);
+        }
+
+        // Stytch Customer Auth APIs (Passwordless Email OTP)
+        if (pathname === '/api/auth/otp-send') {
+            const handler = require('./api/auth/otp-send');
+            return handler(req, res);
+        }
+        if (pathname === '/api/auth/otp-verify') {
+            const handler = require('./api/auth/otp-verify');
+            return handler(req, res);
+        }
+
+        // Customer Auth APIs
+        if (pathname === '/api/auth/customer-register') {
+            const handler = require('./api/auth/customer-register');
+            return handler(req, res);
+        }
+        if (pathname === '/api/auth/customer-login') {
+            const handler = require('./api/auth/customer-login');
+            return handler(req, res);
+        }
+        if (pathname === '/api/auth/customer-logout') {
+            const handler = require('./api/auth/customer-logout');
+            return handler(req, res);
+        }
+        if (pathname === '/api/auth/customer-session') {
+            const handler = require('./api/auth/customer-session');
+            return handler(req, res);
+        }
+        if (pathname === '/api/auth/customer-verify') {
+            const handler = require('./api/auth/customer-verify');
+            return handler(req, res);
+        }
+        if (pathname === '/api/auth/customer-reset') {
+            const handler = require('./api/auth/customer-reset');
+            return handler(req, res);
+        }
+
+        // Shopping Cart APIs
+        if (pathname === '/api/cart/merge') {
+            const handler = require('./api/cart/merge');
+            return handler(req, res);
+        }
+        if (pathname === '/api/cart') {
+            const handler = require('./api/cart/index');
             return handler(req, res);
         }
 
@@ -175,6 +244,10 @@ const server = http.createServer(async (req, res) => {
         // Upload API
         if (pathname === '/api/admin/upload') {
             const handler = require('./api/admin/upload');
+            return handler(req, res);
+        }
+        if (pathname === '/api/admin/cloudinary-signature') {
+            const handler = require('./api/admin/cloudinary-signature');
             return handler(req, res);
         }
 

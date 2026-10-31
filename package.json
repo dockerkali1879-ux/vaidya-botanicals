@@ -9,16 +9,27 @@
     "dev": "node server.js",
     "test": "node test/milestone1.test.js && node test/milestone2.test.js && node test/milestone3.test.js && node test/milestone4.test.js && node test/security.test.js",
     "bootstrap:admin": "node scripts/bootstrap-admin.js",
-    "db:test": "node scripts/test-db-connection.js"
+    "db:migrate": "node database/migrate.js",
+    "db:test": "node test/db.test.js",
+    "test:phase2": "node test/phase2-neon-orders.test.js",
+    "test:stytch": "node test/stytch-cart.test.js",
+    "test:guest-checkout": "node test/guest-checkout.test.js",
+    "build:assets": "node scripts/sync-assets.js",
+    "dev:wrangler": "node scripts/sync-assets.js && wrangler dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
     "cookie": "^0.6.0",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
-    "razorpay": "^2.9.4"
+    "pg": "^8.23.1",
+    "razorpay": "^2.9.4",
+    "stytch": "^14.3.0"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.156.0"
   }
 }

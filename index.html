@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Vaidya - Botanical Wellness</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -132,13 +133,17 @@
                 <a href="#support" onclick="Shop.goSupport(event)"
                     class="hover:text-vaidya-accent transition-colors py-1">Customer Support</a>
             </div>
-            <div class="flex items-center gap-3 relative z-20"><a href="#discover" onclick="Shop.goDiscover(event)"
-                    class="btn-fluid bg-vaidya-accent text-vaidya-bg px-5 py-2.5 rounded-full text-sm font-semibold shadow-sm flex items-center gap-2 hover:bg-vaidya-accentLight"><span>Discover</span><i
-                        class="fa-solid fa-arrow-right text-xs opacity-85"></i></a><button onclick="Shop.goCart()"
-                    aria-label="Open cart"
-                    class="btn-fluid relative w-10 h-10 rounded-full bg-vaidya-card text-vaidya-accent border border-vaidya-accentMuted shadow-md flex items-center justify-center hover:border-vaidya-accent"><i
-                        class="fa-solid fa-cart-shopping text-sm"></i><span id="cart-badge" style="display:none"
-                        class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-vaidya-accent text-vaidya-bg text-[10px] font-bold items-center justify-center ring-2 ring-vaidya-card">0</span></button>
+            <div class="flex items-center gap-2.5 sm:gap-3 relative z-20">
+                <a href="#discover" onclick="Shop.goDiscover(event)"
+                    class="btn-fluid bg-vaidya-accent text-vaidya-bg px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold shadow-sm flex items-center gap-2 hover:bg-vaidya-accentLight">
+                    <span>Discover</span><i class="fa-solid fa-arrow-right text-xs opacity-85"></i>
+                </a>
+                <button onclick="Shop.goCart()" aria-label="Open cart"
+                    class="btn-fluid relative w-10 h-10 rounded-full bg-vaidya-card text-vaidya-accent border border-vaidya-accentMuted shadow-md flex items-center justify-center hover:border-vaidya-accent">
+                    <i class="fa-solid fa-cart-shopping text-sm"></i>
+                    <span id="cart-badge" style="display:none"
+                        class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-vaidya-accent text-vaidya-bg text-[10px] font-bold items-center justify-center ring-2 ring-vaidya-card">0</span>
+                </button>
             </div>
         </nav>
     </header>
@@ -284,10 +289,10 @@
                             immunity support.</p>
                     </div>
                     <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
-                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">$24.00 <span
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹24.00 <span
                                 class="text-xs font-normal text-vaidya-textMuted">/ 100g</span></span>
                         <div class="flex items-center gap-2"><button
-                                onclick="openModal('Lemongrass Immunity Green Tea', 'Health Segment: Immunity', '$24.00', 'Hand-picked green tea leaves blended with aromatic pure lemongrass cut and ginger root for natural vitalizing immunity support.', 'Green Tea, Organic Lemongrass, Ginger Extract, Tulsi Leaves', 'Brew 1 tsp in 85°C water for 3-4 minutes.')"
+                                onclick="openModal('Lemongrass Immunity Green Tea', 'Health Segment: Immunity', '₹24.00', 'Hand-picked green tea leaves blended with aromatic pure lemongrass cut and ginger root for natural vitalizing immunity support.', 'Green Tea, Organic Lemongrass, Ginger Extract, Tulsi Leaves', 'Brew 1 tsp in 85°C water for 3-4 minutes.')"
                                 class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
                                 Details</button><button onclick="Shop.add(this)" data-id="lemongrass-immunity-green-tea"
                                 data-name="Lemongrass Immunity Green Tea" data-price="24.00" data-unit="/ 100g"
@@ -318,10 +323,10 @@
                             purifies air.</p>
                     </div>
                     <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
-                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">$28.00 <span
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹28.00 <span
                                 class="text-xs font-normal text-vaidya-textMuted">/ 15ml</span></span>
                         <div class="flex items-center gap-2"><button
-                                onclick="openModal('Organic Lemongrass Essential Oil', 'Health Segment: Stress Relief', '$28.00', 'Steam-distilled Cymbopogon oil with a crisp citrusy aroma. Promotes mental clarity, relieves tension, and purifies indoor spaces.', '100% Pure Organic Lemongrass Oil (Cymbopogon citratus)', 'Add 4-6 drops to diffuser or dilute with carrier oil for topical application.')"
+                                onclick="openModal('Organic Lemongrass Essential Oil', 'Health Segment: Stress Relief', '₹28.00', 'Steam-distilled Cymbopogon oil with a crisp citrusy aroma. Promotes mental clarity, relieves tension, and purifies indoor spaces.', '100% Pure Organic Lemongrass Oil (Cymbopogon citratus)', 'Add 4-6 drops to diffuser or dilute with carrier oil for topical application.')"
                                 class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
                                 Details</button><button onclick="Shop.add(this)"
                                 data-id="organic-lemongrass-essential-oil" data-name="Organic Lemongrass Essential Oil"
@@ -349,10 +354,10 @@
                             harmony.</p>
                     </div>
                     <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
-                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">$22.00 <span
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹22.00 <span
                                 class="text-xs font-normal text-vaidya-textMuted">/ 100g</span></span>
                         <div class="flex items-center gap-2"><button
-                                onclick="openModal('Botanical Cleanse Green Tea', 'Health Segment: Digestion & Detox', '$22.00', 'Formulated with high-antioxidant sencha, dandelion root, and soothing peppermint for gentle daily digestive harmony.', 'Japanese Sencha, Dandelion Root, Peppermint Leaves, Licorice', 'Enjoy after meals. Steep for 3 minutes.')"
+                                onclick="openModal('Botanical Cleanse Green Tea', 'Health Segment: Digestion & Detox', '₹22.00', 'Formulated with high-antioxidant sencha, dandelion root, and soothing peppermint for gentle daily digestive harmony.', 'Japanese Sencha, Dandelion Root, Peppermint Leaves, Licorice', 'Enjoy after meals. Steep for 3 minutes.')"
                                 class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
                                 Details</button><button onclick="Shop.add(this)" data-id="botanical-cleanse-green-tea"
                                 data-name="Botanical Cleanse Green Tea" data-price="22.00" data-unit="/ 100g"
@@ -378,10 +383,10 @@
                             sleep.</p>
                     </div>
                     <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
-                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">$32.00 <span
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹32.00 <span
                                 class="text-xs font-normal text-vaidya-textMuted">/ 15ml</span></span>
                         <div class="flex items-center gap-2"><button
-                                onclick="openModal('Highland Lavender Elixir Oil', 'Health Segment: Deep Sleep', '$32.00', 'Extracted from high-altitude lavender fields, enriched with bergamot notes to prepare your mind for restful sleep.', 'Pure Highland Lavender & Wild Bergamot Distillate', 'Diffuse in bedroom 30 minutes before rest.')"
+                                onclick="openModal('Highland Lavender Elixir Oil', 'Health Segment: Deep Sleep', '₹32.00', 'Extracted from high-altitude lavender fields, enriched with bergamot notes to prepare your mind for restful sleep.', 'Pure Highland Lavender & Wild Bergamot Distillate', 'Diffuse in bedroom 30 minutes before rest.')"
                                 class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
                                 Details</button><button onclick="Shop.add(this)" data-id="highland-lavender-elixir-oil"
                                 data-name="Highland Lavender Elixir Oil" data-price="32.00" data-unit="/ 15ml"
@@ -403,10 +408,10 @@
                             caffeine-free infusion designed to lower cortisol levels and restore inner calmness.</p>
                     </div>
                     <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
-                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">$20.00 <span
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹20.00 <span
                                 class="text-xs font-normal text-vaidya-textMuted">/ 100g</span></span>
                         <div class="flex items-center gap-2"><button
-                                onclick="openModal('Chamomile & Lemongrass Zen', 'Health Segment: Calm & Focus', '$20.00', 'A soothing caffeine-free infusion designed to lower cortisol levels and restore inner calmness during busy workdays.', 'Egyptian Chamomile Flowers, Cut Lemongrass, Lemon Balm', 'Steep 1 tbsp for 5 minutes in hot water.')"
+                                onclick="openModal('Chamomile & Lemongrass Zen', 'Health Segment: Calm & Focus', '₹20.00', 'A soothing caffeine-free infusion designed to lower cortisol levels and restore inner calmness during busy workdays.', 'Egyptian Chamomile Flowers, Cut Lemongrass, Lemon Balm', 'Steep 1 tbsp for 5 minutes in hot water.')"
                                 class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
                                 Details</button><button onclick="Shop.add(this)" data-id="chamomile-lemongrass-zen"
                                 data-name="Chamomile &amp; Lemongrass Zen" data-price="20.00" data-unit="/ 100g"
@@ -430,10 +435,10 @@
                             ambiance.</p>
                     </div>
                     <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
-                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">$26.00 <span
+                        <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹26.00 <span
                                 class="text-xs font-normal text-vaidya-textMuted">/ 15ml</span></span>
                         <div class="flex items-center gap-2"><button
-                                onclick="openModal('Eucalyptus & Tea Tree Essence', 'Health Segment: Vitality & Respiratory', '$26.00', 'Invigorating botanical blend designed for clear breathing, congestion relief, and refreshing home ambiance.', 'Organic Eucalyptus Globulus, Melaleuca Alternifolia', 'Inhale vapors directly or use in shower steam.')"
+                                onclick="openModal('Eucalyptus & Tea Tree Essence', 'Health Segment: Vitality & Respiratory', '₹26.00', 'Invigorating botanical blend designed for clear breathing, congestion relief, and refreshing home ambiance.', 'Organic Eucalyptus Globulus, Melaleuca Alternifolia', 'Inhale vapors directly or use in shower steam.')"
                                 class="btn-fluid px-4 py-2 rounded-full bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted hover:text-vaidya-accent text-xs font-medium">View
                                 Details</button><button onclick="Shop.add(this)" data-id="eucalyptus-tea-tree-essence"
                                 data-name="Eucalyptus &amp; Tea Tree Essence" data-price="26.00" data-unit="/ 15ml"
@@ -522,7 +527,6 @@
             class="inline-flex items-center gap-2 text-xs font-medium text-vaidya-textSecondary hover:text-vaidya-accent mb-6"><i
                 class="fa-solid fa-arrow-left"></i> Continue shopping</a>
         <h1 class="font-serif text-3xl sm:text-5xl text-vaidya-textPrimary mb-4">Your Cart</h1>
-        <p id="user-chip" class="text-xs text-vaidya-textSecondary mb-4"></p>
         <div id="stepper" class="hidden flex items-center gap-2 text-xs mb-10"></div>
 
         <div id="cart-empty"
@@ -550,33 +554,117 @@
 
                 <div id="step-address"
                     class="hidden bg-vaidya-card rounded-4xl border border-vaidya-accentMuted/50 shadow-lg p-6 sm:p-8">
-                    <h2 class="font-serif text-2xl text-vaidya-textPrimary mb-6">Delivery details</h2>
-                    <form id="addr-form" onsubmit="Shop.saveAddress(event)" class="grid sm:grid-cols-2 gap-4">
-                        <input id="a-name" required placeholder="Full name" autocomplete="name"
-                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent sm:col-span-2">
-                        <input id="a-phone" required placeholder="Mobile number (10 digits)" inputmode="tel"
-                            autocomplete="tel"
-                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
-                        <input id="a-email" type="email" placeholder="Email (optional)" autocomplete="email"
-                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
-                        <input id="a-l1" required placeholder="House / flat, street" autocomplete="address-line1"
-                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent sm:col-span-2">
-                        <input id="a-l2" placeholder="Area, landmark (optional)" autocomplete="address-line2"
-                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent sm:col-span-2">
-                        <input id="a-city" required placeholder="City" autocomplete="address-level2"
-                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
-                        <input id="a-state" required placeholder="State" autocomplete="address-level1"
-                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
-                        <input id="a-pin" required placeholder="PIN code" inputmode="numeric" maxlength="6"
-                            autocomplete="postal-code"
-                            class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
-                        <p id="addr-error" class="sm:col-span-2 text-xs text-red-400 min-h-[1rem]"></p>
-                        <div class="sm:col-span-2 flex gap-3">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 class="font-serif text-2xl text-vaidya-textPrimary">Delivery &amp; Buyer Details</h2>
+                            <p class="text-xs text-vaidya-textSecondary">Fast guest checkout. No account required.</p>
+                        </div>
+                        <span id="phone-verified-pill" class="hidden text-xs text-vaidya-accent flex items-center gap-1.5 bg-vaidya-accentMuted/40 px-3 py-1 rounded-full border border-vaidya-accent/30"><i class="fa-solid fa-circle-check"></i> <span>Phone Verified</span></span>
+                    </div>
+
+                    <form id="addr-form" onsubmit="Shop.saveAddress(event)" class="space-y-4">
+                        <!-- Buyer Contact Information -->
+                        <div class="p-4 rounded-3xl bg-vaidya-soft/60 border border-vaidya-accentMuted/40 space-y-4">
+                            <span class="text-[11px] font-semibold text-vaidya-accent uppercase tracking-wider block">Buyer Information</span>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Your Full Name *</label>
+                                    <input id="a-cust-name" required placeholder="Aarav Sharma" autocomplete="name"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Email Address (Order Confirmation) *</label>
+                                    <input id="a-cust-email" type="email" required placeholder="aarav@example.com" autocomplete="email"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                            </div>
+
+                            <!-- Buyer Phone Number (Verified at final Place Order click) -->
+                            <div>
+                                <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Mobile Phone (Order &amp; Delivery Verification) *</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-vaidya-accent">+91</span>
+                                    <input id="a-cust-phone" required placeholder="9876543210" inputmode="tel" maxlength="10"
+                                        class="w-full pl-12 pr-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <p class="text-[11px] text-vaidya-textMuted mt-1">A 6-digit SMS verification code will be sent to confirm your order upon clicking Place Order.</p>
+                            </div>
+                        </div>
+
+                        <!-- Gift Option Checkbox -->
+                        <div class="pt-3 pb-1 border-t border-vaidya-soft">
+                            <label class="flex items-center gap-2.5 text-xs text-vaidya-textSecondary cursor-pointer select-none">
+                                <input type="checkbox" id="a-is-gift" onchange="Shop.toggleGift(this.checked)" class="rounded text-vaidya-accent focus:ring-vaidya-accent">
+                                <span class="font-medium text-vaidya-textPrimary">This order is a gift for someone else (different delivery recipient)</span>
+                            </label>
+                        </div>
+
+                        <!-- Delivery Recipient & Address -->
+                        <div id="recipient-section" class="space-y-4 pt-1">
+                            <div id="recipient-fields" class="hidden grid sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-purple-500/10 border border-purple-500/30">
+                                <div class="sm:col-span-2 text-[11px] text-purple-300">
+                                    <i class="fa-solid fa-gift mr-1"></i> Delivery Recipient (OTP verification above verifies your contact mobile; recipient phone is only for courier delivery).
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-purple-300 uppercase tracking-wider mb-1">Recipient Name *</label>
+                                    <input id="a-rec-name" placeholder="Gift recipient's name"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-purple-500/40 bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-purple-400">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-purple-300 uppercase tracking-wider mb-1">Recipient Phone *</label>
+                                    <input id="a-rec-phone" placeholder="Recipient's mobile number" inputmode="tel" maxlength="10"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-purple-500/40 bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-purple-400">
+                                </div>
+                            </div>
+
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">House / Flat, Street Address *</label>
+                                    <input id="a-l1" required placeholder="Flat 402, Green Valley Apartments, Rajpur Road" autocomplete="address-line1"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Locality / Area *</label>
+                                    <input id="a-l2" required placeholder="Jakhan / Near Clock Tower" autocomplete="address-line2"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">City *</label>
+                                    <input id="a-city" required placeholder="Dehradun" autocomplete="address-level2"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">State *</label>
+                                    <input id="a-state" required placeholder="Uttarakhand" autocomplete="address-level1"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">PIN Code (6 digits) *</label>
+                                    <input id="a-pin" required placeholder="248001" inputmode="numeric" maxlength="6" autocomplete="postal-code"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-vaidya-textSecondary uppercase tracking-wider mb-1">Landmark (Optional)</label>
+                                    <input id="a-landmark" placeholder="Near Pacific Mall"
+                                        class="w-full px-4 py-2.5 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <label class="flex items-center gap-2 text-xs text-vaidya-textSecondary cursor-pointer select-none">
+                                <input type="checkbox" id="a-save-addr" checked class="rounded text-vaidya-accent focus:ring-vaidya-accent">
+                                <span>Save this delivery address for subsequent orders</span>
+                            </label>
+                        </div>
+
+                        <p id="addr-error" class="text-xs text-red-400 min-h-[1rem]"></p>
+
+                        <div class="flex gap-3 pt-2">
                             <button type="button" onclick="Shop.step(1)"
-                                class="btn-fluid px-6 py-3.5 rounded-full text-sm font-medium bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted">Back</button>
-                            <button type="submit"
-                                class="btn-fluid flex-grow bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Continue
-                                to payment</button>
+                                class="btn-fluid px-6 py-3.5 rounded-full text-sm font-medium bg-vaidya-soft text-vaidya-textPrimary hover:bg-vaidya-accentMuted">Back to Cart</button>
+                            <button type="submit" id="btn-to-payment"
+                                class="btn-fluid flex-grow bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Continue to Payment</button>
                         </div>
                     </form>
                 </div>
@@ -623,6 +711,43 @@
                     <button onclick="Shop.step(2)"
                         class="mt-6 text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i
                             class="fa-solid fa-arrow-left"></i> Back to delivery details</button>
+                </div>
+
+                <!-- Final-Click Phone OTP Verification Modal -->
+                <div id="checkout-otp-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div class="w-full max-w-md bg-vaidya-card border border-vaidya-accentMuted/60 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-full bg-vaidya-accent/10 flex items-center justify-center text-vaidya-accent">
+                                    <i class="fa-solid fa-mobile-screen-button text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-serif text-lg text-vaidya-textPrimary">Verify Mobile Number</h3>
+                                    <p class="text-[11px] text-vaidya-textMuted">One-time security verification</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="Shop.closeCheckoutOtpModal()" class="text-vaidya-textMuted hover:text-vaidya-textPrimary">
+                                <i class="fa-solid fa-xmark text-base"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-vaidya-textSecondary mb-3">
+                            Enter the 6-digit code sent to <strong id="checkout-otp-phone-display" class="text-vaidya-textPrimary font-mono">+91 ••••••••••</strong> to confirm your order.
+                        </p>
+                        <div class="space-y-3">
+                            <input id="checkout-otp-code-input" inputmode="numeric" maxlength="6" pattern="[0-9]*" placeholder="123456"
+                                class="w-full text-center tracking-[0.3em] font-mono text-lg px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-vaidya-textPrimary focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
+                            <p id="checkout-otp-error" class="text-xs text-red-400 min-h-[1rem]"></p>
+                            <button type="button" id="btn-confirm-checkout-otp" onclick="Shop.confirmCheckoutOtp()"
+                                class="btn-fluid w-full bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight flex items-center justify-center gap-2">
+                                <span id="btn-confirm-otp-text">Verify &amp; Confirm Order</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                            <div class="flex items-center justify-between text-xs text-vaidya-textMuted pt-1">
+                                <button type="button" id="btn-checkout-resend-otp" onclick="Shop.resendCheckoutOtp()" class="text-vaidya-accent underline">Resend Code</button>
+                                <button type="button" onclick="Shop.closeCheckoutOtpModal()" class="hover:text-vaidya-textPrimary">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -861,36 +986,6 @@
         </div>
     </section>
 
-    <!-- Registration modal -->
-    <div id="auth-modal"
-        class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md opacity-0 transition-opacity duration-300">
-        <div
-            class="bg-vaidya-card rounded-4xl max-w-md w-full p-8 shadow-2xl transform scale-95 transition-transform duration-300 relative border border-vaidya-accentMuted">
-            <button onclick="Shop.closeAuth()" aria-label="Close"
-                class="absolute top-6 right-6 w-9 h-9 rounded-full bg-vaidya-soft flex items-center justify-center text-vaidya-textSecondary hover:text-vaidya-accent transition-colors"><i
-                    class="fa-solid fa-xmark"></i></button>
-            <span class="text-xs font-semibold uppercase tracking-widest text-vaidya-accent mb-2 block">Quick
-                registration</span>
-            <h3 class="font-serif text-2xl text-vaidya-textPrimary mb-2">Before we add this to your cart</h3>
-            <p class="text-xs text-vaidya-textSecondary leading-relaxed mb-5">Tell us how to reach you about your order.
-                You only need to do this once.</p>
-            <div class="flex gap-2 mb-4">
-                <button type="button" id="tab-email" onclick="Shop.method('email')"
-                    class="flex-1 py-2.5 rounded-full text-xs font-semibold"></button>
-                <button type="button" id="tab-phone" onclick="Shop.method('phone')"
-                    class="flex-1 py-2.5 rounded-full text-xs font-semibold"></button>
-            </div>
-            <form onsubmit="Shop.submitAuth(event)">
-                <input id="auth-input" required
-                    class="w-full px-4 py-3 rounded-2xl border border-vaidya-accentMuted bg-vaidya-bg text-sm text-vaidya-textPrimary placeholder-vaidya-textMuted focus:outline-none focus:ring-2 focus:ring-vaidya-accent">
-                <p id="auth-error" class="text-xs text-red-400 mt-2 min-h-[1rem]"></p>
-                <button type="submit"
-                    class="btn-fluid w-full mt-3 bg-vaidya-accent text-vaidya-bg py-3.5 rounded-full text-sm font-semibold hover:bg-vaidya-accentLight">Register
-                    &amp; add to cart</button>
-            </form>
-        </div>
-    </div>
-
     <div id="toast" style="opacity:0;transform:translate(-50%,12px)"
         class="fixed bottom-6 left-1/2 z-[70] bg-vaidya-card border border-vaidya-accent/40 text-vaidya-textPrimary text-xs px-5 py-3 rounded-full shadow-2xl transition-all duration-300 pointer-events-none">
     </div>
@@ -905,7 +1000,7 @@
                     class="fa-solid fa-xmark"></i></button>
             <div class="text-xs font-medium text-vaidya-accentLight mb-1" id="modal-category">Segment</div>
             <h3 class="font-serif text-2xl text-vaidya-textPrimary mb-2" id="modal-title">Product Name</h3>
-            <div class="font-serif text-lg text-vaidya-accent font-semibold mb-4" id="modal-price">$0.00</div>
+            <div class="font-serif text-lg text-vaidya-accent font-semibold mb-4" id="modal-price">₹0.00</div>
             <p class="text-xs text-vaidya-textSecondary leading-relaxed mb-6 font-light" id="modal-desc">Description</p>
             <div class="space-y-4 pt-4 border-t border-vaidya-soft text-xs">
                 <div><span class="font-semibold text-vaidya-textPrimary block mb-1">Key Botanicals &
@@ -1875,29 +1970,49 @@ void main() {
                 RAZORPAY_KEY_ID: '',
                 ORDER_WEBHOOK_URL: '',
                 CURRENCY: 'INR',
-                SYMBOL: '$',
+                SYMBOL: '₹',
                 SHIPPING: 0,
                 BRAND: 'Vaidya'
             };
 
             const $ = (id) => document.getElementById(id);
             const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+            const GUEST_CART_KEY = 'vaidya_guest_cart_v1';
+            const LEGACY_CART_KEY = 'vaidya_cart';
+
+            // Safe legacy migration: transfer old cart to versioned guest cart
+            try {
+                const legacy = localStorage.getItem(LEGACY_CART_KEY);
+                if (legacy && !localStorage.getItem(GUEST_CART_KEY)) {
+                    localStorage.setItem(GUEST_CART_KEY, legacy);
+                }
+                localStorage.removeItem(LEGACY_CART_KEY);
+            } catch (e) { }
+
             const store = {
                 get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
                 set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
             };
             const money = (n) => CONFIG.SYMBOL + n.toFixed(2);
 
-            let cart = store.get('vaidya_cart', []);
-            let user = store.get('vaidya_user', null);
+            let cart = store.get(GUEST_CART_KEY, []);
             let address = store.get('vaidya_address', null);
-            let storageOK = true;
-            try { localStorage.setItem('vaidya_test', '1'); localStorage.removeItem('vaidya_test'); } catch (e) { storageOK = false; }
-            let pending = null, curStep = 1, authMethod = 'email', done = false, wasCart = false;
+            let curStep = 1, done = false, wasCart = false;
 
-            const count = () => cart.reduce((a, i) => a + i.qty, 0);
-            const subtotal = () => cart.reduce((a, i) => a + i.qty * i.price, 0);
-            const saveCart = () => store.set('vaidya_cart', cart);
+            // Phone OTP verification state
+            let phoneChallengeId = null;
+            let phoneVerified = false;
+            let verificationProof = null;
+            let verifiedPhone = '';
+            let otpCooldown = 0;
+            let otpInterval = null;
+
+            const count = () => cart.reduce((a, i) => a + (parseInt(i.qty, 10) || 1), 0);
+            const subtotal = () => cart.reduce((a, i) => a + ((parseInt(i.qty, 10) || 1) * (parseFloat(i.price) || 0)), 0);
+
+            function saveLocalCart() {
+                store.set(GUEST_CART_KEY, cart);
+            }
 
             function send(payload) {
                 if (CONFIG.ORDER_WEBHOOK_URL) {
@@ -1909,8 +2024,9 @@ void main() {
 
             let tt;
             function toast(m) {
-                const t = $('toast'); t.textContent = m; t.style.opacity = '1'; t.style.transform = 'translate(-50%,0)';
-                clearTimeout(tt); tt = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%,12px)'; }, 2200);
+                const t = $('toast'); if (!t) return;
+                t.textContent = m; t.style.opacity = '1'; t.style.transform = 'translate(-50%,0)';
+                clearTimeout(tt); tt = setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translate(-50%,12px)'; }, 2400);
             }
 
             function renderBadge(bump) {
@@ -1920,86 +2036,235 @@ void main() {
                 if (bump && n) b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.4)' }, { transform: 'scale(1)' }], { duration: 350 });
             }
 
-            function method(m) {
-                authMethod = m;
-                const on = 'flex-1 py-2.5 rounded-full text-xs font-semibold bg-vaidya-accent text-vaidya-bg';
-                const off = 'flex-1 py-2.5 rounded-full text-xs font-semibold bg-vaidya-soft text-vaidya-textSecondary';
-                $('tab-email').className = m === 'email' ? on : off; $('tab-email').textContent = 'Use email';
-                $('tab-phone').className = m === 'phone' ? on : off; $('tab-phone').textContent = 'Use phone number';
-                const i = $('auth-input'); i.value = ''; $('auth-error').textContent = '';
-                if (m === 'email') { i.type = 'email'; i.placeholder = 'you@example.com'; i.autocomplete = 'email'; }
-                else { i.type = 'tel'; i.placeholder = 'Mobile number, e.g. 98765 43210'; i.autocomplete = 'tel'; }
-            }
-
-            function openAuth() {
-                const pm = $('product-modal'); if (pm) { pm.classList.add('opacity-0', 'pointer-events-none'); }
-                method(authMethod);
-                const m = $('auth-modal'); m.classList.remove('hidden');
-                requestAnimationFrame(() => requestAnimationFrame(() => {
-                    m.classList.remove('opacity-0'); m.firstElementChild.classList.replace('scale-95', 'scale-100');
-                }));
-                setTimeout(() => $('auth-input').focus(), 250);
-            }
-
-            function closeAuth() {
-                const m = $('auth-modal'); m.classList.add('opacity-0');
-                m.firstElementChild.classList.replace('scale-100', 'scale-95');
-                setTimeout(() => m.classList.add('hidden'), 300);
-                pending = null;
-            }
-
-            function submitAuth(e) {
-                e.preventDefault();
-                const raw = $('auth-input').value.trim(), err = (t) => { $('auth-error').textContent = t; };
-                let val;
-                if (authMethod === 'email') {
-                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)) return err('Please enter a valid email address.');
-                    val = raw.toLowerCase();
-                } else {
-                    const d = raw.replace(/[\s\-()]/g, '').replace(/^(\+91|0)/, '');
-                    if (!/^[6-9]\d{9}$/.test(d)) return err('Please enter a valid 10-digit mobile number.');
-                    val = '+91' + d;
+            function onPhoneInput() {
+                const input = $('a-cust-phone');
+                const currentDigits = input ? input.value.replace(/\D/g, '') : '';
+                if (phoneVerified && currentDigits !== verifiedPhone) {
+                    phoneVerified = false;
+                    verificationProof = null;
+                    phoneChallengeId = null;
+                    const pill = $('phone-verified-pill');
+                    if (pill) pill.classList.add('hidden');
+                    const status = $('otp-phone-status');
+                    if (status) {
+                        status.textContent = 'Phone number changed. Please request a new verification code.';
+                        status.className = 'text-[11px] text-amber-400 mt-1';
+                    }
+                    const verifyBox = $('otp-verify-box');
+                    if (verifyBox) verifyBox.classList.add('hidden');
+                    const sendBtnText = $('btn-send-otp-text');
+                    if (sendBtnText) sendBtnText.textContent = 'Send OTP';
                 }
-                user = { method: authMethod, value: val, at: new Date().toISOString() };
-                store.set('vaidya_user', user);
-                send({ type: 'registration', ...user });
-                const p = pending; closeAuth(); renderChip();
-                if (p) commit(p); else toast('Registered as ' + user.value);
             }
 
-            function renderChip() {
-                const c = $('user-chip'); if (!c) return;
-                c.innerHTML = user
-                    ? `<i class="fa-solid fa-circle-check text-vaidya-accent"></i> Registered as <strong class="text-vaidya-textPrimary">${esc(user.value)}</strong> &middot; <button onclick="Shop.changeUser()" class="underline text-vaidya-accent">Change</button>`
-                    : '';
+            function startPhoneOtpCooldown(seconds = 60) {
+                otpCooldown = seconds;
+                const btn = $('btn-send-otp');
+                const resendBtn = $('btn-resend-otp');
+                const btnText = $('btn-send-otp-text');
+                clearInterval(otpInterval);
+
+                const updateUi = () => {
+                    if (otpCooldown > 0) {
+                        if (btn) {
+                            btn.disabled = true;
+                            btn.classList.add('opacity-60', 'cursor-not-allowed');
+                        }
+                        if (btnText) btnText.textContent = `Wait ${otpCooldown}s`;
+                        if (resendBtn) {
+                            resendBtn.disabled = true;
+                            resendBtn.classList.add('opacity-60', 'cursor-not-allowed');
+                            resendBtn.textContent = `Resend in ${otpCooldown}s`;
+                        }
+                    } else {
+                        clearInterval(otpInterval);
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                        }
+                        if (btnText) btnText.textContent = phoneVerified ? 'Re-verify' : 'Resend OTP';
+                        if (resendBtn) {
+                            resendBtn.disabled = false;
+                            resendBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+                            resendBtn.textContent = 'Resend';
+                        }
+                    }
+                };
+
+                updateUi();
+                otpInterval = setInterval(() => {
+                    otpCooldown--;
+                    updateUi();
+                }, 1000);
             }
 
-            function changeUser() {
-                user = null; try { localStorage.removeItem('vaidya_user'); } catch (e) { }
-                renderChip(); pending = null; openAuth();
+            async function sendPhoneOtp() {
+                if (otpCooldown > 0) return;
+                const phoneInput = $('a-cust-phone');
+                const status = $('otp-phone-status');
+                const errVerify = $('otp-verify-error');
+                if (errVerify) errVerify.textContent = '';
+
+                const phone = phoneInput ? phoneInput.value.replace(/\D/g, '') : '';
+                if (!phone || !/^[6-9]\d{9}$/.test(phone)) {
+                    if (status) {
+                        status.textContent = 'Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.';
+                        status.className = 'text-[11px] text-red-400 mt-1';
+                    }
+                    return;
+                }
+
+                const btn = $('btn-send-otp');
+                const btnText = $('btn-send-otp-text');
+                const prevText = btnText ? btnText.textContent : 'Send OTP';
+                if (btn) {
+                    btn.disabled = true;
+                    if (btnText) btnText.textContent = 'Sending...';
+                }
+
+                try {
+                    const res = await fetch('/api/checkout/otp/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        if (status) {
+                            status.textContent = data.error || 'Failed to send OTP.';
+                            status.className = 'text-[11px] text-red-400 mt-1';
+                        }
+                        if (btn) btn.disabled = false;
+                        if (btnText) btnText.textContent = prevText;
+                        return;
+                    }
+
+                    phoneChallengeId = data.challenge_id;
+                    if (status) {
+                        status.textContent = 'Verification code sent via SMS.';
+                        status.className = 'text-[11px] text-vaidya-accent mt-1';
+                    }
+
+                    const targetDisplay = $('otp-target-phone-display');
+                    if (targetDisplay) targetDisplay.textContent = '+91 ' + phone;
+
+                    const verifyBox = $('otp-verify-box');
+                    if (verifyBox) verifyBox.classList.remove('hidden');
+
+                    const codeInput = $('otp-code-input');
+                    if (codeInput) {
+                        codeInput.value = '';
+                        setTimeout(() => codeInput.focus(), 150);
+                    }
+
+                    startPhoneOtpCooldown(data.retry_after || 60);
+                } catch (netErr) {
+                    if (status) {
+                        status.textContent = 'Network error sending OTP. Please check your connection.';
+                        status.className = 'text-[11px] text-red-400 mt-1';
+                    }
+                    if (btn) btn.disabled = false;
+                    if (btnText) btnText.textContent = prevText;
+                }
+            }
+
+            async function verifyPhoneOtp() {
+                const err = $('otp-verify-error');
+                if (err) err.textContent = '';
+                const codeInput = $('otp-code-input');
+                const code = codeInput ? codeInput.value.trim() : '';
+
+                if (!code || !/^\d{6}$/.test(code)) {
+                    if (err) err.textContent = 'Please enter the 6-digit code received on your mobile.';
+                    return;
+                }
+                if (!phoneChallengeId) {
+                    if (err) err.textContent = 'Please request an OTP first.';
+                    return;
+                }
+
+                const phoneInput = $('a-cust-phone');
+                const phone = phoneInput ? phoneInput.value.replace(/\D/g, '') : '';
+
+                const btn = $('btn-verify-otp');
+                const prevText = btn ? btn.textContent : 'Verify';
+                if (btn) {
+                    btn.disabled = true;
+                    btn.textContent = 'Verifying...';
+                }
+
+                try {
+                    const res = await fetch('/api/checkout/otp/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ challenge_id: phoneChallengeId, otp: code, phone })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        if (err) err.textContent = data.error || 'Invalid or expired OTP.';
+                        return;
+                    }
+
+                    phoneVerified = true;
+                    verificationProof = data.verification_proof;
+                    verifiedPhone = phone;
+
+                    const pill = $('phone-verified-pill');
+                    if (pill) pill.classList.remove('hidden');
+
+                    const verifyBox = $('otp-verify-box');
+                    if (verifyBox) verifyBox.classList.add('hidden');
+
+                    const status = $('otp-phone-status');
+                    if (status) {
+                        status.textContent = 'Phone number verified successfully.';
+                        status.className = 'text-[11px] text-vaidya-accent mt-1';
+                    }
+
+                    toast('Mobile number verified');
+                } catch (netErr) {
+                    if (err) err.textContent = 'Network error verifying code. Please try again.';
+                } finally {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = prevText;
+                    }
+                }
             }
 
             function commit(item) {
                 const f = cart.find((c) => c.id === item.id);
-                if (f) f.qty++; else cart.push({ ...item, qty: 1 });
-                saveCart(); renderBadge(true); toast(item.name + ' added to cart');
+                if (f) f.qty = (parseInt(f.qty, 10) || 1) + 1;
+                else cart.push({ ...item, qty: 1 });
+
+                saveLocalCart();
+                renderBadge(true);
+                toast(item.name + ' added to cart');
                 if (wasCart) renderCart();
             }
 
+            // GUEST-FIRST ADD TO CART: No login prompt or blocker
             function add(btn) {
                 const d = btn.dataset;
                 const item = { id: d.id, name: d.name, price: parseFloat(d.price), unit: d.unit };
-                if (!user) { pending = item; openAuth(); return; }
                 commit(item);
             }
 
             function qty(id, delta) {
                 const f = cart.find((c) => c.id === id); if (!f) return;
-                f.qty += delta; if (f.qty < 1) cart = cart.filter((c) => c.id !== id);
-                saveCart(); renderBadge(); renderCart();
+                f.qty = (parseInt(f.qty, 10) || 1) + delta;
+                if (f.qty < 1) cart = cart.filter((c) => c.id !== id);
+                saveLocalCart();
+                renderBadge();
+                renderCart();
             }
 
-            function remove(id) { cart = cart.filter((c) => c.id !== id); saveCart(); renderBadge(); renderCart(); }
+            function remove(id) {
+                cart = cart.filter((c) => c.id !== id);
+                saveLocalCart();
+                renderBadge();
+                renderCart();
+            }
 
             function renderCart() {
                 const empty = cart.length === 0;
@@ -2014,14 +2279,14 @@ void main() {
         <div class="w-14 h-14 rounded-2xl bg-vaidya-accentMuted/60 text-vaidya-accent flex items-center justify-center shrink-0"><i class="fa-solid fa-leaf"></i></div>
         <div class="flex-grow min-w-0">
           <div class="font-serif text-base text-vaidya-textPrimary truncate">${esc(i.name)}</div>
-          <div class="text-xs text-vaidya-textMuted">${money(i.price)} ${esc(i.unit || '')}</div>
+          <div class="text-xs text-vaidya-textMuted">${money(parseFloat(i.price) || 0)} ${esc(i.unit || '')}</div>
         </div>
         <div class="flex items-center gap-2 border border-vaidya-accentMuted/80 rounded-full px-2 py-1 bg-vaidya-bg">
           <button onclick="Shop.qty('${i.id}',-1)" aria-label="Decrease" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-minus"></i></button>
           <span class="text-xs font-semibold w-5 text-center text-vaidya-textPrimary">${i.qty}</span>
           <button onclick="Shop.qty('${i.id}',1)" aria-label="Increase" class="w-6 h-6 flex items-center justify-center text-xs text-vaidya-textSecondary hover:text-vaidya-accent"><i class="fa-solid fa-plus"></i></button>
         </div>
-        <div class="font-serif text-sm font-semibold w-20 text-right text-vaidya-textPrimary">${money(i.qty * i.price)}</div>
+        <div class="font-serif text-sm font-semibold w-20 text-right text-vaidya-textPrimary">${money((parseInt(i.qty, 10) || 1) * (parseFloat(i.price) || 0))}</div>
         <button onclick="Shop.remove('${i.id}')" aria-label="Remove" class="text-vaidya-textMuted hover:text-red-400 p-1"><i class="fa-solid fa-xmark"></i></button>
       </div>
     `).join('');
@@ -2051,9 +2316,57 @@ void main() {
                 }).join('');
             }
 
+            function toggleGift(isGift) {
+                const rf = $('recipient-fields');
+                if (rf) rf.classList.toggle('hidden', !isGift);
+                const rn = $('a-rec-name');
+                const rp = $('a-rec-phone');
+                if (rn) rn.required = Boolean(isGift);
+                if (rp) rp.required = Boolean(isGift);
+            }
+
+            function fillAddressForm() {
+                if (!address) {
+                    const saved = store.get('vaidya_address', null);
+                    if (saved) address = saved;
+                }
+
+                if (address) {
+                    const custName = $('a-cust-name');
+                    const custEmail = $('a-cust-email');
+                    const custPhone = $('a-cust-phone');
+
+                    if (custName && (address.customer_name || address.name)) custName.value = address.customer_name || address.name;
+                    if (custEmail && (address.customer_email || address.email)) custEmail.value = address.customer_email || address.email;
+                    if (custPhone && (address.customer_phone || address.phone)) custPhone.value = address.customer_phone || address.phone;
+
+                    const giftCheck = $('a-is-gift');
+                    if (giftCheck) {
+                        giftCheck.checked = Boolean(address.is_gift);
+                        toggleGift(Boolean(address.is_gift));
+                    }
+                    const recName = $('a-rec-name');
+                    if (recName && address.recipient_name) recName.value = address.recipient_name;
+                    const recPhone = $('a-rec-phone');
+                    if (recPhone && address.recipient_phone) recPhone.value = address.recipient_phone;
+
+                    const ids = ['l1', 'l2', 'city', 'state', 'pin', 'landmark'];
+                    ids.forEach((k) => { const el = $('a-' + k); if (el && address[k]) el.value = address[k]; });
+                }
+            }
+
             function step(n) {
-                if (n === 2 && !user) { openAuth(); return; }
-                if (n === 3 && !address) { step(2); return; }
+                if (n === 2) {
+                    // Fast guest checkout: step 2 (Delivery & Buyer Details) is always accessible
+                }
+                if (n === 3) {
+                    if (!address) {
+                        step(2);
+                        const el = $('addr-error');
+                        if (el) el.textContent = 'Please enter your delivery details before proceeding.';
+                        return;
+                    }
+                }
                 curStep = n;
                 $('step-cart').classList.toggle('hidden', n !== 1);
                 $('step-address').classList.toggle('hidden', n !== 2);
@@ -2062,57 +2375,119 @@ void main() {
 
                 if (n === 2) fillAddressForm();
                 if (n === 3 && address) {
+                    const isGift = address.is_gift;
+                    const giftHtml = isGift
+                        ? `<div class="mb-3 p-3 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-xs text-purple-300">
+                             <i class="fa-solid fa-gift mr-1.5"></i> <strong>Gift Recipient:</strong> ${esc(address.recipient_name)} (${esc(address.recipient_phone)})
+                           </div>`
+                        : '';
                     $('pay-recap').innerHTML = `
-        <strong class="text-vaidya-textPrimary">${esc(address.name)}</strong> (${esc(address.phone)})<br>
-        ${esc(address.l1)}${address.l2 ? ', ' + esc(address.l2) : ''}, ${esc(address.city)}, ${esc(address.state)} - ${esc(address.pin)}
-      `;
+                        ${giftHtml}
+                        <div class="text-xs text-vaidya-textSecondary space-y-1">
+                            <div>Buyer: <strong class="text-vaidya-textPrimary">${esc(address.customer_name || address.name)}</strong> (${esc(address.customer_phone || address.phone)})</div>
+                            <div>Email: <strong class="text-vaidya-textPrimary">${esc(address.customer_email || address.email)}</strong></div>
+                            <div class="pt-1 text-vaidya-textPrimary font-medium">${esc(address.l1)}${address.l2 ? ', ' + esc(address.l2) : ''}</div>
+                            <div class="text-vaidya-textPrimary font-medium">${esc(address.city)}, ${esc(address.state)} - ${esc(address.pin)}</div>
+                            ${address.landmark ? `<div class="text-[11px] text-vaidya-textMuted">Landmark: ${esc(address.landmark)}</div>` : ''}
+                        </div>
+                    `;
                 }
             }
 
             function toAddress() { step(2); }
 
-            function fillAddressForm() {
-                if (!address) return;
-                const ids = ['name', 'phone', 'email', 'l1', 'l2', 'city', 'state', 'pin'];
-                ids.forEach((k) => { const el = $('a-' + k); if (el && address[k]) el.value = address[k]; });
-            }
-
             function saveAddress(e) {
-                e.preventDefault();
-                const g = (k) => $('a-' + k).value.trim();
-                const phone = g('phone').replace(/[\s\-()]/g, '');
-                const pin = g('pin');
-                const err = (t) => { $('addr-error').textContent = t; };
+                if (e) e.preventDefault();
+                const g = (k) => ($('a-' + k)?.value || '').trim();
+                const custName = g('cust-name');
+                const custEmail = g('cust-email');
+                const custPhone = g('cust-phone').replace(/\D/g, '');
+                const isGift = $('a-is-gift')?.checked || false;
+                const recName = isGift ? g('rec-name') : custName;
+                const recPhone = isGift ? g('rec-phone').replace(/\D/g, '') : custPhone;
+                const l1 = g('l1');
+                const l2 = g('l2');
+                const city = g('city');
+                const state = g('state');
+                const pin = g('pin').replace(/\s/g, '');
+                const landmark = g('landmark');
+                const saveForLater = $('a-save-addr')?.checked || false;
+                const err = (t) => { const el = $('addr-error'); if (el) el.textContent = t; };
 
-                if (!/^\d{10}$/.test(phone)) return err('Please enter a valid 10-digit mobile number.');
+                if (!custName) return err('Please enter your full name.');
+                if (!custEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(custEmail)) return err('Please enter a valid email address.');
+                if (!/^[6-9]\d{9}$/.test(custPhone)) return err('Please enter a valid 10-digit Indian mobile number.');
+
+                if (isGift) {
+                    if (!recName) return err('Please enter the gift recipient\'s name.');
+                    if (!/^\d{10}$/.test(recPhone)) return err('Please enter a valid 10-digit recipient mobile number.');
+                }
+                if (!l1) return err('House / Flat and street address is required.');
+                if (!l2) return err('Locality / Area is required.');
+                if (!city) return err('City is required.');
+                if (!state) return err('State is required.');
                 if (!/^\d{6}$/.test(pin)) return err('Please enter a valid 6-digit PIN code.');
                 err('');
 
-                address = { name: g('name'), phone, email: g('email'), l1: g('l1'), l2: g('l2'), city: g('city'), state: g('state'), pin };
-                store.set('vaidya_address', address);
+                address = {
+                    customer_name: custName,
+                    customer_email: custEmail,
+                    customer_phone: custPhone,
+                    name: custName,
+                    email: custEmail,
+                    phone: custPhone,
+                    recipient_name: recName,
+                    recipient_phone: recPhone,
+                    is_gift: isGift,
+                    l1,
+                    l2,
+                    city,
+                    state,
+                    pin,
+                    landmark
+                };
+
+                if (saveForLater) {
+                    store.set('vaidya_address', address);
+                }
                 step(3);
             }
 
-            function generateOrderId() {
-                return 'VD-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
-            }
-
             async function completeOrder(payMethod, payId) {
-                let orderId = generateOrderId();
+                if (!address || !phoneVerified || !verificationProof) {
+                    toast('Please verify your mobile number and enter delivery details.');
+                    step(2);
+                    return;
+                }
+                if (!cart.length) {
+                    toast('Your cart is empty.');
+                    return;
+                }
+
                 const payload = {
-                    type: 'order',
-                    orderId,
-                    createdAt: new Date().toISOString(),
-                    user,
-                    address,
+                    address: {
+                        customer_name: address.customer_name,
+                        customer_email: address.customer_email || address.email,
+                        customer_phone: address.customer_phone,
+                        name: address.customer_name,
+                        phone: address.customer_phone,
+                        email: address.customer_email || address.email,
+                        recipient_name: address.recipient_name,
+                        recipient_phone: address.recipient_phone,
+                        is_gift: address.is_gift,
+                        l1: address.l1,
+                        l2: address.l2,
+                        city: address.city,
+                        state: address.state,
+                        pin: address.pin,
+                        landmark: address.landmark
+                    },
                     items: cart,
-                    subtotal: subtotal(),
                     shipping: CONFIG.SHIPPING,
-                    total: subtotal() + CONFIG.SHIPPING,
-                    payment: { method: payMethod, paymentId: payId || null }
+                    payment: { method: payMethod, paymentId: payId || null },
+                    verification_proof: verificationProof
                 };
 
-                // Persist order to backend database
                 try {
                     const res = await fetch('/api/orders', {
                         method: 'POST',
@@ -2120,23 +2495,180 @@ void main() {
                         body: JSON.stringify(payload)
                     });
                     const data = await res.json();
-                    if (data && data.order && data.order.order_number) {
-                        orderId = data.order.order_number;
+                    if (!res.ok) {
+                        toast(data.error || 'Failed to complete order');
+                        if (data.error && data.error.toLowerCase().includes('verification')) {
+                            phoneVerified = false;
+                            verificationProof = null;
+                            const pill = $('phone-verified-pill');
+                            if (pill) pill.classList.add('hidden');
+                            step(2);
+                        }
+                        return;
                     }
+
+                    const confirmed = data.order || {};
+                    const orderId = confirmed.order_number || ('VD-' + Date.now().toString(36).toUpperCase());
+
+                    send({ type: 'order', orderNumber: orderId, total: confirmed.total, items: cart });
+                    // Guest cart cleared ONLY upon confirmed order creation
+                    cart = [];
+                    store.set(GUEST_CART_KEY, []);
+                    phoneVerified = false;
+                    verificationProof = null;
+                    renderBadge();
+                    done = true;
+
+                    $('done-id').textContent = orderId;
+                    $('done-msg').textContent = payMethod === 'COD'
+                        ? 'Your Cash on Delivery order is confirmed and recorded in our system. Our botanical care team will dispatch your package shortly.'
+                        : 'Payment received successfully via Razorpay. Your botanical order is being processed.';
+
+                    renderCart();
                 } catch (e) {
-                    // Fallback to client orderId
+                    // On network error, guest cart is NOT cleared
+                    toast('Network error creating order. Please check your connection.');
+                }
+            }
+
+            let pendingPayMethod = null;
+            let pendingPayId = null;
+
+            function openCheckoutOtpModal() {
+                if (!address || !address.customer_phone) {
+                    toast('Please enter your delivery details.');
+                    step(2);
+                    return;
+                }
+                const modal = $('checkout-otp-modal');
+                if (modal) modal.classList.remove('hidden');
+                const phoneDisplay = $('checkout-otp-phone-display');
+                if (phoneDisplay) phoneDisplay.textContent = '+91 ' + address.customer_phone;
+                const err = $('checkout-otp-error');
+                if (err) err.textContent = '';
+                const input = $('checkout-otp-code-input');
+                if (input) {
+                    input.value = '';
+                    setTimeout(() => input.focus(), 150);
+                }
+                // Automatically dispatch OTP to buyer phone
+                sendCheckoutOtp();
+            }
+
+            function closeCheckoutOtpModal() {
+                const modal = $('checkout-otp-modal');
+                if (modal) modal.classList.add('hidden');
+                pendingPayMethod = null;
+                pendingPayId = null;
+            }
+
+            async function sendCheckoutOtp() {
+                const err = $('checkout-otp-error');
+                if (err) err.textContent = '';
+                try {
+                    const res = await fetch('/api/checkout/otp/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone: address.customer_phone })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        if (err) err.textContent = data.error || 'Failed to dispatch verification code';
+                        return;
+                    }
+                    phoneChallengeId = data.challenge_id;
+                    toast('Verification code sent to +91 ' + address.customer_phone);
+                } catch (e) {
+                    if (err) err.textContent = 'Network error sending OTP. Please try again.';
+                }
+            }
+
+            function resendCheckoutOtp() {
+                sendCheckoutOtp();
+            }
+
+            async function confirmCheckoutOtp() {
+                const err = $('checkout-otp-error');
+                if (err) err.textContent = '';
+                const input = $('checkout-otp-code-input');
+                const code = input ? input.value.trim() : '';
+
+                if (!code || !/^\d{4,6}$/.test(code)) {
+                    if (err) err.textContent = 'Please enter the 6-digit code received on your mobile.';
+                    return;
                 }
 
-                send(payload);
-                cart = []; saveCart(); renderBadge();
-                done = true;
+                if (!phoneChallengeId) {
+                    if (err) err.textContent = 'Please request a verification code first.';
+                    return;
+                }
 
-                $('done-id').textContent = orderId;
-                $('done-msg').textContent = payMethod === 'COD'
-                    ? 'Your Cash on Delivery order is confirmed. Our team will verify your address shortly.'
-                    : 'Payment received successfully via Razorpay. Your botanical order is being processed.';
+                const btn = $('btn-confirm-checkout-otp');
+                const btnText = $('btn-confirm-otp-text');
+                const prevText = btnText ? btnText.textContent : 'Verify & Confirm Order';
+                if (btn) btn.disabled = true;
+                if (btnText) btnText.textContent = 'Verifying...';
 
-                renderCart();
+                try {
+                    const res = await fetch('/api/checkout/otp/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            challenge_id: phoneChallengeId,
+                            otp: code,
+                            phone: address.customer_phone
+                        })
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        if (err) err.textContent = data.error || 'Invalid or expired verification code';
+                        return;
+                    }
+
+                    phoneVerified = true;
+                    verificationProof = data.verification_proof;
+                    verifiedPhone = address.customer_phone;
+
+                    // Close modal and execute the pending order!
+                    const modal = $('checkout-otp-modal');
+                    if (modal) modal.classList.add('hidden');
+
+                    const m = pendingPayMethod || 'COD';
+                    const p = pendingPayId;
+                    pendingPayMethod = null;
+                    pendingPayId = null;
+
+                    if (m === 'Razorpay' && !p) {
+                        launchRazorpay();
+                    } else {
+                        completeOrder(m, p);
+                    }
+                } catch (netErr) {
+                    if (err) err.textContent = 'Network error verifying code. Please try again.';
+                } finally {
+                    if (btn) btn.disabled = false;
+                    if (btnText) btnText.textContent = prevText;
+                }
+            }
+
+            function cod() {
+                if (!address) {
+                    toast('Please enter your delivery details.');
+                    step(2);
+                    return;
+                }
+                if (!cart.length) {
+                    toast('Your cart is empty.');
+                    return;
+                }
+                pendingPayMethod = 'COD';
+                pendingPayId = null;
+
+                if (phoneVerified && verificationProof && verifiedPhone === address.customer_phone) {
+                    completeOrder('COD', null);
+                } else {
+                    openCheckoutOtpModal();
+                }
             }
 
             function payOnline() {
@@ -2144,7 +2676,27 @@ void main() {
                     toast('Online payments are undergoing maintenance. Please select Cash on Delivery.');
                     return;
                 }
+                if (!address) {
+                    toast('Please enter your delivery details.');
+                    step(2);
+                    return;
+                }
+                if (!cart.length) {
+                    toast('Your cart is empty.');
+                    return;
+                }
 
+                pendingPayMethod = 'Razorpay';
+                pendingPayId = null;
+
+                if (phoneVerified && verificationProof && verifiedPhone === address.customer_phone) {
+                    launchRazorpay();
+                } else {
+                    openCheckoutOtpModal();
+                }
+            }
+
+            function launchRazorpay() {
                 const amtInSubunits = Math.round((subtotal() + CONFIG.SHIPPING) * 100);
                 const options = {
                     key: CONFIG.RAZORPAY_KEY_ID,
@@ -2156,9 +2708,9 @@ void main() {
                         completeOrder('Razorpay', resp.razorpay_payment_id);
                     },
                     prefill: {
-                        name: address ? address.name : '',
-                        email: (user && user.method === 'email') ? user.value : (address ? address.email : ''),
-                        contact: address ? address.phone : (user && user.method === 'phone' ? user.value : '')
+                        name: address ? (address.customer_name || address.name) : '',
+                        email: address ? (address.customer_email || address.email) : '',
+                        contact: address ? (address.customer_phone || address.phone) : ''
                     },
                     theme: { color: '#20E070' }
                 };
@@ -2169,10 +2721,6 @@ void main() {
                 } catch (e) {
                     toast('Could not open Razorpay gateway.');
                 }
-            }
-
-            function cod() {
-                completeOrder('COD', null);
             }
 
             function populateDiscoverGrid() {
@@ -2205,7 +2753,7 @@ void main() {
 
                         const safeName = esc(p.name);
                         const safeCat = esc(p.health_segment || '');
-                        const safePrice = '$' + Number(p.price).toFixed(2);
+                        const safePrice = '₹' + Number(p.price).toFixed(2);
                         const safeDesc = esc(p.description || p.short_description || '');
                         const safeIng = esc(p.ingredients || '');
                         const safeUse = esc(p.usage_instructions || '');
@@ -2279,7 +2827,6 @@ void main() {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else if (isCart) {
                     done = false;
-                    renderChip();
                     renderCart();
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 } else if (isStory || isSupport) {
@@ -2326,7 +2873,7 @@ void main() {
                             $('dyn-faq-container').innerHTML = faqs.map(f => `
                                 <div class="bg-vaidya-card p-6 rounded-3xl border border-vaidya-accentMuted/40">
                                     <h3 class="font-serif text-base text-vaidya-textPrimary mb-2 flex items-center gap-2">
-                                        <i class="fa-solid fa-circle-question text-xs text-vaidya-accent"></i> ${esc(f.q)}
+                                         <i class="fa-solid fa-circle-question text-xs text-vaidya-accent"></i> ${esc(f.q)}
                                     </h3>
                                     <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed">${esc(f.a)}</p>
                                 </div>
@@ -2349,8 +2896,10 @@ void main() {
             });
 
             return {
-                add, qty, remove, method, openAuth, closeAuth, submitAuth,
-                changeUser, toAddress, saveAddress, step, payOnline, cod, scrollToSection,
+                add, qty, remove,
+                onPhoneInput, sendPhoneOtp, verifyPhoneOtp, toggleGift,
+                openCheckoutOtpModal, closeCheckoutOtpModal, confirmCheckoutOtp, resendCheckoutOtp,
+                toAddress, saveAddress, step, payOnline, cod, scrollToSection,
                 goCart() { location.hash = '#cart'; },
                 goDiscover(e) {
                     if (e) e.preventDefault();

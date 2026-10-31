@@ -1,3 +1,4 @@
+const { isDatabaseConfigured, query } = require('../../lib/db');
 const { isSupabaseConfigured, getSupabaseAdmin, mockDb } = require('../../lib/supabase');
 
 function generateTicketNumber() {
@@ -14,9 +15,35 @@ module.exports = async function handler(req, res) {
             }
 
             const ticketNumber = generateTicketNumber();
+            const normalizedEmail = String(email).trim().toLowerCase();
+
+            if (isDatabaseConfigured()) {
+                const insertRes = await query(`
+                    INSERT INTO public.support_tickets (
+                        ticket_number, customer_email, customer_phone, order_number, category, subject,
+                        message, attachments, status, internal_notes, created_at, updated_at
+                    ) VALUES (
+                        $1, $2, $3, $4, $5, $6,
+                        $7, $8, 'open', '', NOW(), NOW()
+                    ) RETURNING ticket_number
+                `, [
+                    ticketNumber, normalizedEmail, phone ? String(phone).trim() : null,
+                    order_number ? String(order_number).trim() : null,
+                    category || 'General Question', subject || 'Customer Inquiry',
+                    message.trim(), JSON.stringify(Array.isArray(attachments) ? attachments : [])
+                ]);
+
+                return res.status(201).json({
+                    success: true,
+                    ticket_number: insertRes.rows[0].ticket_number,
+                    message: 'Your support case has been recorded. Our botanical care team will follow up shortly.'
+                });
+            }
+
             const newTicket = {
+                id: 'tkt-' + Date.now().toString(36),
                 ticket_number: ticketNumber,
-                customer_email: String(email).trim().toLowerCase(),
+                customer_email: normalizedEmail,
                 customer_phone: phone ? String(phone).trim() : null,
                 order_number: order_number ? String(order_number).trim() : null,
                 category: category || 'General Question',
@@ -29,24 +56,12 @@ module.exports = async function handler(req, res) {
                 updated_at: new Date().toISOString()
             };
 
-            if (isSupabaseConfigured()) {
-                const supabase = getSupabaseAdmin();
-                const { data, error } = await supabase.from('support_tickets').insert([newTicket]).select().single();
-                if (error) throw error;
-                return res.status(201).json({
-                    success: true,
-                    ticket_number: data.ticket_number,
-                    message: 'Your support case has been recorded. Our botanical care team will follow up shortly.'
-                });
-            } else {
-                newTicket.id = 'tkt-' + Date.now().toString(36);
-                mockDb.supportTickets.unshift(newTicket);
-                return res.status(201).json({
-                    success: true,
-                    ticket_number: newTicket.ticket_number,
-                    message: 'Your support case has been recorded. Our botanical care team will follow up shortly.'
-                });
-            }
+            mockDb.supportTickets.unshift(newTicket);
+            return res.status(201).json({
+                success: true,
+                ticket_number: newTicket.ticket_number,
+                message: 'Your support case has been recorded. Our botanical care team will follow up shortly.'
+            });
         } catch (err) {
             console.error('[Submit Support Ticket Error]:', err);
             return res.status(500).json({ error: 'Failed to submit support case' });
@@ -54,31 +69,51 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'GET') {
-        // Customer status lookup
         try {
             const { ticket_number, email } = req.query || {};
             if (!ticket_number || !email) {
                 return res.status(400).json({ error: 'ticket_number and email are required for verification' });
             }
 
-            let found = null;
-            if (isSupabaseConfigured()) {
-                const supabase = getSupabaseAdmin();
-                const { data, error } = await supabase
-                    .from('support_tickets')
-                    .select('ticket_number, category, subject, message, status, created_at, updated_at')
-                    .eq('ticket_number', ticket_number)
-                    .eq('customer_email', email.trim().toLowerCase())
-                    .single();
+            const normalizedEmail = String(email).trim().toLowerCase();
 
-                if (error || !data) return res.status(404).json({ error: 'Ticket not found' });
-                found = data;
-            } else {
-                const match = mockDb.supportTickets.find(
-                    t => t.ticket_number === ticket_number && t.customer_email.toLowerCase() === email.trim().toLowerCase()
-                );
-                if (!match) return res.status(404).json({ error: 'Ticket not found' });
-                found = {
+            if (isDatabaseConfigured()) {
+                const result = await query(`
+                    SELECT ticket_number, category, subject, message, status, created_at, updated_at
+                    FROM public.support_tickets
+                    WHERE ticket_number = $1 AND LOWER(customer_email) = $2
+                `, [ticket_number, normalizedEmail]);
+
+                if (result.rows.length === 0) {
+                    const match = (mockDb.supportTickets || []).find(
+                        t => t.ticket_number === ticket_number && t.customer_email.toLowerCase() === normalizedEmail
+                    );
+                    if (match) {
+                        return res.status(200).json({
+                            ticket: {
+                                ticket_number: match.ticket_number,
+                                category: match.category,
+                                subject: match.subject,
+                                message: match.message,
+                                status: match.status,
+                                created_at: match.created_at,
+                                updated_at: match.updated_at
+                            }
+                        });
+                    }
+                    return res.status(404).json({ error: 'Ticket not found' });
+                }
+
+                return res.status(200).json({ ticket: result.rows[0] });
+            }
+
+            const match = (mockDb.supportTickets || []).find(
+                t => t.ticket_number === ticket_number && t.customer_email.toLowerCase() === normalizedEmail
+            );
+            if (!match) return res.status(404).json({ error: 'Ticket not found' });
+
+            return res.status(200).json({
+                ticket: {
                     ticket_number: match.ticket_number,
                     category: match.category,
                     subject: match.subject,
@@ -86,10 +121,8 @@ module.exports = async function handler(req, res) {
                     status: match.status,
                     created_at: match.created_at,
                     updated_at: match.updated_at
-                };
-            }
-
-            return res.status(200).json({ ticket: found });
+                }
+            });
         } catch (err) {
             return res.status(500).json({ error: 'Lookup failed' });
         }

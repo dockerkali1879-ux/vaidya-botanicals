@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Vaidya Admin Dashboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -595,7 +596,7 @@
                         <label class="cursor-pointer py-2 px-3 rounded-xl bg-vaidya-card border border-vaidya-accent text-vaidya-accent hover:bg-vaidya-accent hover:text-vaidya-bg font-semibold flex items-center gap-1.5 transition-colors">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                             <span>Upload Images</span>
-                            <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/svg+xml" onchange="handleImageUpload(this.files)" class="hidden">
+                            <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" onchange="handleImageUpload(this.files)" class="hidden">
                         </label>
                     </div>
 
@@ -657,11 +658,46 @@
             </div>
             <div class="p-6 space-y-5 overflow-y-auto flex-1 text-xs">
                 <input type="hidden" id="edit-order-id">
-                <!-- Customer info -->
-                <div class="p-4 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30 space-y-1">
-                    <span class="text-[10px] uppercase tracking-wider text-vaidya-accent font-semibold block">Customer & Delivery Address</span>
-                    <div id="order-modal-cust" class="text-sm font-medium text-vaidya-textPrimary"></div>
-                    <div id="order-modal-addr" class="text-xs text-vaidya-textSecondary leading-relaxed"></div>
+                <!-- Customer info & Recipient info -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-4 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30 space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] uppercase tracking-wider text-vaidya-accent font-semibold block">Buyer Information</span>
+                            <span id="order-modal-phone-otp-badge"></span>
+                        </div>
+                        <div id="order-modal-cust" class="text-sm font-medium text-vaidya-textPrimary"></div>
+                        <div id="order-modal-phone-otp-time" class="text-[10px] text-vaidya-textMuted"></div>
+                    </div>
+                    <div class="p-4 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30 space-y-1">
+                        <span class="text-[10px] uppercase tracking-wider text-vaidya-accent font-semibold block">Delivery Recipient & Address</span>
+                        <div id="order-modal-recipient" class="text-xs font-semibold text-vaidya-textPrimary"></div>
+                        <div id="order-modal-addr" class="text-xs text-vaidya-textSecondary leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- Manual Pre-Dispatch Phone Verification -->
+                <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] uppercase tracking-wider text-amber-400 font-semibold flex items-center gap-1.5">
+                            <i class="fa-solid fa-phone-volume"></i> Pre-Dispatch Manual Call Verification
+                        </span>
+                        <span id="order-modal-verified-at" class="text-[10px] text-vaidya-textMuted"></span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1 text-[11px]">Verification Call Status</label>
+                            <select id="edit-order-verification-status" class="w-full bg-vaidya-soft border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                                <option value="unverified">⏳ Unverified (Pending Call)</option>
+                                <option value="call_verified">✅ Phone Verified & Confirmed</option>
+                                <option value="unreachable">⚠️ Unreachable / No Answer</option>
+                                <option value="cancelled">❌ Cancelled by Customer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1 text-[11px]">Verification Notes</label>
+                            <input type="text" id="edit-order-verification-notes" placeholder="e.g. Confirmed with customer over phone" class="w-full bg-vaidya-soft border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Items list -->
@@ -901,7 +937,7 @@
                         <span class="capitalize text-vaidya-textSecondary">${p.category === 'tea' ? 'Green Tea' : p.category === 'oil' ? 'Essential Oil' : p.category}</span>
                     </td>
                     <td class="py-3.5 px-4 font-mono">
-                        $${Number(p.price).toFixed(2)} <span class="text-[10px] text-vaidya-textMuted">${escapeHtml(p.unit || '')}</span>
+                        ₹${Number(p.price).toFixed(2)} <span class="text-[10px] text-vaidya-textMuted">${escapeHtml(p.unit || '')}</span>
                     </td>
                     <td class="py-3.5 px-4 font-mono ${stockColor}">
                         ${p.stock} units
@@ -1032,30 +1068,93 @@
             const status = document.getElementById('upload-status-text');
             progress.classList.remove('hidden');
 
+            const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+            const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                status.textContent = `Uploading ${file.name} (${i + 1}/${files.length})...`;
+                status.textContent = `Processing ${file.name} (${i + 1}/${files.length})...`;
+
+                // 1. Client-side security and format validation
+                if (!ALLOWED_TYPES.includes(file.type.toLowerCase())) {
+                    showToast(`Invalid format for ${file.name}. Allowed: JPG, PNG, WebP, AVIF`, true);
+                    continue;
+                }
+                if (file.size > MAX_SIZE) {
+                    showToast(`File ${file.name} exceeds 5MB limit (${(file.size / (1024 * 1024)).toFixed(2)} MB)`, true);
+                    continue;
+                }
 
                 try {
-                    const base64 = await fileToBase64(file);
-                    const res = await fetch('/api/admin/upload', {
+                    // 2. Request official Cloudinary signed upload parameters from edge API
+                    status.textContent = `Authorizing Cloudinary upload for ${file.name}...`;
+                    const sigRes = await fetch('/api/admin/cloudinary-signature', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             filename: file.name,
                             mimeType: file.type,
-                            base64Data: base64,
-                            bucketType: 'public'
+                            size: file.size
                         })
                     });
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.error || 'Upload failed');
 
-                    currentEditingImages.push({
-                        url: data.url,
-                        alt: file.name.split('.')[0],
-                        is_primary: currentEditingImages.length === 0
-                    });
+                    const sigData = await sigRes.json();
+
+                    if (sigRes.ok && sigData.signature && sigData.cloudName) {
+                        // 3. Direct upload to Cloudinary official REST API via signed POST
+                        status.textContent = `Uploading ${file.name} directly to Cloudinary (${sigData.folder})...`;
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('api_key', sigData.apiKey);
+                        formData.append('timestamp', sigData.timestamp);
+                        formData.append('signature', sigData.signature);
+                        formData.append('folder', sigData.folder);
+                        formData.append('public_id', sigData.public_id);
+
+                        const cldUrl = `https://api.cloudinary.com/v1_1/${encodeURIComponent(sigData.cloudName)}/image/upload`;
+                        const cldRes = await fetch(cldUrl, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const cldJson = await cldRes.json();
+                        if (!cldRes.ok || !cldJson.secure_url) {
+                            throw new Error(cldJson.error?.message || 'Cloudinary upload rejected');
+                        }
+
+                        currentEditingImages.push({
+                            url: cldJson.secure_url,
+                            public_id: cldJson.public_id,
+                            alt: file.name.split('.')[0],
+                            is_primary: currentEditingImages.length === 0
+                        });
+                        showToast(`Uploaded ${file.name} to Cloudinary`);
+                    } else if (sigRes.status === 503) {
+                        // Cloudinary credentials unconfigured in local dev: Fall back to local storage
+                        status.textContent = `Cloudinary unconfigured. Falling back to local storage for ${file.name}...`;
+                        const base64 = await fileToBase64(file);
+                        const res = await fetch('/api/admin/upload', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                filename: file.name,
+                                mimeType: file.type,
+                                base64Data: base64,
+                                bucketType: 'public'
+                            })
+                        });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+                        currentEditingImages.push({
+                            url: data.url,
+                            alt: file.name.split('.')[0],
+                            is_primary: currentEditingImages.length === 0
+                        });
+                        showToast(`Uploaded ${file.name} to local storage`);
+                    } else {
+                        throw new Error(sigData.error || 'Failed to authorize upload signature');
+                    }
                 } catch (err) {
                     showToast(`Error uploading ${file.name}: ${err.message}`, true);
                 }
@@ -1063,7 +1162,6 @@
 
             progress.classList.add('hidden');
             renderImageGallery();
-            showToast('Images uploaded successfully.');
         }
 
         function fileToBase64(file) {
@@ -1204,7 +1302,7 @@
                     <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">${escapeHtml(p.short_description || '')}</p>
                 </div>
                 <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
-                    <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">$${Number(p.price).toFixed(2)} <span class="text-xs font-normal text-vaidya-textMuted">${escapeHtml(p.unit || '')}</span></span>
+                    <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹${Number(p.price).toFixed(2)} <span class="text-xs font-normal text-vaidya-textMuted">${escapeHtml(p.unit || '')}</span></span>
                     <button class="px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5"><i class="fa-solid fa-cart-plus"></i> Add</button>
                 </div>
             </div>
@@ -1444,7 +1542,7 @@
                         <div class="text-[11px] text-vaidya-textMuted">${escapeHtml(o.customer_phone || o.customer_email)}</div>
                     </td>
                     <td class="py-3.5 px-4 font-mono text-sm font-semibold text-vaidya-textPrimary">
-                        $${Number(o.total).toFixed(2)}
+                        ₹${Number(o.total).toFixed(2)}
                     </td>
                     <td class="py-3.5 px-4">
                         <div class="flex items-center gap-1.5">
@@ -1472,10 +1570,36 @@
             document.getElementById('edit-order-id').value = o.id;
             document.getElementById('order-modal-title').textContent = `Order ${o.order_number}`;
             document.getElementById('order-modal-date').textContent = new Date(o.created_at).toLocaleString();
-            document.getElementById('order-modal-cust').textContent = `${o.customer_name} (${o.customer_phone || ''}) - ${o.customer_email}`;
+            document.getElementById('order-modal-cust').innerHTML = `
+                <div>${escapeHtml(o.customer_name || 'Customer')}</div>
+                <div class="text-xs text-vaidya-textMuted">${escapeHtml(o.customer_email || '')} &bull; ${escapeHtml(o.customer_phone || '')}</div>
+            `;
+
+            const otpBadge = document.getElementById('order-modal-phone-otp-badge');
+            const otpTime = document.getElementById('order-modal-phone-otp-time');
+            if (o.phone_verified) {
+                if (otpBadge) otpBadge.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-semibold border border-emerald-500/30 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Phone OTP Verified</span>`;
+                if (otpTime) otpTime.textContent = o.phone_verified_at ? `Verified at: ${new Date(o.phone_verified_at).toLocaleString()}` : 'Phone verified at checkout';
+            } else {
+                if (otpBadge) otpBadge.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-semibold border border-red-500/30 flex items-center gap-1"><i class="fa-solid fa-circle-xmark"></i> Unverified Phone</span>`;
+                if (otpTime) otpTime.textContent = '';
+            }
 
             const a = o.shipping_address || {};
-            document.getElementById('order-modal-addr').innerHTML = `${escapeHtml(a.l1 || '')}${a.l2 ? ', ' + escapeHtml(a.l2) : ''}, ${escapeHtml(a.city || '')}, ${escapeHtml(a.state || '')} - ${escapeHtml(a.pin || '')}`;
+            const recName = o.recipient_name || a.recipient_name || a.name || o.customer_name || 'Customer';
+            const recPhone = o.recipient_phone || a.recipient_phone || a.phone || o.customer_phone || '';
+            const isGift = (recName !== o.customer_name && o.customer_name);
+
+            document.getElementById('order-modal-recipient').innerHTML = `
+                ${escapeHtml(recName)} (${escapeHtml(recPhone)})
+                ${isGift ? '<span class="ml-1.5 px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] uppercase font-bold">Gift Order</span>' : ''}
+            `;
+            document.getElementById('order-modal-addr').innerHTML = `${escapeHtml(a.l1 || a.address_line1 || '')}${a.l2 ? ', ' + escapeHtml(a.l2) : ''}, ${escapeHtml(a.city || '')}, ${escapeHtml(a.state || '')} - ${escapeHtml(a.pin || a.postal_code || '')}${a.landmark ? ' (Landmark: ' + escapeHtml(a.landmark) + ')' : ''}`;
+
+            // Pre-dispatch manual verification
+            document.getElementById('edit-order-verification-status').value = o.manual_verification_status || 'unverified';
+            document.getElementById('edit-order-verification-notes').value = o.verification_notes || '';
+            document.getElementById('order-modal-verified-at').textContent = o.verified_at ? `Verified: ${new Date(o.verified_at).toLocaleDateString()}` : '';
 
             const itemsContainer = document.getElementById('order-modal-items');
             const items = Array.isArray(o.items) ? o.items : [];
@@ -1483,14 +1607,14 @@
                 <div class="flex items-center justify-between py-1.5">
                     <div>
                         <span class="font-medium text-vaidya-textPrimary">${escapeHtml(i.name)}</span>
-                        <span class="text-vaidya-textMuted text-[11px] block">Qty: ${i.qty} &times; $${Number(i.price).toFixed(2)}</span>
+                        <span class="text-vaidya-textMuted text-[11px] block">Qty: ${i.qty} &times; ₹${Number(i.price).toFixed(2)}</span>
                     </div>
-                    <span class="font-mono text-vaidya-textPrimary font-semibold">$${Number(i.qty * i.price).toFixed(2)}</span>
+                    <span class="font-mono text-vaidya-textPrimary font-semibold">₹${Number(i.qty * i.price).toFixed(2)}</span>
                 </div>
             `).join('') + `
                 <div class="flex justify-between pt-2 border-t border-vaidya-accentMuted/30 font-semibold text-vaidya-textPrimary">
                     <span>Order Total:</span>
-                    <span class="text-vaidya-accent font-mono">$${Number(o.total).toFixed(2)}</span>
+                    <span class="text-vaidya-accent font-mono">₹${Number(o.total).toFixed(2)}</span>
                 </div>
             `;
 
@@ -1510,7 +1634,9 @@
                 payment_status: document.getElementById('edit-order-payment-status').value,
                 courier_name: document.getElementById('edit-order-courier').value.trim(),
                 tracking_number: document.getElementById('edit-order-tracking').value.trim(),
-                admin_notes: document.getElementById('edit-order-notes').value.trim()
+                admin_notes: document.getElementById('edit-order-notes').value.trim(),
+                manual_verification_status: document.getElementById('edit-order-verification-status').value,
+                verification_notes: document.getElementById('edit-order-verification-notes').value.trim()
             };
 
             try {

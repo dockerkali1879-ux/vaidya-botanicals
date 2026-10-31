@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Authentication - Vaidya Botanicals</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +42,7 @@
 
         <div class="flex items-center gap-3 mb-6">
             <div class="w-10 h-10 rounded-full bg-vaidya-accent/10 flex items-center justify-center text-vaidya-accent">
-                <i class="fa-solid fa-lock text-base"></i>
+                <i class="fa-solid fa-shield-halved text-base"></i>
             </div>
             <div>
                 <h1 class="font-serif text-xl font-medium text-vaidya-textPrimary">Private Console</h1>
@@ -50,44 +51,240 @@
         </div>
 
         <div id="error-box" class="hidden mb-4 p-3 rounded-xl bg-red-950/40 border border-red-500/30 text-xs text-red-300"></div>
+        <div id="info-box" class="hidden mb-4 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-300"></div>
 
-        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-            <div>
-                <label class="block text-xs font-medium text-vaidya-textSecondary mb-1.5">Business Email</label>
-                <input type="email" id="email" required autocomplete="username" placeholder="owner@vaidyabotanicals.com"
-                    class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-4 py-3 text-sm text-vaidya-textPrimary placeholder:text-vaidya-textMuted/60 focus:outline-none focus:border-vaidya-accent transition-colors">
+        <!-- 1. PRIMARY FLOW: ADMINISTRATOR PHONE OTP -->
+        <div id="admin-otp-flow" class="space-y-4">
+            <!-- STEP 1: Request Code -->
+            <div id="otp-step-1">
+                <p class="text-xs text-vaidya-textSecondary mb-4 leading-relaxed">
+                    Access is restricted to the preconfigured system administrator. A secure verification code will be dispatched to your authorized mobile device.
+                </p>
+
+                <button type="button" id="btn-request-otp" onclick="handleSendOtp()"
+                    class="w-full py-3.5 px-4 rounded-xl bg-vaidya-accent text-vaidya-bg text-sm font-semibold hover:bg-vaidya-accentLight active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                    <span id="btn-request-text">Send Admin Verification Code</span>
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
             </div>
 
-            <div>
-                <label class="block text-xs font-medium text-vaidya-textSecondary mb-1.5">Access Credential</label>
-                <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••••••"
-                    class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-4 py-3 text-sm text-vaidya-textPrimary placeholder:text-vaidya-textMuted/60 focus:outline-none focus:border-vaidya-accent transition-colors">
-            </div>
+            <!-- STEP 2: Verify Code -->
+            <div id="otp-step-2" class="hidden space-y-4">
+                <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/40">
+                    <p class="text-[11px] text-vaidya-textMuted uppercase tracking-wider font-semibold">Verification Target</p>
+                    <p id="target-phone-text" class="text-sm font-mono text-vaidya-accent mt-0.5">+91 ••••••••••</p>
+                </div>
 
-            <button type="submit" id="submit-btn"
-                class="w-full mt-2 py-3.5 px-4 rounded-xl bg-vaidya-accent text-vaidya-bg text-sm font-semibold hover:bg-vaidya-accentLight active:scale-[0.99] transition-all flex items-center justify-center gap-2">
-                <span id="btn-text">Authenticate</span>
-                <i class="fa-solid fa-arrow-right text-xs"></i>
+                <div>
+                    <label class="block text-xs font-medium text-vaidya-textSecondary mb-1.5">6-Digit SMS Verification Code</label>
+                    <input type="text" id="admin-otp-input" inputmode="numeric" maxlength="6" pattern="[0-9]*" placeholder="123456" autocomplete="one-time-code"
+                        class="w-full text-center tracking-[0.3em] font-mono text-lg bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-4 py-3 text-vaidya-textPrimary placeholder:text-vaidya-textMuted/40 focus:outline-none focus:border-vaidya-accent transition-colors">
+                </div>
+
+                <button type="button" id="btn-verify-otp" onclick="handleVerifyOtp()"
+                    class="w-full py-3.5 px-4 rounded-xl bg-vaidya-accent text-vaidya-bg text-sm font-semibold hover:bg-vaidya-accentLight active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                    <span id="btn-verify-text">Verify & Enter Console</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+
+                <div class="flex items-center justify-between text-xs text-vaidya-textMuted pt-2">
+                    <button type="button" id="btn-resend-otp" onclick="handleSendOtp()" disabled class="hover:text-vaidya-accent disabled:opacity-50 transition-colors">
+                        Resend Code (<span id="resend-countdown">60</span>s)
+                    </button>
+                    <button type="button" onclick="resetToStep1()" class="hover:text-vaidya-textPrimary transition-colors">
+                        Change Request
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. FALLBACK/LEGACY CREDENTIAL FLOW TOGGLE (For Local Node Testing) -->
+        <div class="mt-6 pt-4 border-t border-vaidya-accentMuted/20 text-center">
+            <button type="button" onclick="toggleLegacyForm()" class="text-[11px] text-vaidya-textMuted hover:text-vaidya-accent transition-colors">
+                <span id="legacy-toggle-text">Need legacy password sign in?</span>
+            </button>
+        </div>
+
+        <form id="legacy-login-form" onsubmit="handleLegacyLogin(event)" class="hidden space-y-3 mt-4 pt-3 border-t border-vaidya-accentMuted/10">
+            <div>
+                <label class="block text-[11px] font-medium text-vaidya-textSecondary mb-1">Email</label>
+                <input type="email" id="legacy-email" placeholder="admin@vaidyabotanicals.com"
+                    class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+            </div>
+            <div>
+                <label class="block text-[11px] font-medium text-vaidya-textSecondary mb-1">Password</label>
+                <input type="password" id="legacy-password" placeholder="••••••••••••"
+                    class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+            </div>
+            <button type="submit" id="btn-legacy-submit"
+                class="w-full py-2.5 px-3 rounded-xl bg-vaidya-soft border border-vaidya-accent/40 text-vaidya-textPrimary text-xs font-medium hover:bg-vaidya-card transition-colors">
+                Authenticate with Password
             </button>
         </form>
 
-        <div class="mt-6 pt-4 border-t border-vaidya-accentMuted/20 text-center">
-            <span class="text-[11px] text-vaidya-textMuted tracking-wider uppercase">Vaidya Botanical Systems</span>
+        <div class="mt-4 text-center">
+            <span class="text-[10px] text-vaidya-textMuted tracking-wider uppercase">Vaidya Botanical Systems &bull; 2Factor OTP Security</span>
         </div>
     </div>
 
     <script>
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const errBox = document.getElementById('error-box');
-            const btn = document.getElementById('submit-btn');
-            const btnText = document.getElementById('btn-text');
+        let currentChallengeId = null;
+        let resendTimer = null;
 
-            errBox.classList.add('hidden');
+        function showErr(msg) {
+            const errBox = document.getElementById('error-box');
+            errBox.textContent = msg;
+            errBox.classList.remove('hidden');
+            document.getElementById('info-box').classList.add('hidden');
+        }
+
+        function showInfo(msg) {
+            const infoBox = document.getElementById('info-box');
+            infoBox.textContent = msg;
+            infoBox.classList.remove('hidden');
+            document.getElementById('error-box').classList.add('hidden');
+        }
+
+        function clearMessages() {
+            document.getElementById('error-box').classList.add('hidden');
+            document.getElementById('info-box').classList.add('hidden');
+        }
+
+        function startCooldown(seconds) {
+            const btn = document.getElementById('btn-resend-otp');
+            const span = document.getElementById('resend-countdown');
             btn.disabled = true;
-            btnText.textContent = 'Verifying credentials...';
+            let remaining = seconds;
+            span.textContent = remaining;
+
+            if (resendTimer) clearInterval(resendTimer);
+            resendTimer = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(resendTimer);
+                    btn.disabled = false;
+                    btn.textContent = 'Resend Code';
+                } else {
+                    span.textContent = remaining;
+                }
+            }, 1000);
+        }
+
+        function resetToStep1() {
+            clearMessages();
+            document.getElementById('otp-step-1').classList.remove('hidden');
+            document.getElementById('otp-step-2').classList.add('hidden');
+            currentChallengeId = null;
+        }
+
+        async function handleSendOtp() {
+            clearMessages();
+            const btn = document.getElementById('btn-request-otp');
+            const btnText = document.getElementById('btn-request-text');
+            btn.disabled = true;
+            btnText.textContent = 'Sending SMS verification code...';
+
+            try {
+                const res = await fetch('/api/auth/admin-otp/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    showErr(data.error || 'Failed to send administrator verification code');
+                    btn.disabled = false;
+                    btnText.textContent = 'Send Admin Verification Code';
+                    return;
+                }
+
+                currentChallengeId = data.challenge_id;
+                document.getElementById('target-phone-text').textContent = '+91 ' + (data.masked_phone || 'Authorized Admin Mobile');
+                document.getElementById('otp-step-1').classList.add('hidden');
+                document.getElementById('otp-step-2').classList.remove('hidden');
+                showInfo(data.message || 'Verification code dispatched to authorized admin phone.');
+
+                const codeInput = document.getElementById('admin-otp-input');
+                codeInput.value = '';
+                setTimeout(() => codeInput.focus(), 100);
+
+                startCooldown(60);
+            } catch (err) {
+                showErr('Network error requesting OTP. Please check your connection.');
+                btn.disabled = false;
+                btnText.textContent = 'Send Admin Verification Code';
+            }
+        }
+
+        async function handleVerifyOtp() {
+            clearMessages();
+            const codeInput = document.getElementById('admin-otp-input');
+            const code = codeInput.value.trim();
+
+            if (!code || !/^\d{4,6}$/.test(code)) {
+                showErr('Please enter the 6-digit verification code.');
+                return;
+            }
+
+            if (!currentChallengeId) {
+                showErr('No active verification session. Please request a new code.');
+                resetToStep1();
+                return;
+            }
+
+            const btn = document.getElementById('btn-verify-otp');
+            const btnText = document.getElementById('btn-verify-text');
+            btn.disabled = true;
+            btnText.textContent = 'Verifying administrator...';
+
+            try {
+                const res = await fetch('/api/auth/admin-otp/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        challenge_id: currentChallengeId,
+                        otp: code
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    showErr(data.error || 'Invalid or expired verification code.');
+                    btn.disabled = false;
+                    btnText.textContent = 'Verify & Enter Console';
+                    return;
+                }
+
+                btnText.textContent = 'Authorized. Redirecting...';
+                showInfo('Administrator authorized. Loading private dashboard...');
+                setTimeout(() => {
+                    window.location.href = '/admin';
+                }, 400);
+            } catch (err) {
+                showErr('Network error verifying code. Please try again.');
+                btn.disabled = false;
+                btnText.textContent = 'Verify & Enter Console';
+            }
+        }
+
+        function toggleLegacyForm() {
+            const form = document.getElementById('legacy-login-form');
+            const toggleText = document.getElementById('legacy-toggle-text');
+            const isHidden = form.classList.contains('hidden');
+            form.classList.toggle('hidden', !isHidden);
+            toggleText.textContent = isHidden ? 'Hide legacy password sign in' : 'Need legacy password sign in?';
+        }
+
+        async function handleLegacyLogin(e) {
+            e.preventDefault();
+            clearMessages();
+            const email = document.getElementById('legacy-email').value.trim();
+            const password = document.getElementById('legacy-password').value;
+            const btn = document.getElementById('btn-legacy-submit');
+
+            btn.disabled = true;
+            btn.textContent = 'Verifying credentials...';
 
             try {
                 const res = await fetch('/api/auth/admin-login', {
@@ -97,21 +294,18 @@
                 });
 
                 const data = await res.json();
-
                 if (res.ok && data.success) {
-                    btnText.textContent = 'Authorized. Redirecting...';
+                    btn.textContent = 'Authorized. Redirecting...';
                     window.location.href = '/admin';
                 } else {
-                    errBox.textContent = data.error || 'Authentication rejected.';
-                    errBox.classList.remove('hidden');
+                    showErr(data.error || 'Authentication rejected.');
                     btn.disabled = false;
-                    btnText.textContent = 'Authenticate';
+                    btn.textContent = 'Authenticate with Password';
                 }
             } catch (err) {
-                errBox.textContent = 'Network or server error. Please try again.';
-                errBox.classList.remove('hidden');
+                showErr('Network error. Please try again.');
                 btn.disabled = false;
-                btnText.textContent = 'Authenticate';
+                btn.textContent = 'Authenticate with Password';
             }
         }
     </script>

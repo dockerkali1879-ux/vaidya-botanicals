@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Vaidya Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vaidya: {
+                            bg: '#121212',
+                            soft: '#181A20',
+                            card: '#1E2026',
+                            accent: '#20E070',
+                            accentLight: '#34D399',
+                            accentMuted: '#1A382B',
+                            textPrimary: '#E2E8F0',
+                            textSecondary: '#94A3B8',
+                            textMuted: '#64748B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #121212; }
+        ::-webkit-scrollbar-thumb { background: #1A382B; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #20E070; }
+    </style>
+</head>
+<body class="bg-vaidya-bg text-vaidya-textPrimary font-sans min-h-screen flex selection:bg-vaidya-accent selection:text-vaidya-bg antialiased">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-12 opacity-0 transition-all duration-300 pointer-events-none px-5 py-3 rounded-2xl bg-vaidya-card border border-vaidya-accent text-vaidya-textPrimary text-xs shadow-2xl flex items-center gap-3">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-vaidya-accent text-sm"></i>
+        <span id="toast-msg">Action completed</span>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 border-r border-vaidya-accentMuted/40 bg-vaidya-soft flex flex-col justify-between shrink-0 hidden md:flex min-h-screen sticky top-0">
+        <div>
+            <!-- Brand -->
+            <div class="px-6 py-6 border-b border-vaidya-accentMuted/30 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-vaidya-accent/10 flex items-center justify-center text-vaidya-accent border border-vaidya-accent/20">
+                    <i class="fa-solid fa-leaf text-sm"></i>
+                </div>
+                <div>
+                    <span class="font-serif text-lg tracking-tight text-vaidya-textPrimary font-normal block leading-tight">Vaidya</span>
+                    <span class="text-[10px] tracking-wider text-vaidya-accent uppercase font-medium">Store Console</span>
+                </div>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="p-4 space-y-1 text-xs font-medium">
+                <button onclick="navigateTab('products')" id="nav-products" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors bg-vaidya-accent/15 text-vaidya-accent">
+                    <i class="fa-solid fa-box text-sm w-4"></i>
+                    <span>Products</span>
+                </button>
+                <button onclick="navigateTab('content')" id="nav-content" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-vaidya-textSecondary hover:bg-vaidya-card hover:text-vaidya-textPrimary">
+                    <i class="fa-solid fa-pen-nib text-sm w-4"></i>
+                    <span>Website Content</span>
+                </button>
+                <button onclick="navigateTab('orders')" id="nav-orders" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-vaidya-textSecondary hover:bg-vaidya-card hover:text-vaidya-textPrimary">
+                    <i class="fa-solid fa-truck-fast text-sm w-4"></i>
+                    <span>Orders & Deliveries</span>
+                </button>
+                <button onclick="navigateTab('support')" id="nav-support" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-vaidya-textSecondary hover:bg-vaidya-card hover:text-vaidya-textPrimary">
+                    <i class="fa-solid fa-headset text-sm w-4"></i>
+                    <span>Customer Support</span>
+                </button>
+                <button onclick="navigateTab('reviews')" id="nav-reviews" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-vaidya-textSecondary hover:bg-vaidya-card hover:text-vaidya-textPrimary">
+                    <i class="fa-solid fa-star text-sm w-4"></i>
+                    <span>Reviews</span>
+                </button>
+                <button onclick="navigateTab('audit')" id="nav-audit" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-vaidya-textSecondary hover:bg-vaidya-card hover:text-vaidya-textPrimary">
+                    <i class="fa-solid fa-shield-halved text-sm w-4"></i>
+                    <span>Audit Trail</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-vaidya-accentMuted/30 space-y-3">
+            <div class="px-3 py-2 bg-vaidya-card rounded-xl border border-vaidya-accentMuted/40">
+                <div class="text-[10px] text-vaidya-textMuted uppercase tracking-wider">Logged in as</div>
+                <div id="admin-user-email" class="text-xs text-vaidya-textPrimary font-medium truncate mt-0.5">admin@vaidyabotanicals.com</div>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="/" target="_blank" class="flex-1 py-2 px-3 rounded-xl bg-vaidya-card text-vaidya-textSecondary hover:text-vaidya-accent text-[11px] font-medium border border-vaidya-accentMuted/40 text-center flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    <span>Storefront</span>
+                </a>
+                <button onclick="handleLogout()" class="py-2 px-3 rounded-xl bg-red-950/40 text-red-300 hover:bg-red-900/50 text-[11px] font-medium border border-red-500/30 flex items-center justify-center" title="Log Out">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col min-w-0 min-h-screen">
+        <!-- Top Navigation Bar -->
+        <header class="h-16 border-b border-vaidya-accentMuted/40 bg-vaidya-card/60 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <h2 id="page-title" class="font-serif text-lg text-vaidya-textPrimary font-medium">Products</h2>
+                <span id="page-subtitle" class="text-xs text-vaidya-textMuted hidden sm:inline">&mdash; Manage store catalog & inventory</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span id="system-status-pill" class="text-[11px] font-medium px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>System Active</span>
+                </span>
+            </div>
+        </header>
+
+        <!-- Dynamic View Sections -->
+        <div class="p-6 flex-1 overflow-y-auto">
+
+            <!-- 1. PRODUCTS SECTION -->
+            <section id="view-products" class="tab-view space-y-6">
+                <!-- Action Bar -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <div class="relative flex-1 sm:w-72">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-vaidya-textMuted text-xs"></i>
+                            <input type="text" id="product-search" oninput="filterProductTable()" placeholder="Search products..."
+                                class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl pl-9 pr-4 py-2 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <select id="product-category-filter" onchange="filterProductTable()"
+                            class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textSecondary focus:outline-none focus:border-vaidya-accent">
+                            <option value="all">All Categories</option>
+                            <option value="tea">Green Teas & Infusions</option>
+                            <option value="oil">Essential Oils</option>
+                            <option value="tonic">Daily Tonics</option>
+                        </select>
+                    </div>
+
+                    <button onclick="openProductModal()" class="py-2.5 px-4 rounded-xl bg-vaidya-accent text-vaidya-bg text-xs font-semibold hover:bg-vaidya-accentLight active:scale-[0.99] transition-all flex items-center gap-2 shadow-lg shadow-vaidya-accent/10">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add Product</span>
+                    </button>
+                </div>
+
+                <!-- Products Table -->
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-vaidya-soft/60 border-b border-vaidya-accentMuted/30 text-vaidya-textMuted uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-3.5 px-4">Product</th>
+                                    <th class="py-3.5 px-4">Category</th>
+                                    <th class="py-3.5 px-4">Price / Unit</th>
+                                    <th class="py-3.5 px-4">Stock</th>
+                                    <th class="py-3.5 px-4">Status</th>
+                                    <th class="py-3.5 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="product-table-body" class="divide-y divide-vaidya-accentMuted/20 text-vaidya-textPrimary">
+                                <tr>
+                                    <td colspan="6" class="py-12 text-center text-vaidya-textMuted">
+                                        <i class="fa-solid fa-circle-notch fa-spin text-lg text-vaidya-accent mb-2 block"></i>
+                                        Loading product catalog...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. WEBSITE CONTENT SECTION -->
+            <section id="view-content" class="tab-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Website Content Management</h3>
+                        <p class="text-xs text-vaidya-textMuted">Modify homepage headlines, brand narrative, contact information, and FAQs</p>
+                    </div>
+                    <button onclick="saveCurrentContentSection()" id="cms-save-btn" class="py-2.5 px-4 rounded-xl bg-vaidya-accent text-vaidya-bg text-xs font-semibold hover:bg-vaidya-accentLight active:scale-[0.99] transition-all flex items-center gap-2 shadow-lg shadow-vaidya-accent/10">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span id="cms-save-btn-text">Publish Section</span>
+                    </button>
+                </div>
+
+                <!-- CMS Subtabs -->
+                <div class="flex border-b border-vaidya-accentMuted/40 gap-6 text-xs font-medium">
+                    <button onclick="switchContentTab('hero')" id="ctab-hero" class="ctab-btn pb-3 border-b-2 border-vaidya-accent text-vaidya-accent">Homepage Hero</button>
+                    <button onclick="switchContentTab('about')" id="ctab-about" class="ctab-btn pb-3 border-b-2 border-transparent text-vaidya-textSecondary hover:text-vaidya-textPrimary">Our Philosophy</button>
+                    <button onclick="switchContentTab('story')" id="ctab-story" class="ctab-btn pb-3 border-b-2 border-transparent text-vaidya-textSecondary hover:text-vaidya-textPrimary">Our Story</button>
+                    <button onclick="switchContentTab('support_info')" id="ctab-support_info" class="ctab-btn pb-3 border-b-2 border-transparent text-vaidya-textSecondary hover:text-vaidya-textPrimary">Care & FAQs</button>
+                </div>
+
+                <!-- CMS Section Panels -->
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 shadow-xl space-y-6">
+                    <!-- Hero Panel -->
+                    <div id="cpanel-hero" class="cpanel space-y-4 text-xs">
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Hero Eyebrow Text</label>
+                            <input type="text" id="cms-hero-eyebrow" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Hero Main Title *</label>
+                            <input type="text" id="cms-hero-title" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary font-serif text-sm focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Hero Narrative Description</label>
+                            <textarea id="cms-hero-desc" rows="3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Badge 1</label>
+                                <input type="text" id="cms-hero-b1" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Badge 2</label>
+                                <input type="text" id="cms-hero-b2" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Badge 3</label>
+                                <input type="text" id="cms-hero-b3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About Panel -->
+                    <div id="cpanel-about" class="cpanel hidden space-y-4 text-xs">
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">About Section Eyebrow</label>
+                            <input type="text" id="cms-about-eyebrow" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Main Statement Heading</label>
+                            <input type="text" id="cms-about-title" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary font-serif text-sm focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Philosophy Description</label>
+                            <textarea id="cms-about-desc" rows="4" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                            <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/30 space-y-1.5">
+                                <label class="block text-[11px] text-vaidya-textMuted">Purity Metric</label>
+                                <input type="text" id="cms-about-s1-num" placeholder="0%" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-xs text-vaidya-accent font-serif">
+                                <input type="text" id="cms-about-s1-lbl" placeholder="Synthetic Additives" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-[11px] text-vaidya-textSecondary">
+                            </div>
+                            <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/30 space-y-1.5">
+                                <label class="block text-[11px] text-vaidya-textMuted">Organic Metric</label>
+                                <input type="text" id="cms-about-s2-num" placeholder="100%" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-xs text-vaidya-accent font-serif">
+                                <input type="text" id="cms-about-s2-lbl" placeholder="Organic Ingredients" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-[11px] text-vaidya-textSecondary">
+                            </div>
+                            <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/30 space-y-1.5">
+                                <label class="block text-[11px] text-vaidya-textMuted">Trade Metric</label>
+                                <input type="text" id="cms-about-s3-num" placeholder="Direct" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-xs text-vaidya-accent font-serif">
+                                <input type="text" id="cms-about-s3-lbl" placeholder="Farm Trade" class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-[11px] text-vaidya-textSecondary">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Our Story Panel -->
+                    <div id="cpanel-story" class="cpanel hidden space-y-4 text-xs">
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Story Headline Title</label>
+                            <input type="text" id="cms-story-title" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary font-serif text-sm focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Story Subtitle</label>
+                            <input type="text" id="cms-story-subtitle" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Chapter 1: The Founding</label>
+                            <textarea id="cms-story-p1" rows="3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Chapter 2: Sourcing & Distillation</label>
+                            <textarea id="cms-story-p2" rows="3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1.5">Chapter 3: The Daily Ritual</label>
+                            <textarea id="cms-story-p3" rows="3" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Support & FAQs Panel -->
+                    <div id="cpanel-support_info" class="cpanel hidden space-y-5 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Support Email</label>
+                                <input type="email" id="cms-support-email" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Support Phone</label>
+                                <input type="text" id="cms-support-phone" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Operating Hours</label>
+                                <input type="text" id="cms-support-hours" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-vaidya-textSecondary mb-1.5">Laboratory Address</label>
+                                <input type="text" id="cms-support-address" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary">
+                            </div>
+                        </div>
+
+                        <!-- FAQs List Manager -->
+                        <div class="border-t border-vaidya-accentMuted/30 pt-4 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="font-medium text-vaidya-textPrimary">Frequently Asked Questions</span>
+                                <button type="button" onclick="addFaqItem()" class="py-1.5 px-3 rounded-lg bg-vaidya-soft border border-vaidya-accent text-vaidya-accent hover:bg-vaidya-accent hover:text-vaidya-bg font-semibold flex items-center gap-1.5 transition-colors">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
+                                    <span>Add Question</span>
+                                </button>
+                            </div>
+                            <div id="faq-list-container" class="space-y-3">
+                                <!-- FAQ items dynamic rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. ORDERS SECTION -->
+            <section id="view-orders" class="tab-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Orders & Deliveries</h3>
+                        <p class="text-xs text-vaidya-textMuted">Inspect customer purchases, track fulfillment, record courier numbers, and collect COD payments</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="orders-status-filter" onchange="loadOrders()" class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textSecondary focus:outline-none focus:border-vaidya-accent">
+                            <option value="all">All Order Statuses</option>
+                            <option value="new">New</option>
+                            <option value="processing">Processing</option>
+                            <option value="dispatched">Dispatched</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <button onclick="loadOrders()" class="p-2 rounded-xl bg-vaidya-card border border-vaidya-accentMuted/40 text-vaidya-textSecondary hover:text-vaidya-accent text-xs">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Orders Table -->
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-vaidya-soft/60 border-b border-vaidya-accentMuted/30 text-vaidya-textMuted uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-3.5 px-4">Order Ref</th>
+                                    <th class="py-3.5 px-4">Customer</th>
+                                    <th class="py-3.5 px-4">Total Amount</th>
+                                    <th class="py-3.5 px-4">Payment</th>
+                                    <th class="py-3.5 px-4">Fulfillment</th>
+                                    <th class="py-3.5 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-table-body" class="divide-y divide-vaidya-accentMuted/20 text-vaidya-textPrimary">
+                                <tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No orders recorded yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. SUPPORT SECTION -->
+            <section id="view-support" class="tab-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Customer Support Cases</h3>
+                        <p class="text-xs text-vaidya-textMuted">Private inquiries, secure customer attachments, and confidential internal staff notes</p>
+                    </div>
+                    <select id="support-status-filter" onchange="loadSupportTickets()" class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textSecondary">
+                        <option value="all">All Cases</option>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-vaidya-soft/60 border-b border-vaidya-accentMuted/30 text-vaidya-textMuted uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-3.5 px-4">Case #</th>
+                                    <th class="py-3.5 px-4">Customer</th>
+                                    <th class="py-3.5 px-4">Category</th>
+                                    <th class="py-3.5 px-4">Subject</th>
+                                    <th class="py-3.5 px-4">Status</th>
+                                    <th class="py-3.5 px-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="support-table-body" class="divide-y divide-vaidya-accentMuted/20 text-vaidya-textPrimary">
+                                <tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No support cases submitted.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. REVIEWS SECTION -->
+            <section id="view-reviews" class="tab-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Product Reviews Moderation</h3>
+                        <p class="text-xs text-vaidya-textMuted">Approve or reject customer-submitted product ratings and reviews</p>
+                    </div>
+                    <select id="reviews-status-filter" onchange="loadReviews()" class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textSecondary">
+                        <option value="all">All Reviews</option>
+                        <option value="pending">Pending Moderation</option>
+                        <option value="approved">Approved & Live</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-vaidya-soft/60 border-b border-vaidya-accentMuted/30 text-vaidya-textMuted uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-3.5 px-4">Product</th>
+                                    <th class="py-3.5 px-4">Reviewer</th>
+                                    <th class="py-3.5 px-4">Rating</th>
+                                    <th class="py-3.5 px-4">Review Commentary</th>
+                                    <th class="py-3.5 px-4">Status</th>
+                                    <th class="py-3.5 px-4 text-right">Moderation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviews-table-body" class="divide-y divide-vaidya-accentMuted/20 text-vaidya-textPrimary">
+                                <tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No reviews awaiting moderation.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. AUDIT SECTION -->
+            <section id="view-audit" class="tab-view hidden space-y-6">
+                <div>
+                    <h3 class="font-serif text-lg text-vaidya-textPrimary font-medium">Security & Action Audit Trail</h3>
+                    <p class="text-xs text-vaidya-textMuted">Immutable server record of administrator operations, pricing changes, and logins</p>
+                </div>
+                <div class="bg-vaidya-card border border-vaidya-accentMuted/40 rounded-3xl p-6 shadow-xl space-y-3">
+                    <div id="audit-log-list" class="space-y-2 text-xs font-mono">
+                        <div class="text-vaidya-textMuted py-4 text-center">Audit logs tracking active.</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- PRODUCT EDITOR MODAL -->
+    <div id="product-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-vaidya-card border border-vaidya-accentMuted/60 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
+            <!-- Modal Header -->
+            <div class="px-6 py-5 border-b border-vaidya-accentMuted/30 flex items-center justify-between">
+                <div>
+                    <h3 id="modal-heading" class="font-serif text-lg text-vaidya-textPrimary font-medium">Add New Product</h3>
+                    <p class="text-xs text-vaidya-textMuted">Configure product specifications, pricing, imagery, and visibility</p>
+                </div>
+                <button onclick="closeProductModal()" class="w-8 h-8 rounded-full bg-vaidya-soft text-vaidya-textSecondary hover:text-vaidya-textPrimary flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body Form -->
+            <form id="product-form" onsubmit="saveProduct(event)" class="p-6 space-y-5 overflow-y-auto flex-1 text-xs">
+                <input type="hidden" id="prod-id">
+
+                <!-- 1. Basic Identity -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Product Title *</label>
+                        <input type="text" id="prod-name" required placeholder="e.g. Lemongrass Immunity Green Tea"
+                            class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">URL Slug (leave blank to auto-generate)</label>
+                        <input type="text" id="prod-slug" placeholder="e.g. lemongrass-immunity-green-tea"
+                            class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Category *</label>
+                        <select id="prod-category" required class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                            <option value="tea">Green Teas & Infusions</option>
+                            <option value="oil">Essential Oils</option>
+                            <option value="tonic">Daily Tonics</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Health Segment</label>
+                        <input type="text" id="prod-health-segment" placeholder="e.g. Health Segment: Immunity"
+                            class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Marketing Badge</label>
+                        <input type="text" id="prod-badge" placeholder="e.g. Best Seller, Pure Distillate"
+                            class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    </div>
+                </div>
+
+                <!-- 2. Pricing & Stock -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 p-4 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30">
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Price ($) *</label>
+                        <input type="number" step="0.01" id="prod-price" required placeholder="24.00"
+                            class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Compare Price ($)</label>
+                        <input type="number" step="0.01" id="prod-compare-price" placeholder="Optional strikethrough"
+                            class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Stock Quantity *</label>
+                        <input type="number" id="prod-stock" required value="50"
+                            class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Package Unit *</label>
+                        <input type="text" id="prod-unit" required value="/ 100g" placeholder="e.g. / 100g, / 15ml"
+                            class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-xl px-3.5 py-2.5 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    </div>
+                </div>
+
+                <!-- 3. Storefront Visibility -->
+                <div class="flex items-center gap-6 p-3 bg-vaidya-soft/40 rounded-2xl border border-vaidya-accentMuted/20">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="prod-published" checked class="rounded border-vaidya-accentMuted text-vaidya-accent focus:ring-0">
+                        <span class="font-medium text-vaidya-textPrimary">Publish to Storefront</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="prod-featured" checked class="rounded border-vaidya-accentMuted text-vaidya-accent focus:ring-0">
+                        <span class="font-medium text-vaidya-textPrimary">Feature on Homepage</span>
+                    </label>
+                </div>
+
+                <!-- 4. Descriptions -->
+                <div>
+                    <label class="block font-medium text-vaidya-textSecondary mb-1.5">Short Description (Displays on card preview) *</label>
+                    <textarea id="prod-short-desc" rows="2" required placeholder="Concise 1-2 sentence summary..."
+                        class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                </div>
+                <div>
+                    <label class="block font-medium text-vaidya-textSecondary mb-1.5">Full Botanical Description (Displays in modal details)</label>
+                    <textarea id="prod-desc" rows="3" placeholder="Elaborate on botanical origin, distillation story, and health properties..."
+                        class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                </div>
+
+                <!-- 5. Ayurvedic & Usage Specs -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Ingredients Formulation</label>
+                        <textarea id="prod-ingredients" rows="2" placeholder="e.g. Green Tea, Organic Lemongrass..."
+                            class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Usage Instructions</label>
+                        <textarea id="prod-usage" rows="2" placeholder="e.g. Brew 1 tsp in 85°C water for 3-4 mins..."
+                            class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Storage & Precautions</label>
+                        <textarea id="prod-storage" rows="2" placeholder="e.g. Store in cool place away from sun..."
+                            class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent"></textarea>
+                    </div>
+                </div>
+
+                <!-- 6. Image Management -->
+                <div class="border-t border-vaidya-accentMuted/30 pt-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="font-medium text-vaidya-textPrimary block">Product Photographs</span>
+                            <span class="text-[11px] text-vaidya-textMuted">Upload high-resolution photographs directly (PNG, JPG, WebP max 5MB)</span>
+                        </div>
+                        <label class="cursor-pointer py-2 px-3 rounded-xl bg-vaidya-card border border-vaidya-accent text-vaidya-accent hover:bg-vaidya-accent hover:text-vaidya-bg font-semibold flex items-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Upload Images</span>
+                            <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" onchange="handleImageUpload(this.files)" class="hidden">
+                        </label>
+                    </div>
+
+                    <!-- Uploading Progress Bar -->
+                    <div id="upload-progress" class="hidden p-3 bg-vaidya-soft rounded-xl border border-vaidya-accent/30 flex items-center gap-3">
+                        <i class="fa-solid fa-spinner fa-spin text-vaidya-accent"></i>
+                        <span id="upload-status-text" class="text-xs text-vaidya-textPrimary">Uploading image to secure storage...</span>
+                    </div>
+
+                    <!-- Images Gallery Grid -->
+                    <div id="images-gallery-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                        <!-- Dynamic image tiles rendered here -->
+                    </div>
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="border-t border-vaidya-accentMuted/30 pt-5 flex items-center justify-between">
+                    <button type="button" onclick="previewCurrentForm()" class="py-2.5 px-4 rounded-xl bg-vaidya-soft text-vaidya-textSecondary hover:text-vaidya-textPrimary font-medium flex items-center gap-2 border border-vaidya-accentMuted/40">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Preview Card</span>
+                    </button>
+
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="closeProductModal()" class="py-2.5 px-4 rounded-xl text-vaidya-textMuted hover:text-vaidya-textPrimary font-medium">
+                            Cancel
+                        </button>
+                        <button type="submit" id="save-prod-btn" class="py-2.5 px-5 rounded-xl bg-vaidya-accent text-vaidya-bg font-semibold hover:bg-vaidya-accentLight shadow-lg shadow-vaidya-accent/10 flex items-center gap-2">
+                            <i class="fa-solid fa-check"></i>
+                            <span id="save-prod-btn-text">Save Product</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PREVIEW MODAL -->
+    <div id="preview-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="max-w-md w-full bg-vaidya-card border border-vaidya-accent rounded-4xl p-6 relative shadow-2xl">
+            <button onclick="document.getElementById('preview-modal').classList.add('hidden')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-vaidya-soft text-vaidya-textSecondary hover:text-vaidya-textPrimary flex items-center justify-center">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="text-[10px] uppercase font-bold tracking-wider text-vaidya-accent mb-3">Live Storefront Card Preview</div>
+            <div id="preview-card-container"></div>
+        </div>
+    </div>
+
+    <!-- ORDER DETAILS MODAL -->
+    <div id="order-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-vaidya-card border border-vaidya-accentMuted/60 rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
+            <div class="px-6 py-5 border-b border-vaidya-accentMuted/30 flex items-center justify-between">
+                <div>
+                    <h3 id="order-modal-title" class="font-serif text-lg text-vaidya-textPrimary font-medium">Order Inspection</h3>
+                    <p id="order-modal-date" class="text-xs text-vaidya-textMuted"></p>
+                </div>
+                <button onclick="document.getElementById('order-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-vaidya-soft text-vaidya-textSecondary hover:text-vaidya-textPrimary flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-5 overflow-y-auto flex-1 text-xs">
+                <input type="hidden" id="edit-order-id">
+                <!-- Customer info & Recipient info -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-4 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30 space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] uppercase tracking-wider text-vaidya-accent font-semibold block">Buyer Information</span>
+                            <span id="order-modal-phone-otp-badge"></span>
+                        </div>
+                        <div id="order-modal-cust" class="text-sm font-medium text-vaidya-textPrimary"></div>
+                        <div id="order-modal-phone-otp-time" class="text-[10px] text-vaidya-textMuted"></div>
+                    </div>
+                    <div class="p-4 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30 space-y-1">
+                        <span class="text-[10px] uppercase tracking-wider text-vaidya-accent font-semibold block">Delivery Recipient & Address</span>
+                        <div id="order-modal-recipient" class="text-xs font-semibold text-vaidya-textPrimary"></div>
+                        <div id="order-modal-addr" class="text-xs text-vaidya-textSecondary leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <!-- Manual Pre-Dispatch Phone Verification -->
+                <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] uppercase tracking-wider text-amber-400 font-semibold flex items-center gap-1.5">
+                            <i class="fa-solid fa-phone-volume"></i> Pre-Dispatch Manual Call Verification
+                        </span>
+                        <span id="order-modal-verified-at" class="text-[10px] text-vaidya-textMuted"></span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1 text-[11px]">Verification Call Status</label>
+                            <select id="edit-order-verification-status" class="w-full bg-vaidya-soft border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                                <option value="unverified">⏳ Unverified (Pending Call)</option>
+                                <option value="call_verified">✅ Phone Verified & Confirmed</option>
+                                <option value="unreachable">⚠️ Unreachable / No Answer</option>
+                                <option value="cancelled">❌ Cancelled by Customer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-vaidya-textSecondary mb-1 text-[11px]">Verification Notes</label>
+                            <input type="text" id="edit-order-verification-notes" placeholder="e.g. Confirmed with customer over phone" class="w-full bg-vaidya-soft border border-amber-500/30 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items list -->
+                <div>
+                    <span class="text-[10px] uppercase tracking-wider text-vaidya-textMuted font-semibold block mb-2">Ordered Formulations</span>
+                    <div id="order-modal-items" class="space-y-2 border border-vaidya-accentMuted/30 rounded-2xl p-3 bg-vaidya-soft/40 divide-y divide-vaidya-accentMuted/20"></div>
+                </div>
+
+                <!-- Status Selectors -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Fulfillment Status</label>
+                        <select id="edit-order-status" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            <option value="new">New</option>
+                            <option value="processing">Processing</option>
+                            <option value="dispatched">Dispatched</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Payment Status</label>
+                        <select id="edit-order-payment-status" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid (Confirmed / Collected)</option>
+                            <option value="refunded">Refunded</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tracking Courier -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">Courier Partner</label>
+                        <input type="text" id="edit-order-courier" placeholder="e.g. BlueDart, Delhivery, DTDC" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-vaidya-textSecondary mb-1.5">AWB / Tracking Number</label>
+                        <input type="text" id="edit-order-tracking" placeholder="Tracking code" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary font-mono">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-vaidya-textSecondary mb-1.5">Internal Order Notes</label>
+                    <textarea id="edit-order-notes" rows="2" placeholder="Private notes for packaging staff..." class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-vaidya-accentMuted/30">
+                    <button type="button" onclick="document.getElementById('order-modal').classList.add('hidden')" class="py-2.5 px-4 rounded-xl text-vaidya-textMuted hover:text-vaidya-textPrimary">Cancel</button>
+                    <button type="button" onclick="saveOrderUpdates()" class="py-2.5 px-5 rounded-xl bg-vaidya-accent text-vaidya-bg font-semibold hover:bg-vaidya-accentLight">Update Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUPPORT CASE MODAL -->
+    <div id="support-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-vaidya-card border border-vaidya-accentMuted/60 rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl relative my-auto">
+            <div class="px-6 py-5 border-b border-vaidya-accentMuted/30 flex items-center justify-between">
+                <div>
+                    <h3 id="support-modal-title" class="font-serif text-lg text-vaidya-textPrimary font-medium">Customer Support Case</h3>
+                    <p id="support-modal-cust" class="text-xs text-vaidya-textMuted"></p>
+                </div>
+                <button onclick="document.getElementById('support-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-vaidya-soft text-vaidya-textSecondary hover:text-vaidya-textPrimary flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4 overflow-y-auto flex-1 text-xs">
+                <input type="hidden" id="edit-support-id">
+                <div class="p-3 bg-vaidya-soft/60 rounded-2xl border border-vaidya-accentMuted/30">
+                    <span class="text-[10px] uppercase text-vaidya-accent font-semibold block mb-1">Customer Inquiry</span>
+                    <div id="support-modal-msg" class="text-xs text-vaidya-textPrimary leading-relaxed whitespace-pre-wrap"></div>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-vaidya-textSecondary mb-1.5">Case Status</label>
+                    <select id="edit-support-status" class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl px-3 py-2 text-xs text-vaidya-textPrimary">
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-medium text-vaidya-textSecondary mb-1.5">Internal Staff Notes (Invisible to Customer)</label>
+                    <textarea id="edit-support-notes" rows="3" placeholder="Record internal follow-up steps..." class="w-full bg-vaidya-soft border border-vaidya-accentMuted/40 rounded-xl p-3 text-xs text-vaidya-textPrimary"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-vaidya-accentMuted/30">
+                    <button type="button" onclick="document.getElementById('support-modal').classList.add('hidden')" class="py-2.5 px-4 rounded-xl text-vaidya-textMuted hover:text-vaidya-textPrimary">Cancel</button>
+                    <button type="button" onclick="saveSupportUpdates()" class="py-2.5 px-5 rounded-xl bg-vaidya-accent text-vaidya-bg font-semibold hover:bg-vaidya-accentLight">Save Case</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Script -->
+    <script>
+        let currentTab = 'products';
+        let allProducts = [];
+        let currentEditingImages = [];
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const text = document.getElementById('toast-msg');
+
+            text.textContent = msg;
+            if (isError) {
+                toast.classList.remove('border-vaidya-accent');
+                toast.classList.add('border-red-500');
+                icon.className = 'fa-solid fa-circle-exclamation text-red-400 text-sm';
+            } else {
+                toast.classList.remove('border-red-500');
+                toast.classList.add('border-vaidya-accent');
+                icon.className = 'fa-solid fa-circle-check text-vaidya-accent text-sm';
+            }
+
+            toast.classList.remove('opacity-0', 'translate-y-12');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-12');
+            }, 3000);
+        }
+
+        function navigateTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+            const targetView = document.getElementById('view-' + tabId);
+            if (targetView) targetView.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-vaidya-accent/15', 'text-vaidya-accent');
+                el.classList.add('text-vaidya-textSecondary');
+            });
+            const activeNav = document.getElementById('nav-' + tabId);
+            if (activeNav) {
+                activeNav.classList.add('bg-vaidya-accent/15', 'text-vaidya-accent');
+                activeNav.classList.remove('text-vaidya-textSecondary');
+            }
+
+            const titles = {
+                products: 'Products',
+                content: 'Website Content',
+                orders: 'Orders & Deliveries',
+                support: 'Customer Support',
+                reviews: 'Reviews',
+                audit: 'Audit Trail'
+            };
+            document.getElementById('page-title').textContent = titles[tabId] || 'Console';
+
+            if (tabId === 'orders') loadOrders();
+            if (tabId === 'support') loadSupportTickets();
+            if (tabId === 'reviews') loadReviews();
+            if (tabId === 'content') loadSiteContent();
+            if (tabId === 'products') loadProducts();
+        }
+
+        async function verifySession() {
+            try {
+                const res = await fetch('/api/auth/admin-session');
+                const data = await res.json();
+                if (!res.ok || !data.authenticated) {
+                    window.location.href = '/';
+                    return;
+                }
+                document.getElementById('admin-user-email').textContent = data.user.email;
+                loadProducts();
+            } catch (err) {
+                window.location.href = '/';
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await fetch('/api/auth/admin-logout', { method: 'POST' });
+                window.location.href = '/';
+            } catch (err) {
+                window.location.href = '/';
+            }
+        }
+
+        // ==========================================
+        // PRODUCT CATALOG MANAGEMENT
+        // ==========================================
+        async function loadProducts() {
+            const tbody = document.getElementById('product-table-body');
+            try {
+                const res = await fetch('/api/admin/products');
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to fetch products');
+
+                allProducts = data.products || [];
+                renderProductTable(allProducts);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400">Error loading catalog: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderProductTable(products) {
+            const tbody = document.getElementById('product-table-body');
+            if (!products.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No products found. Click "Add Product" above to create one.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = products.map(p => {
+                const primaryImg = (p.images && p.images.length) ? p.images.find(i => i.is_primary) || p.images[0] : null;
+                const imgThumb = primaryImg && primaryImg.url
+                    ? `<img src="${primaryImg.url}" alt="${primaryImg.alt || p.name}" class="w-10 h-10 rounded-xl object-cover border border-vaidya-accentMuted/40">`
+                    : `<div class="w-10 h-10 rounded-xl bg-vaidya-accent/10 border border-vaidya-accent/20 flex items-center justify-center text-vaidya-accent"><i class="fa-solid fa-${p.category === 'tea' ? 'mug-saucer' : p.category === 'oil' ? 'bottle-droplet' : 'leaf'}"></i></div>`;
+
+                const stockColor = p.stock > 10 ? 'text-emerald-400' : p.stock > 0 ? 'text-amber-400 font-semibold' : 'text-red-400 font-bold';
+
+                const statusBadges = [];
+                if (p.is_archived) statusBadges.push('<span class="px-2 py-0.5 rounded-full text-[10px] bg-gray-800 text-gray-400 border border-gray-700">Archived</span>');
+                else if (p.is_published) statusBadges.push('<span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">Published</span>');
+                else statusBadges.push('<span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-950/80 text-amber-300 border border-amber-500/30">Draft</span>');
+
+                if (p.is_featured) statusBadges.push('<span class="px-2 py-0.5 rounded-full text-[10px] bg-vaidya-accent/15 text-vaidya-accent border border-vaidya-accent/30">Featured</span>');
+                if (p.badge) statusBadges.push(`<span class="px-2 py-0.5 rounded-full text-[10px] bg-vaidya-card text-vaidya-textSecondary border border-vaidya-accentMuted/60">${p.badge}</span>`);
+
+                return `
+                <tr class="hover:bg-vaidya-soft/40 transition-colors">
+                    <td class="py-3.5 px-4 flex items-center gap-3">
+                        ${imgThumb}
+                        <div class="min-w-0">
+                            <div class="font-medium text-vaidya-textPrimary truncate">${escapeHtml(p.name)}</div>
+                            <div class="text-[11px] text-vaidya-textMuted font-mono truncate">/${escapeHtml(p.slug)}</div>
+                        </div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <span class="capitalize text-vaidya-textSecondary">${p.category === 'tea' ? 'Green Tea' : p.category === 'oil' ? 'Essential Oil' : p.category}</span>
+                    </td>
+                    <td class="py-3.5 px-4 font-mono">
+                        ₹${Number(p.price).toFixed(2)} <span class="text-[10px] text-vaidya-textMuted">${escapeHtml(p.unit || '')}</span>
+                    </td>
+                    <td class="py-3.5 px-4 font-mono ${stockColor}">
+                        ${p.stock} units
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <div class="flex flex-wrap gap-1">${statusBadges.join('')}</div>
+                    </td>
+                    <td class="py-3.5 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            <button onclick="previewProduct('${p.id}')" title="Preview" class="p-1.5 rounded-lg text-vaidya-textMuted hover:text-vaidya-accent hover:bg-vaidya-soft">
+                                <i class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                            <button onclick="openProductModal(allProducts.find(x => x.id === '${p.id}'))" title="Edit Product" class="p-1.5 rounded-lg text-vaidya-textMuted hover:text-vaidya-accent hover:bg-vaidya-soft">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i>
+                            </button>
+                            <button onclick="duplicateProduct('${p.id}')" title="Duplicate" class="p-1.5 rounded-lg text-vaidya-textMuted hover:text-vaidya-accent hover:bg-vaidya-soft">
+                                <i class="fa-solid fa-copy text-xs"></i>
+                            </button>
+                            <button onclick="togglePublish('${p.id}', ${p.is_published})" title="${p.is_published ? 'Unpublish' : 'Publish'}" class="p-1.5 rounded-lg ${p.is_published ? 'text-emerald-400 hover:text-amber-400' : 'text-amber-400 hover:text-emerald-400'} hover:bg-vaidya-soft">
+                                <i class="fa-solid fa-${p.is_published ? 'toggle-on' : 'toggle-off'} text-sm"></i>
+                            </button>
+                            <button onclick="archiveProduct('${p.id}')" title="Archive" class="p-1.5 rounded-lg text-vaidya-textMuted hover:text-red-400 hover:bg-vaidya-soft">
+                                <i class="fa-solid fa-box-archive text-xs"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function filterProductTable() {
+            const query = (document.getElementById('product-search').value || '').toLowerCase();
+            const cat = document.getElementById('product-category-filter').value;
+
+            let filtered = allProducts;
+            if (cat !== 'all') {
+                filtered = filtered.filter(p => p.category === cat);
+            }
+            if (query) {
+                filtered = filtered.filter(p =>
+                    p.name.toLowerCase().includes(query) ||
+                    p.slug.toLowerCase().includes(query) ||
+                    (p.short_description && p.short_description.toLowerCase().includes(query))
+                );
+            }
+            renderProductTable(filtered);
+        }
+
+        // ==========================================
+        // PRODUCT MODAL OPERATIONS
+        // ==========================================
+        function openProductModal(prod = null) {
+            document.getElementById('modal-heading').textContent = prod ? 'Edit Product' : 'Add New Product';
+            document.getElementById('save-prod-btn-text').textContent = prod ? 'Update Product' : 'Create Product';
+
+            document.getElementById('prod-id').value = prod ? prod.id : '';
+            document.getElementById('prod-name').value = prod ? prod.name : '';
+            document.getElementById('prod-slug').value = prod ? prod.slug : '';
+            document.getElementById('prod-category').value = prod ? prod.category : 'tea';
+            document.getElementById('prod-health-segment').value = prod ? (prod.health_segment || '') : '';
+            document.getElementById('prod-badge').value = prod ? (prod.badge || '') : '';
+            document.getElementById('prod-price').value = prod ? prod.price : '';
+            document.getElementById('prod-compare-price').value = (prod && prod.compare_at_price) ? prod.compare_at_price : '';
+            document.getElementById('prod-stock').value = prod ? prod.stock : 50;
+            document.getElementById('prod-unit').value = prod ? prod.unit : '/ 100g';
+            document.getElementById('prod-published').checked = prod ? prod.is_published : true;
+            document.getElementById('prod-featured').checked = prod ? prod.is_featured : true;
+            document.getElementById('prod-short-desc').value = prod ? (prod.short_description || '') : '';
+            document.getElementById('prod-desc').value = prod ? (prod.description || '') : '';
+            document.getElementById('prod-ingredients').value = prod ? (prod.ingredients || '') : '';
+            document.getElementById('prod-usage').value = prod ? (prod.usage_instructions || '') : '';
+            document.getElementById('prod-storage').value = prod ? (prod.storage_precautions || '') : '';
+
+            currentEditingImages = (prod && Array.isArray(prod.images)) ? JSON.parse(JSON.stringify(prod.images)) : [];
+            renderImageGallery();
+
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+        }
+
+        function renderImageGallery() {
+            const container = document.getElementById('images-gallery-grid');
+            if (!currentEditingImages.length) {
+                container.innerHTML = '<div class="col-span-full py-4 text-center text-vaidya-textMuted border border-dashed border-vaidya-accentMuted/40 rounded-2xl">No photographs attached yet. Click "Upload Images" above.</div>';
+                return;
+            }
+
+            container.innerHTML = currentEditingImages.map((img, idx) => `
+                <div class="relative bg-vaidya-soft rounded-2xl p-2 border ${img.is_primary ? 'border-vaidya-accent' : 'border-vaidya-accentMuted/40'} space-y-1.5 group">
+                    <img src="${img.url || 'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'><rect width=\'100%\' height=\'100%\' fill=\'%231E2026\'/><text x=\'50%\' y=\'50%\' fill=\'%2320E070\' text-anchor=\'middle\'>No Image</text></svg>'}" class="w-full h-24 object-cover rounded-xl">
+                    <input type="text" value="${escapeHtml(img.alt || '')}" oninput="updateImageAlt(${idx}, this.value)" placeholder="Alt text..." class="w-full bg-vaidya-card border border-vaidya-accentMuted/30 rounded-lg px-2 py-1 text-[10px] text-vaidya-textPrimary focus:outline-none focus:border-vaidya-accent">
+                    <div class="flex items-center justify-between pt-1">
+                        <button type="button" onclick="setPrimaryImage(${idx})" class="text-[10px] font-semibold ${img.is_primary ? 'text-vaidya-accent' : 'text-vaidya-textMuted hover:text-vaidya-accent'}">
+                            ${img.is_primary ? '<i class="fa-solid fa-star"></i> Primary' : '<i class="fa-regular fa-star"></i> Set Primary'}
+                        </button>
+                        <button type="button" onclick="removeImage(${idx})" class="text-vaidya-textMuted hover:text-red-400 text-xs p-0.5">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setPrimaryImage(index) {
+            currentEditingImages.forEach((img, i) => img.is_primary = (i === index));
+            renderImageGallery();
+        }
+
+        function updateImageAlt(index, alt) {
+            if (currentEditingImages[index]) currentEditingImages[index].alt = alt;
+        }
+
+        function removeImage(index) {
+            currentEditingImages.splice(index, 1);
+            if (currentEditingImages.length && !currentEditingImages.some(i => i.is_primary)) {
+                currentEditingImages[0].is_primary = true;
+            }
+            renderImageGallery();
+        }
+
+        async function handleImageUpload(files) {
+            if (!files || !files.length) return;
+            const progress = document.getElementById('upload-progress');
+            const status = document.getElementById('upload-status-text');
+            progress.classList.remove('hidden');
+
+            const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+            const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                status.textContent = `Processing ${file.name} (${i + 1}/${files.length})...`;
+
+                // 1. Client-side security and format validation
+                if (!ALLOWED_TYPES.includes(file.type.toLowerCase())) {
+                    showToast(`Invalid format for ${file.name}. Allowed: JPG, PNG, WebP, AVIF`, true);
+                    continue;
+                }
+                if (file.size > MAX_SIZE) {
+                    showToast(`File ${file.name} exceeds 5MB limit (${(file.size / (1024 * 1024)).toFixed(2)} MB)`, true);
+                    continue;
+                }
+
+                try {
+                    // 2. Request official Cloudinary signed upload parameters from edge API
+                    status.textContent = `Authorizing Cloudinary upload for ${file.name}...`;
+                    const sigRes = await fetch('/api/admin/cloudinary-signature', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            mimeType: file.type,
+                            size: file.size
+                        })
+                    });
+
+                    const sigData = await sigRes.json();
+
+                    if (sigRes.ok && sigData.signature && sigData.cloudName) {
+                        // 3. Direct upload to Cloudinary official REST API via signed POST
+                        status.textContent = `Uploading ${file.name} directly to Cloudinary (${sigData.folder})...`;
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('api_key', sigData.apiKey);
+                        formData.append('timestamp', sigData.timestamp);
+                        formData.append('signature', sigData.signature);
+                        formData.append('folder', sigData.folder);
+                        formData.append('public_id', sigData.public_id);
+
+                        const cldUrl = `https://api.cloudinary.com/v1_1/${encodeURIComponent(sigData.cloudName)}/image/upload`;
+                        const cldRes = await fetch(cldUrl, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const cldJson = await cldRes.json();
+                        if (!cldRes.ok || !cldJson.secure_url) {
+                            throw new Error(cldJson.error?.message || 'Cloudinary upload rejected');
+                        }
+
+                        currentEditingImages.push({
+                            url: cldJson.secure_url,
+                            public_id: cldJson.public_id,
+                            alt: file.name.split('.')[0],
+                            is_primary: currentEditingImages.length === 0
+                        });
+                        showToast(`Uploaded ${file.name} to Cloudinary`);
+                    } else if (sigRes.status === 503) {
+                        // Cloudinary credentials unconfigured in local dev: Fall back to local storage
+                        status.textContent = `Cloudinary unconfigured. Falling back to local storage for ${file.name}...`;
+                        const base64 = await fileToBase64(file);
+                        const res = await fetch('/api/admin/upload', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                filename: file.name,
+                                mimeType: file.type,
+                                base64Data: base64,
+                                bucketType: 'public'
+                            })
+                        });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+                        currentEditingImages.push({
+                            url: data.url,
+                            alt: file.name.split('.')[0],
+                            is_primary: currentEditingImages.length === 0
+                        });
+                        showToast(`Uploaded ${file.name} to local storage`);
+                    } else {
+                        throw new Error(sigData.error || 'Failed to authorize upload signature');
+                    }
+                } catch (err) {
+                    showToast(`Error uploading ${file.name}: ${err.message}`, true);
+                }
+            }
+
+            progress.classList.add('hidden');
+            renderImageGallery();
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        async function saveProduct(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value;
+            const payload = {
+                name: document.getElementById('prod-name').value.trim(),
+                slug: document.getElementById('prod-slug').value.trim(),
+                category: document.getElementById('prod-category').value,
+                health_segment: document.getElementById('prod-health-segment').value.trim(),
+                badge: document.getElementById('prod-badge').value.trim(),
+                price: parseFloat(document.getElementById('prod-price').value),
+                compare_at_price: document.getElementById('prod-compare-price').value ? parseFloat(document.getElementById('prod-compare-price').value) : null,
+                stock: parseInt(document.getElementById('prod-stock').value, 10),
+                unit: document.getElementById('prod-unit').value.trim(),
+                is_published: document.getElementById('prod-published').checked,
+                is_featured: document.getElementById('prod-featured').checked,
+                short_description: document.getElementById('prod-short-desc').value.trim(),
+                description: document.getElementById('prod-desc').value.trim(),
+                ingredients: document.getElementById('prod-ingredients').value.trim(),
+                usage_instructions: document.getElementById('prod-usage').value.trim(),
+                storage_precautions: document.getElementById('prod-storage').value.trim(),
+                images: currentEditingImages
+            };
+
+            const btn = document.getElementById('save-prod-btn');
+            const btnText = document.getElementById('save-prod-btn-text');
+            btn.disabled = true;
+            btnText.textContent = 'Saving...';
+
+            try {
+                const method = id ? 'PUT' : 'POST';
+                const endpoint = id ? `/api/admin/products?id=${id}` : '/api/admin/products';
+
+                const res = await fetch(endpoint, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to save product');
+
+                showToast(id ? 'Product updated successfully.' : 'New product created.');
+                closeProductModal();
+                loadProducts();
+            } catch (err) {
+                showToast(err.message, true);
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = id ? 'Update Product' : 'Create Product';
+            }
+        }
+
+        async function duplicateProduct(id) {
+            try {
+                const res = await fetch(`/api/admin/products?action=duplicate&id=${id}`, { method: 'POST' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to duplicate product');
+                showToast('Product duplicated as draft.');
+                loadProducts();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        async function togglePublish(id, currentState) {
+            try {
+                const res = await fetch(`/api/admin/products?id=${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ is_published: !currentState })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to toggle status');
+                showToast(currentState ? 'Product unpublished.' : 'Product published to store.');
+                loadProducts();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        async function archiveProduct(id) {
+            if (!confirm('Are you sure you want to archive this product? It will be removed from the storefront.')) return;
+            try {
+                const res = await fetch(`/api/admin/products?id=${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to archive');
+                showToast('Product archived.');
+                loadProducts();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        function previewProduct(id) {
+            const p = allProducts.find(x => x.id === id);
+            if (!p) return;
+            renderPreviewModal(p);
+        }
+
+        function previewCurrentForm() {
+            const previewObj = {
+                name: document.getElementById('prod-name').value || 'Product Preview',
+                category: document.getElementById('prod-category').value,
+                health_segment: document.getElementById('prod-health-segment').value || 'Health Segment',
+                badge: document.getElementById('prod-badge').value || 'Curated',
+                price: parseFloat(document.getElementById('prod-price').value) || 0,
+                unit: document.getElementById('prod-unit').value || '/ unit',
+                short_description: document.getElementById('prod-short-desc').value || 'Short description preview...',
+                images: currentEditingImages
+            };
+            renderPreviewModal(previewObj);
+        }
+
+        function renderPreviewModal(p) {
+            const primaryImg = (p.images && p.images.length) ? p.images.find(i => i.is_primary) || p.images[0] : null;
+            const container = document.getElementById('preview-card-container');
+
+            container.innerHTML = `
+            <div class="product-card ${p.category} bg-vaidya-card rounded-4xl p-6 border border-vaidya-accentMuted/60 flex flex-col justify-between">
+                <div>
+                    <div class="w-full h-48 rounded-3xl bg-gradient-to-br from-[#181A20] to-[#242730] flex items-center justify-center relative overflow-hidden mb-6 border border-white/5">
+                        ${primaryImg && primaryImg.url ? `<img src="${primaryImg.url}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-leaf text-5xl text-vaidya-accent/60"></i>`}
+                        ${p.badge ? `<span class="absolute top-4 left-4 bg-vaidya-bg/90 text-vaidya-accent border border-vaidya-accent/30 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase">${escapeHtml(p.badge)}</span>` : ''}
+                    </div>
+                    <div class="text-xs font-medium text-vaidya-accentLight mb-1">${escapeHtml(p.health_segment || '')}</div>
+                    <h3 class="font-serif text-xl text-vaidya-textPrimary mb-2">${escapeHtml(p.name)}</h3>
+                    <p class="text-xs text-vaidya-textSecondary font-light leading-relaxed mb-6">${escapeHtml(p.short_description || '')}</p>
+                </div>
+                <div class="flex items-center justify-between pt-4 border-t border-vaidya-soft">
+                    <span class="font-serif text-lg text-vaidya-textPrimary font-semibold">₹${Number(p.price).toFixed(2)} <span class="text-xs font-normal text-vaidya-textMuted">${escapeHtml(p.unit || '')}</span></span>
+                    <button class="px-4 py-2 rounded-full bg-vaidya-accent text-vaidya-bg text-xs font-semibold flex items-center gap-1.5"><i class="fa-solid fa-cart-plus"></i> Add</button>
+                </div>
+            </div>
+            `;
+            document.getElementById('preview-modal').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // WEBSITE CONTENT MANAGEMENT (CMS)
+        // ==========================================
+        let currentContentSection = 'hero';
+        let siteContentData = {};
+        let currentFaqs = [];
+
+        async function loadSiteContent() {
+            try {
+                const res = await fetch('/api/admin/content');
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to fetch content');
+
+                siteContentData = data.content || {};
+                populateContentFields();
+            } catch (err) {
+                showToast('Failed to load content: ' + err.message, true);
+            }
+        }
+
+        function switchContentTab(sec) {
+            currentContentSection = sec;
+            document.querySelectorAll('.cpanel').forEach(p => p.classList.add('hidden'));
+            const activePanel = document.getElementById('cpanel-' + sec);
+            if (activePanel) activePanel.classList.remove('hidden');
+
+            document.querySelectorAll('.ctab-btn').forEach(btn => {
+                btn.classList.remove('border-vaidya-accent', 'text-vaidya-accent');
+                btn.classList.add('border-transparent', 'text-vaidya-textSecondary');
+            });
+            const activeTab = document.getElementById('ctab-' + sec);
+            if (activeTab) {
+                activeTab.classList.add('border-vaidya-accent', 'text-vaidya-accent');
+                activeTab.classList.remove('border-transparent', 'text-vaidya-textSecondary');
+            }
+        }
+
+        function populateContentFields() {
+            // Hero
+            const hero = siteContentData.hero || {};
+            document.getElementById('cms-hero-eyebrow').value = hero.eyebrow || '';
+            document.getElementById('cms-hero-title').value = hero.title || '';
+            document.getElementById('cms-hero-desc').value = hero.description || '';
+            document.getElementById('cms-hero-b1').value = hero.badge_1 || '';
+            document.getElementById('cms-hero-b2').value = hero.badge_2 || '';
+            document.getElementById('cms-hero-b3').value = hero.badge_3 || '';
+
+            // About
+            const about = siteContentData.about || {};
+            document.getElementById('cms-about-eyebrow').value = about.eyebrow || '';
+            document.getElementById('cms-about-title').value = about.title || '';
+            document.getElementById('cms-about-desc').value = about.description || '';
+            document.getElementById('cms-about-s1-num').value = about.stat_1_number || '';
+            document.getElementById('cms-about-s1-lbl').value = about.stat_1_label || '';
+            document.getElementById('cms-about-s2-num').value = about.stat_2_number || '';
+            document.getElementById('cms-about-s2-lbl').value = about.stat_2_label || '';
+            document.getElementById('cms-about-s3-num').value = about.stat_3_number || '';
+            document.getElementById('cms-about-s3-lbl').value = about.stat_3_label || '';
+
+            // Story
+            const story = siteContentData.story || {};
+            document.getElementById('cms-story-title').value = story.title || '';
+            document.getElementById('cms-story-subtitle').value = story.subtitle || '';
+            document.getElementById('cms-story-p1').value = story.p1 || '';
+            document.getElementById('cms-story-p2').value = story.p2 || '';
+            document.getElementById('cms-story-p3').value = story.p3 || '';
+
+            // Support & FAQs
+            const sup = siteContentData.support_info || {};
+            document.getElementById('cms-support-email').value = sup.email || '';
+            document.getElementById('cms-support-phone').value = sup.phone || '';
+            document.getElementById('cms-support-hours').value = sup.hours || '';
+            document.getElementById('cms-support-address').value = sup.address || '';
+
+            currentFaqs = Array.isArray(sup.faqs) ? JSON.parse(JSON.stringify(sup.faqs)) : [];
+            renderFaqList();
+        }
+
+        function renderFaqList() {
+            const container = document.getElementById('faq-list-container');
+            if (!currentFaqs.length) {
+                container.innerHTML = '<div class="py-3 text-center text-vaidya-textMuted border border-dashed border-vaidya-accentMuted/40 rounded-xl">No FAQs added yet. Click "Add Question" above.</div>';
+                return;
+            }
+
+            container.innerHTML = currentFaqs.map((f, i) => `
+                <div class="p-3 bg-vaidya-soft rounded-xl border border-vaidya-accentMuted/30 space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                        <input type="text" value="${escapeHtml(f.q)}" oninput="currentFaqs[${i}].q = this.value" placeholder="Question..." class="flex-1 bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg px-2.5 py-1.5 text-xs text-vaidya-textPrimary font-medium focus:outline-none focus:border-vaidya-accent">
+                        <button type="button" onclick="removeFaqItem(${i})" class="text-vaidya-textMuted hover:text-red-400 p-1 text-xs">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                    <textarea rows="2" oninput="currentFaqs[${i}].a = this.value" placeholder="Answer..." class="w-full bg-vaidya-card border border-vaidya-accentMuted/40 rounded-lg p-2 text-xs text-vaidya-textSecondary focus:outline-none focus:border-vaidya-accent">${escapeHtml(f.a)}</textarea>
+                </div>
+            `).join('');
+        }
+
+        function addFaqItem() {
+            currentFaqs.push({ q: 'New Botanical Question', a: 'Detailed answer...' });
+            renderFaqList();
+        }
+
+        function removeFaqItem(index) {
+            currentFaqs.splice(index, 1);
+            renderFaqList();
+        }
+
+        async function saveCurrentContentSection() {
+            const sec = currentContentSection;
+            let dataPayload = {};
+
+            if (sec === 'hero') {
+                dataPayload = {
+                    eyebrow: document.getElementById('cms-hero-eyebrow').value.trim(),
+                    title: document.getElementById('cms-hero-title').value.trim(),
+                    description: document.getElementById('cms-hero-desc').value.trim(),
+                    badge_1: document.getElementById('cms-hero-b1').value.trim(),
+                    badge_2: document.getElementById('cms-hero-b2').value.trim(),
+                    badge_3: document.getElementById('cms-hero-b3').value.trim()
+                };
+            } else if (sec === 'about') {
+                dataPayload = {
+                    eyebrow: document.getElementById('cms-about-eyebrow').value.trim(),
+                    title: document.getElementById('cms-about-title').value.trim(),
+                    description: document.getElementById('cms-about-desc').value.trim(),
+                    stat_1_number: document.getElementById('cms-about-s1-num').value.trim(),
+                    stat_1_label: document.getElementById('cms-about-s1-lbl').value.trim(),
+                    stat_2_number: document.getElementById('cms-about-s2-num').value.trim(),
+                    stat_2_label: document.getElementById('cms-about-s2-lbl').value.trim(),
+                    stat_3_number: document.getElementById('cms-about-s3-num').value.trim(),
+                    stat_3_label: document.getElementById('cms-about-s3-lbl').value.trim()
+                };
+            } else if (sec === 'story') {
+                dataPayload = {
+                    title: document.getElementById('cms-story-title').value.trim(),
+                    subtitle: document.getElementById('cms-story-subtitle').value.trim(),
+                    p1: document.getElementById('cms-story-p1').value.trim(),
+                    p2: document.getElementById('cms-story-p2').value.trim(),
+                    p3: document.getElementById('cms-story-p3').value.trim()
+                };
+            } else if (sec === 'support_info') {
+                dataPayload = {
+                    email: document.getElementById('cms-support-email').value.trim(),
+                    phone: document.getElementById('cms-support-phone').value.trim(),
+                    hours: document.getElementById('cms-support-hours').value.trim(),
+                    address: document.getElementById('cms-support-address').value.trim(),
+                    faqs: currentFaqs
+                };
+            }
+
+            const btn = document.getElementById('cms-save-btn');
+            const btnText = document.getElementById('cms-save-btn-text');
+            btn.disabled = true;
+            btnText.textContent = 'Publishing...';
+
+            try {
+                const res = await fetch('/api/admin/content', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key: sec, data: dataPayload })
+                });
+
+                const resData = await res.json();
+                if (!res.ok) throw new Error(resData.error || 'Failed to update section');
+
+                siteContentData[sec] = dataPayload;
+                showToast(`Section "${sec}" published to live website.`);
+            } catch (err) {
+                showToast(err.message, true);
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = 'Publish Section';
+            }
+        }
+
+        // ==========================================
+        // ORDERS & DELIVERY MANAGEMENT
+        // ==========================================
+        let allOrders = [];
+
+        async function loadOrders() {
+            const tbody = document.getElementById('orders-table-body');
+            const statusFilter = document.getElementById('orders-status-filter')?.value || 'all';
+
+            try {
+                const url = statusFilter !== 'all' ? `/api/admin/orders?status=${statusFilter}` : '/api/admin/orders';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to fetch orders');
+
+                allOrders = data.orders || [];
+                renderOrdersTable(allOrders);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400">Failed to load orders: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderOrdersTable(orders) {
+            const tbody = document.getElementById('orders-table-body');
+            if (!orders.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No orders found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = orders.map(o => {
+                const payBadge = o.payment_status === 'paid'
+                    ? '<span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">Paid</span>'
+                    : '<span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-950/80 text-amber-300 border border-amber-500/30">Pending</span>';
+
+                const orderBadgeMap = {
+                    new: 'bg-blue-950/80 text-blue-300 border-blue-500/30',
+                    processing: 'bg-indigo-950/80 text-indigo-300 border-indigo-500/30',
+                    dispatched: 'bg-amber-950/80 text-amber-300 border-amber-500/30',
+                    delivered: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30',
+                    cancelled: 'bg-red-950/80 text-red-300 border-red-500/30'
+                };
+                const orderBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] border capitalize ${orderBadgeMap[o.order_status] || 'bg-gray-800 text-gray-400'}">${o.order_status}</span>`;
+
+                const dateStr = new Date(o.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+                return `
+                <tr class="hover:bg-vaidya-soft/40 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-medium text-vaidya-accent">
+                        ${escapeHtml(o.order_number)}
+                        <div class="text-[10px] text-vaidya-textMuted font-sans">${dateStr}</div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <div class="font-medium text-vaidya-textPrimary">${escapeHtml(o.customer_name)}</div>
+                        <div class="text-[11px] text-vaidya-textMuted">${escapeHtml(o.customer_phone || o.customer_email)}</div>
+                    </td>
+                    <td class="py-3.5 px-4 font-mono text-sm font-semibold text-vaidya-textPrimary">
+                        ₹${Number(o.total).toFixed(2)}
+                    </td>
+                    <td class="py-3.5 px-4">
+                        <div class="flex items-center gap-1.5">
+                            ${payBadge}
+                            <span class="text-[10px] uppercase font-bold text-vaidya-textMuted">${escapeHtml(o.payment_method)}</span>
+                        </div>
+                    </td>
+                    <td class="py-3.5 px-4">
+                        ${orderBadge}
+                    </td>
+                    <td class="py-3.5 px-4 text-right">
+                        <button onclick="openOrderModal('${o.id}')" class="py-1 px-2.5 rounded-lg bg-vaidya-soft border border-vaidya-accentMuted/40 text-vaidya-textSecondary hover:text-vaidya-accent text-xs">
+                            Inspect
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function openOrderModal(id) {
+            const o = allOrders.find(item => item.id === id);
+            if (!o) return;
+
+            document.getElementById('edit-order-id').value = o.id;
+            document.getElementById('order-modal-title').textContent = `Order ${o.order_number}`;
+            document.getElementById('order-modal-date').textContent = new Date(o.created_at).toLocaleString();
+            document.getElementById('order-modal-cust').innerHTML = `
+                <div>${escapeHtml(o.customer_name || 'Customer')}</div>
+                <div class="text-xs text-vaidya-textMuted">${escapeHtml(o.customer_email || '')} &bull; ${escapeHtml(o.customer_phone || '')}</div>
+            `;
+
+            const otpBadge = document.getElementById('order-modal-phone-otp-badge');
+            const otpTime = document.getElementById('order-modal-phone-otp-time');
+            if (o.phone_verified) {
+                if (otpBadge) otpBadge.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-semibold border border-emerald-500/30 flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Phone OTP Verified</span>`;
+                if (otpTime) otpTime.textContent = o.phone_verified_at ? `Verified at: ${new Date(o.phone_verified_at).toLocaleString()}` : 'Phone verified at checkout';
+            } else {
+                if (otpBadge) otpBadge.innerHTML = `<span class="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-semibold border border-red-500/30 flex items-center gap-1"><i class="fa-solid fa-circle-xmark"></i> Unverified Phone</span>`;
+                if (otpTime) otpTime.textContent = '';
+            }
+
+            const a = o.shipping_address || {};
+            const recName = o.recipient_name || a.recipient_name || a.name || o.customer_name || 'Customer';
+            const recPhone = o.recipient_phone || a.recipient_phone || a.phone || o.customer_phone || '';
+            const isGift = (recName !== o.customer_name && o.customer_name);
+
+            document.getElementById('order-modal-recipient').innerHTML = `
+                ${escapeHtml(recName)} (${escapeHtml(recPhone)})
+                ${isGift ? '<span class="ml-1.5 px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] uppercase font-bold">Gift Order</span>' : ''}
+            `;
+            document.getElementById('order-modal-addr').innerHTML = `${escapeHtml(a.l1 || a.address_line1 || '')}${a.l2 ? ', ' + escapeHtml(a.l2) : ''}, ${escapeHtml(a.city || '')}, ${escapeHtml(a.state || '')} - ${escapeHtml(a.pin || a.postal_code || '')}${a.landmark ? ' (Landmark: ' + escapeHtml(a.landmark) + ')' : ''}`;
+
+            // Pre-dispatch manual verification
+            document.getElementById('edit-order-verification-status').value = o.manual_verification_status || 'unverified';
+            document.getElementById('edit-order-verification-notes').value = o.verification_notes || '';
+            document.getElementById('order-modal-verified-at').textContent = o.verified_at ? `Verified: ${new Date(o.verified_at).toLocaleDateString()}` : '';
+
+            const itemsContainer = document.getElementById('order-modal-items');
+            const items = Array.isArray(o.items) ? o.items : [];
+            itemsContainer.innerHTML = items.map(i => `
+                <div class="flex items-center justify-between py-1.5">
+                    <div>
+                        <span class="font-medium text-vaidya-textPrimary">${escapeHtml(i.name)}</span>
+                        <span class="text-vaidya-textMuted text-[11px] block">Qty: ${i.qty} &times; ₹${Number(i.price).toFixed(2)}</span>
+                    </div>
+                    <span class="font-mono text-vaidya-textPrimary font-semibold">₹${Number(i.qty * i.price).toFixed(2)}</span>
+                </div>
+            `).join('') + `
+                <div class="flex justify-between pt-2 border-t border-vaidya-accentMuted/30 font-semibold text-vaidya-textPrimary">
+                    <span>Order Total:</span>
+                    <span class="text-vaidya-accent font-mono">₹${Number(o.total).toFixed(2)}</span>
+                </div>
+            `;
+
+            document.getElementById('edit-order-status').value = o.order_status || 'new';
+            document.getElementById('edit-order-payment-status').value = o.payment_status || 'pending';
+            document.getElementById('edit-order-courier').value = o.courier_name || '';
+            document.getElementById('edit-order-tracking').value = o.tracking_number || '';
+            document.getElementById('edit-order-notes').value = o.admin_notes || '';
+
+            document.getElementById('order-modal').classList.remove('hidden');
+        }
+
+        async function saveOrderUpdates() {
+            const id = document.getElementById('edit-order-id').value;
+            const payload = {
+                order_status: document.getElementById('edit-order-status').value,
+                payment_status: document.getElementById('edit-order-payment-status').value,
+                courier_name: document.getElementById('edit-order-courier').value.trim(),
+                tracking_number: document.getElementById('edit-order-tracking').value.trim(),
+                admin_notes: document.getElementById('edit-order-notes').value.trim(),
+                manual_verification_status: document.getElementById('edit-order-verification-status').value,
+                verification_notes: document.getElementById('edit-order-verification-notes').value.trim()
+            };
+
+            try {
+                const res = await fetch(`/api/admin/orders?id=${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to update order');
+
+                showToast('Order details and delivery status updated.');
+                document.getElementById('order-modal').classList.add('hidden');
+                loadOrders();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // ==========================================
+        // CUSTOMER SUPPORT MANAGEMENT
+        // ==========================================
+        let allSupportTickets = [];
+
+        async function loadSupportTickets() {
+            const tbody = document.getElementById('support-table-body');
+            const statusFilter = document.getElementById('support-status-filter')?.value || 'all';
+
+            try {
+                const url = statusFilter !== 'all' ? `/api/admin/support?status=${statusFilter}` : '/api/admin/support';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to load support cases');
+
+                allSupportTickets = data.tickets || [];
+                renderSupportTable(allSupportTickets);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400">Failed to load cases: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderSupportTable(tickets) {
+            const tbody = document.getElementById('support-table-body');
+            if (!tickets.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No support cases found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = tickets.map(t => {
+                const statusMap = {
+                    open: 'bg-amber-950/80 text-amber-300 border-amber-500/30',
+                    in_progress: 'bg-blue-950/80 text-blue-300 border-blue-500/30',
+                    resolved: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30',
+                    closed: 'bg-gray-800 text-gray-400 border-gray-700'
+                };
+                const badge = `<span class="px-2 py-0.5 rounded-full text-[10px] border capitalize ${statusMap[t.status] || 'bg-gray-800'}">${t.status}</span>`;
+
+                return `
+                <tr class="hover:bg-vaidya-soft/40 transition-colors">
+                    <td class="py-3.5 px-4 font-mono font-medium text-vaidya-accent">${escapeHtml(t.ticket_number)}</td>
+                    <td class="py-3.5 px-4">${escapeHtml(t.customer_email)}</td>
+                    <td class="py-3.5 px-4 text-vaidya-textSecondary">${escapeHtml(t.category)}</td>
+                    <td class="py-3.5 px-4 truncate max-w-xs">${escapeHtml(t.subject || t.message)}</td>
+                    <td class="py-3.5 px-4">${badge}</td>
+                    <td class="py-3.5 px-4 text-right">
+                        <button onclick="openSupportModal('${t.id}')" class="py-1 px-2.5 rounded-lg bg-vaidya-soft border border-vaidya-accentMuted/40 text-vaidya-textSecondary hover:text-vaidya-accent text-xs">
+                            View Case
+                        </button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function openSupportModal(id) {
+            const t = allSupportTickets.find(item => item.id === id);
+            if (!t) return;
+
+            document.getElementById('edit-support-id').value = t.id;
+            document.getElementById('support-modal-title').textContent = `Support Case ${t.ticket_number}`;
+            document.getElementById('support-modal-cust').textContent = `${t.customer_email} &bull; ${new Date(t.created_at).toLocaleString()}`;
+            document.getElementById('support-modal-msg').textContent = t.message;
+            document.getElementById('edit-support-status').value = t.status || 'open';
+            document.getElementById('edit-support-notes').value = t.internal_notes || '';
+
+            document.getElementById('support-modal').classList.remove('hidden');
+        }
+
+        async function saveSupportUpdates() {
+            const id = document.getElementById('edit-support-id').value;
+            const payload = {
+                status: document.getElementById('edit-support-status').value,
+                internal_notes: document.getElementById('edit-support-notes').value.trim()
+            };
+
+            try {
+                const res = await fetch(`/api/admin/support?id=${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to save support updates');
+
+                showToast('Case updated.');
+                document.getElementById('support-modal').classList.add('hidden');
+                loadSupportTickets();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        // ==========================================
+        // PRODUCT REVIEWS MODERATION
+        // ==========================================
+        let allReviews = [];
+
+        async function loadReviews() {
+            const tbody = document.getElementById('reviews-table-body');
+            const statusFilter = document.getElementById('reviews-status-filter')?.value || 'all';
+
+            try {
+                const url = statusFilter !== 'all' ? `/api/admin/reviews?status=${statusFilter}` : '/api/admin/reviews';
+                const res = await fetch(url);
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to load reviews');
+
+                allReviews = data.reviews || [];
+                renderReviewsTable(allReviews);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-400">Failed to load reviews: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderReviewsTable(reviews) {
+            const tbody = document.getElementById('reviews-table-body');
+            if (!reviews.length) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-vaidya-textMuted">No reviews found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = reviews.map(r => {
+                const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                const verifiedPill = r.verified_purchase
+                    ? '<span class="inline-flex items-center gap-1 text-[10px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> Verified Purchase</span>'
+                    : '';
+
+                const statusMap = {
+                    pending: 'bg-amber-950/80 text-amber-300 border-amber-500/30',
+                    approved: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30',
+                    rejected: 'bg-red-950/80 text-red-300 border-red-500/30',
+                    hidden: 'bg-gray-800 text-gray-400 border-gray-700'
+                };
+                const badge = `<span class="px-2 py-0.5 rounded-full text-[10px] border capitalize ${statusMap[r.status] || 'bg-gray-800'}">${r.status}</span>`;
+
+                return `
+                <tr class="hover:bg-vaidya-soft/40 transition-colors">
+                    <td class="py-3.5 px-4 font-medium text-vaidya-textPrimary">${escapeHtml(r.product_id)}</td>
+                    <td class="py-3.5 px-4">
+                        <div class="font-medium text-vaidya-textPrimary">${escapeHtml(r.customer_name)}</div>
+                        <div class="text-[11px] text-vaidya-textMuted">${escapeHtml(r.customer_email)}</div>
+                        ${verifiedPill}
+                    </td>
+                    <td class="py-3.5 px-4 text-amber-400 font-serif text-sm">${stars}</td>
+                    <td class="py-3.5 px-4 max-w-xs">
+                        <div class="font-medium text-vaidya-textPrimary">${escapeHtml(r.title || '')}</div>
+                        <div class="text-xs text-vaidya-textSecondary line-clamp-2">${escapeHtml(r.comment)}</div>
+                    </td>
+                    <td class="py-3.5 px-4">${badge}</td>
+                    <td class="py-3.5 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            ${r.status !== 'approved' ? `<button onclick="moderateReview('${r.id}', 'approved')" class="py-1 px-2.5 rounded-lg bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[11px] font-medium hover:bg-emerald-900/60">Approve</button>` : ''}
+                            ${r.status !== 'rejected' ? `<button onclick="moderateReview('${r.id}', 'rejected')" class="py-1 px-2.5 rounded-lg bg-red-950/80 text-red-300 border border-red-500/30 text-[11px] font-medium hover:bg-red-900/60">Reject</button>` : ''}
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        async function moderateReview(id, status) {
+            try {
+                const res = await fetch(`/api/admin/reviews?id=${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Failed to moderate review');
+
+                showToast(`Review marked as ${status}.`);
+                loadReviews();
+            } catch (err) {
+                showToast(err.message, true);
+            }
+        }
+
+        function escapeHtml(text) {
+            return String(text || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            verifySession();
+            loadSiteContent();
+        });
+    </script>
+</body>
+</html>

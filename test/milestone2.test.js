@@ -118,7 +118,7 @@ async function runTests() {
         if (updateData.product.price !== 33.00 || updateData.product.stock !== 75) {
             throw new Error('Price or stock not updated properly');
         }
-        console.log(` PASS: Product updated to price $${updateData.product.price} and stock ${updateData.product.stock}.`);
+        console.log(` PASS: Product updated to price ₹${updateData.product.price} and stock ${updateData.product.stock}.`);
 
         // Test 6: Duplicate product
         console.log('\n[Test 6] Verifying product duplication...');

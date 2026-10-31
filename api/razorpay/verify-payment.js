@@ -1,5 +1,6 @@
 const { verifyPaymentSignature, isRazorpayConfigured } = require('../../lib/razorpay');
 const { sendWhatsAppNotification } = require('../../lib/whatsapp');
+const { isDatabaseConfigured, query } = require('../../lib/db');
 const { isSupabaseConfigured, getSupabaseAdmin, mockDb } = require('../../lib/supabase');
 
 module.exports = async function handler(req, res) {
@@ -32,7 +33,9 @@ module.exports = async function handler(req, res) {
             console.error(`[Razorpay Security Alert] Invalid payment signature for order ${order_number}!`);
 
             // Mark order as failed in database
-            if (isSupabaseConfigured()) {
+            if (isDatabaseConfigured()) {
+                await query('UPDATE public.orders SET payment_status = $1, updated_at = NOW() WHERE order_number = $2', ['failed', order_number]);
+            } else if (isSupabaseConfigured()) {
                 const supabase = getSupabaseAdmin();
                 await supabase
                     .from('orders')
@@ -52,7 +55,15 @@ module.exports = async function handler(req, res) {
 
         // Cryptographically verified signature: Mark payment paid
         let updatedOrder = null;
-        if (isSupabaseConfigured()) {
+        if (isDatabaseConfigured()) {
+            const updateRes = await query(`
+                UPDATE public.orders
+                SET payment_status = 'paid', razorpay_order_id = $1, razorpay_payment_id = $2, razorpay_signature = $3, updated_at = NOW()
+                WHERE order_number = $4
+                RETURNING *
+            `, [razorpay_order_id, razorpay_payment_id, razorpay_signature, order_number]);
+            if (updateRes.rows.length > 0) updatedOrder = updateRes.rows[0];
+        } else if (isSupabaseConfigured()) {
             const supabase = getSupabaseAdmin();
             const { data, error } = await supabase
                 .from('orders')
