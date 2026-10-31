@@ -37,7 +37,10 @@ function syncAssets() {
     // 3. Admin Management SPA
     copyFileSafe(path.join(ROOT_DIR, 'admin', 'index.html'), path.join(PUBLIC_DIR, 'admin', 'index.html'));
 
-    // 4. Staging Protection: HTTP Headers for Cloudflare Static Assets
+    // 4. Custom 404 Lost in Himalayas Page
+    copyFileSafe(path.join(ROOT_DIR, '404.html'), path.join(PUBLIC_DIR, '404.html'));
+
+    // 5. Staging Protection: HTTP Headers for Cloudflare Static Assets
     const headersContent = `/*\n  X-Robots-Tag: noindex, nofollow\n`;
     fs.writeFileSync(path.join(PUBLIC_DIR, '_headers'), headersContent, 'utf8');
     console.log('[Asset Sync]: Generated public/_headers for noindex protection.');

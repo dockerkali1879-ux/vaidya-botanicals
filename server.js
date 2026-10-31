@@ -30,14 +30,14 @@ const MIME_TYPES = {
     '.webp': 'image/webp'
 };
 
-function serveFile(res, filePath, contentType) {
+function serveFile(res, filePath, contentType, statusCode = 200) {
     fs.readFile(filePath, (err, content) => {
         if (err) {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('404 Not Found');
             return;
         }
-        res.writeHead(200, {
+        res.writeHead(statusCode, {
             'Content-Type': contentType || 'text/html; charset=UTF-8',
             'X-Frame-Options': 'DENY',
             'X-Content-Type-Options': 'nosniff',
@@ -269,6 +269,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     // Default 404
+    const notFoundPath = path.join(__dirname, '404.html');
+    if (fs.existsSync(notFoundPath)) {
+        return serveFile(res, notFoundPath, 'text/html; charset=UTF-8', 404);
+    }
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('404 Not Found');
 });
