@@ -16,13 +16,15 @@
     ]
   },
   "vars": {
+    "NODE_ENV": "staging",
     "CLOUDINARY_CLOUD_NAME": "vaidya-botanicals",
     "CLOUDINARY_API_KEY": "placeholder_cloudinary_api_key"
   },
+  "workers_dev": true,
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "placeholder-hyperdrive-dev-id"
+      "id": "e9f98cc53359475796a339f7c9a0679e"
     }
   ]
 }
